@@ -1,0 +1,105 @@
+"use client";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase-client";
+
+export default function EditForm({ member }: { member: any }) {
+  const router = useRouter();
+  const [f, setF] = useState({ ...member });
+  const [photo, setPhoto] = useState<File | null>(null);
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState("");
+
+  function calcAge(dob: string) {
+    if (!dob) return "";
+    const birth = new Date(dob);
+    const today = new Date();
+    let age = today.getFullYear() - birth.getFullYear();
+    const m = today.getMonth() - birth.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;
+    return age > 0 ? String(age) : "";
+  }
+
+  function set(k: string, v: any) {
+    setF((prev: any) => ({ ...prev, [k]: v }));
+    if (k === "dob") {
+      const a = calcAge(v);
+      setF((prev: any) => ({ ...prev, dob: v, age: a }));
+    }
+  }
+
+  const setDirect = (k: string, v: any) => setF((prev: any) => ({ ...prev, [k]: v }));
+
+  async function save() {
+    setErr(""); setBusy(true);
+    const sb = createClient();
+    let photo_url = f.photo_url;
+    if (photo) {
+      const path = `members/${Date.now()}-${photo.name.replace(/[^a-z0-9.]/gi, "_")}`;
+      const { error: upErr } = await sb.storage.from("member-photos").upload(path, photo);
+      if (upErr) { setErr(upErr.message); setBusy(false); return; }
+      const { data: pub } = sb.storage.from("member-photos").getPublicUrl(path);
+      photo_url = pub.publicUrl;
+    }
+    const { error } = await sb.from("members").update({
+      name: f.name, phone: f.phone, address: f.address, age: f.age ? Number(f.age) : null,
+      dob: f.dob || null, gender: f.gender, weight: f.weight ? Number(f.weight) : null,
+      height: f.height ? Number(f.height) : null, fee_amount: Number(f.fee_amount),
+      fee_cycle_days: Number(f.fee_cycle_days), is_pt_client: f.is_pt_client,
+      active: f.active, notes: f.notes, photo_url, next_due_date: f.next_due_date
+    }).eq("id", member.id);
+    setBusy(false);
+    if (error) { setErr(error.message); return; }
+    router.push(`/members/${member.id}`);
+  }
+
+  async function remove() {
+    if (!confirm("Delete this member permanently?")) return;
+    const sb = createClient();
+    await sb.from("members").delete().eq("id", member.id);
+    router.push("/members");
+  }
+
+  return (
+    <div className="max-w-2xl mx-auto">
+      <h1 className="text-xl font-bold mb-4">Edit Member</h1>
+      <div className="card space-y-3">
+        <div className="grid grid-cols-2 gap-3">
+          <L label="Name"><input className="input" value={f.name || ""} onChange={e => set("name", e.target.value)} /></L>
+          <L label="Phone"><input className="input" value={f.phone || ""} onChange={e => set("phone", e.target.value)} /></L>
+          <L label="Date of Birth"><input type="date" className="input" value={f.dob || ""} onChange={e => set("dob", e.target.value)} /></L>
+          <L label="Age"><input type="number" className="input" value={f.age || ""} onChange={e => setDirect("age", e.target.value)} /></L>
+          <L label="Gender">
+            <select className="input" value={f.gender || "M"} onChange={e => set("gender", e.target.value)}>
+              <option value="M">Male</option><option value="F">Female</option><option value="O">Other</option>
+            </select>
+          </L>
+          <L label="Weight (kg)"><input type="number" step="0.1" className="input" value={f.weight || ""} onChange={e => set("weight", e.target.value)} /></L>
+          <L label="Height (cm)"><input type="number" step="0.1" className="input" value={f.height || ""} onChange={e => set("height", e.target.value)} /></L>
+          <L label="Fee (₹)"><input type="number" className="input" value={f.fee_amount || 0} onChange={e => set("fee_amount", e.target.value)} /></L>
+          <L label="Cycle (days)"><input type="number" className="input" value={f.fee_cycle_days || 30} onChange={e => set("fee_cycle_days", e.target.value)} /></L>
+          <L label="Next Due Date"><input type="date" className="input" value={f.next_due_date || ""} onChange={e => set("next_due_date", e.target.value)} /></L>
+        </div>
+        <L label="Address"><textarea className="input" rows={2} value={f.address || ""} onChange={e => set("address", e.target.value)} /></L>
+        <L label="Notes"><textarea className="input" rows={2} value={f.notes || ""} onChange={e => set("notes", e.target.value)} /></L>
+        <L label="Update Photo"><input type="file" accept="image/*" onChange={e => setPhoto(e.target.files?.[0] ?? null)} /></L>
+        <label className="flex items-center gap-2 text-sm">
+          <input type="checkbox" checked={!!f.is_pt_client} onChange={e => set("is_pt_client", e.target.checked)} /> PT Client
+        </label>
+        <label className="flex items-center gap-2 text-sm">
+          <input type="checkbox" checked={!!f.active} onChange={e => set("active", e.target.checked)} /> Active
+        </label>
+        {err && <p className="text-rose-600 text-sm">{err}</p>}
+        <div className="flex gap-2">
+          <button className="btn btn-primary" onClick={save} disabled={busy}>{busy ? "Saving…" : "Save"}</button>
+          <a className="btn btn-ghost" href={`/members/${member.id}`}>Cancel</a>
+          <button className="btn btn-danger ml-auto" onClick={remove}>Delete Member</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function L({ label, children }: any) {
+  return <label className="block"><span className="text-xs text-slate-600">{label}</span><div className="mt-1">{children}</div></label>;
+}
