@@ -2,7 +2,7 @@
 // Provider A: meta — Meta WhatsApp Cloud API (free 1000/mo)
 // Provider B: local — your own whatsapp-web.js node bridge (free unlimited, your number)
 
-type SendResult = { ok: boolean; error?: string; raw?: any; simulated?: boolean };
+type SendResult = { ok: boolean; error?: string; raw?: any; simulated?: boolean; message?: string };
 
 export async function sendWhatsApp(toRaw: string, body: string, documentBuffer?: ArrayBuffer | null): Promise<SendResult> {
   const to = toRaw.replace(/[^\d]/g, "");
