@@ -3,6 +3,8 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase-client";
 
+import { generateInvoice } from "@/lib/pdf-bill";
+
 export default function NewMember() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
@@ -14,7 +16,7 @@ export default function NewMember() {
   const [form, setForm] = useState({
     admission_no: "", name: "", phone: "+91", address: "",
     dob: "", age: "", gender: "M", weight: "", height: "",
-    fee_amount: "1500", fee_cycle_days: "30",
+    fee_amount: "1000", fee_cycle_days: "30", admission_fee: "",
     is_pt_client: false, notes: ""
   });
 
@@ -82,15 +84,50 @@ export default function NewMember() {
       next_due_date: due.toISOString().slice(0, 10)
     };
 
-    const { data, error } = await sb.from("members").insert(payload).select("id, name, phone").single();
-    setLoading(false);
-    if (error) { setErr(error.message); return; }
+    const { data, error } = await sb.from("members").insert(payload).select("id, name, phone, admission_no, next_due_date, fee_amount").single();
+    if (error) { setErr(error.message); setLoading(false); return; }
+
+    // Create initial payment record
+    const feeAmt = Number(form.fee_amount || 0);
+    const admFee = Number(form.admission_fee || 0);
+    const totalPayment = feeAmt + admFee;
+    let paymentData: any = null;
+    
+    if (totalPayment > 0) {
+      const { data: payRec } = await sb.from("payments").insert({
+        member_id: data.id,
+        amount: totalPayment,
+        method: "cash",
+        notes: "Initial Membership + Admission",
+        paid_on: today.toISOString().slice(0, 10)
+      }).select().single();
+      paymentData = payRec;
+    }
 
     if (sendWelcome && form.phone) {
-      const msg = (settings.msg_welcome || "Hello {name}, welcome to {gym_name}!")
-        .replace(/{name}/g, form.name).replace(/{gym_name}/g, settings.gym_name || "Lexus Fitness Group");
-      await fetch("/api/wa/send", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ memberId: data.id, body: msg }) });
+      const gymName = settings.gym_name || "Lexus Fitness Group";
+      let msg = (settings.msg_welcome || "Hello {name},\n\nWelcome to {gym_name}! 💪🔥\nWe are excited to have you join our family.\n\n— Team {gym_name}")
+        .replace(/{name}/g, form.name).replace(/{gym_name}/g, gymName);
+      
+      if (totalPayment > 0) {
+        msg += `\n\nWe received ₹${totalPayment} (₹${feeAmt} Fee` + (admFee > 0 ? ` + ₹${admFee} Admission` : "") + `). Check the attached invoice!`;
+      }
+
+      if (paymentData) {
+        // Send with invoice
+        const doc = generateInvoice(data, { ...paymentData, paid_on: today.toISOString().slice(0, 10) }, { admissionFee: admFee });
+        const pdfBlob = doc.output("blob");
+        const fd = new FormData();
+        fd.append("memberId", data.id); 
+        fd.append("body", msg);
+        fd.append("document", pdfBlob, `Invoice_${data.admission_no}.pdf`);
+        await fetch("/api/wa/send", { method: "POST", body: fd });
+      } else {
+        // Send without invoice
+        await fetch("/api/wa/send", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ memberId: data.id, body: msg }) });
+      }
     }
+    setLoading(false);
     router.push(`/members/${data.id}`);
   }
 
@@ -128,8 +165,11 @@ export default function NewMember() {
           <Field label="Height (cm)">
             <input id="new-height" type="number" step="0.1" className="input" value={form.height} onChange={e => upd("height", e.target.value)} />
           </Field>
-          <Field label="Fee Amount (₹)">
+          <Field label="Monthly Fee (₹)">
             <input id="new-fee" type="number" className="input" value={form.fee_amount} onChange={e => upd("fee_amount", e.target.value)} />
+          </Field>
+          <Field label="Extra Admission Fee (₹)">
+            <input id="new-adm-fee" type="number" className="input" placeholder="e.g. 500" value={form.admission_fee} onChange={e => upd("admission_fee", e.target.value)} />
           </Field>
           <Field label="Fee Cycle (days)">
             <input id="new-cycle" type="number" className="input" value={form.fee_cycle_days} onChange={e => upd("fee_cycle_days", e.target.value)} />
