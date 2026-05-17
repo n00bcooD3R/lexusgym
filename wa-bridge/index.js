@@ -55,7 +55,15 @@ app.post("/send", async (req, res) => {
   if (!to || !body) return res.status(400).json({ error: "Missing to or body" });
 
   try {
-    const formattedNum = to.replace(/[^\d]/g, "") + "@c.us";
+    const cleaned = to.replace(/[^\d]/g, "");
+    
+    // Resolve the official WhatsApp ID for this number
+    const numberDetails = await client.getNumberId(cleaned);
+    if (!numberDetails) {
+       return res.status(400).json({ error: "Number is not registered on WhatsApp" });
+    }
+    
+    const formattedNum = numberDetails._serialized;
     await client.sendMessage(formattedNum, body);
     console.log(`Sent to ${to}`);
     res.json({ ok: true });
