@@ -74,15 +74,27 @@ async function sendViaMeta(to: string, body: string, documentBuffer?: ArrayBuffe
   }
 }
 
-async function sendViaLocal(to: string, body: string, _documentBuffer?: ArrayBuffer | null): Promise<SendResult> {
-  const url = process.env.LOCAL_WA_URL;
+async function sendViaLocal(to: string, body: string, documentBuffer?: ArrayBuffer | null): Promise<SendResult> {
+  let url = process.env.LOCAL_WA_URL;
   const secret = process.env.LOCAL_WA_SECRET;
   if (!url) return { ok: false, error: "LOCAL_WA_URL missing" };
+  if (url.endsWith("/")) url = url.slice(0, -1);
+
   try {
+    let media = null;
+    if (documentBuffer) {
+      const base64 = Buffer.from(documentBuffer).toString("base64");
+      media = {
+        mimetype: "application/pdf",
+        filename: "Invoice.pdf",
+        data: base64
+      };
+    }
+
     const res = await fetch(`${url}/send`, {
       method: "POST",
       headers: { "Content-Type": "application/json", "x-secret": secret || "" },
-      body: JSON.stringify({ to, body })
+      body: JSON.stringify({ to, body, media })
     });
     const json = await res.json().catch(() => ({}));
     if (!res.ok) return { ok: false, error: JSON.stringify(json) };

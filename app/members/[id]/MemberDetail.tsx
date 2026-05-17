@@ -129,24 +129,60 @@ function PaymentsTab({ m, payments }: any) {
     router.refresh();
   }
 
-  async function record() {
-    setBusy(true);
-    const sb = createClient();
-    const total = Number(amount) + extraCharges.trainer + extraCharges.diet + extraCharges.admission;
-    const { data: payment, error } = await sb.from("payments").insert({ member_id: m.id, amount: total, method, notes, paid_on: paymentDate }).select().single();
-    setBusy(false);
-    if (error) { alert(error.message); return; }
-    if (sendWA) {
-      const doc = generateInvoice(m, { ...payment, paid_on: paymentDate }, { trainerCharges: extraCharges.trainer, dietCharges: extraCharges.diet, admissionFee: extraCharges.admission });
-      const pdfBlob = doc.output("blob");
-      const expiry = m.next_due_date ? new Date(m.next_due_date).toLocaleDateString("en-IN") : "N/A";
-      const paymentMethodStr = method === "upi" ? "UPI/QR" : method === "card" ? "Card" : method === "bank" ? "Bank Transfer" : "Cash";
-      const msg = `Hello ${m.name}, 👋\n\nYour payment of ₹${total} received through ${paymentMethodStr}.\n\nYour Lexus Gym membership has been successfully renewed! 💪🔥\n\nThank you for continuing your fitness journey with us. Your dedication and consistency bring you closer to your goals every day.\n\nLet’s keep training hard, staying focused, and achieving great results together!\n\n— Team Lexus Gym`;
-      const fd = new FormData();
-      fd.append("memberId", m.id); fd.append("body", msg);
-      fd.append("document", pdfBlob, `Invoice_${m.admission_no}.pdf`);
-      await fetch("/api/wa/send", { method: "POST", body: fd });
+async function record() {
+    if (!amount || Number(amount) <= 0) {
+      alert("Please enter a valid amount");
+      return;
     }
+    setBusy(true);
+    try {
+      const sb = createClient();
+      const total = Number(amount) + extraCharges.trainer + extraCharges.diet + extraCharges.admission;
+      
+      // First insert the payment
+      const { data: payment, error } = await sb.from("payments").insert({ 
+        member_id: m.id, 
+        amount: total, 
+        method, 
+        notes, 
+        paid_on: paymentDate 
+      }).select().single();
+      
+      if (error) {
+        alert("Error saving payment: " + error.message);
+        setBusy(false);
+        return;
+      }
+      
+      // Then update the member's next due date manually to ensure it works
+      const paymentDateObj = new Date(paymentDate);
+      const nextDue = new Date(paymentDateObj);
+      nextDue.setDate(nextDue.getDate() + (m.fee_cycle_days || 30));
+      
+      await sb.from("members").update({ 
+        last_payment_date: paymentDate,
+        next_due_date: nextDue.toISOString().slice(0, 10)
+      }).eq("id", m.id);
+      
+      if (sendWA && payment) {
+        const doc = generateInvoice(m, { ...payment, paid_on: paymentDate }, { trainerCharges: extraCharges.trainer, dietCharges: extraCharges.diet, admissionFee: extraCharges.admission });
+        const pdfBlob = doc.output("blob");
+        const expiry = nextDue.toLocaleDateString("en-IN");
+        const paymentMethodStr = method === "upi" ? "UPI/QR" : method === "card" ? "Card" : method === "bank" ? "Bank Transfer" : "Cash";
+        const msg = `Hello ${m.name}, 👋\n\nYour payment of ₹${total} received through ${paymentMethodStr}.\n\nYour Lexus Gym membership has been successfully renewed! 💪🔥\n\nThank you for continuing your fitness journey with us.\n\n— Team Lexus Gym`;
+        const fd = new FormData();
+        fd.append("memberId", m.id); fd.append("body", msg);
+        fd.append("document", pdfBlob, `Invoice_${m.admission_no}.pdf`);
+        await fetch("/api/wa/send", { method: "POST", body: fd });
+      }
+      
+      alert("Payment recorded successfully!");
+      router.refresh();
+    } catch (err: any) {
+      alert("Error: " + (err.message || "Unknown error"));
+    }
+    setBusy(false);
+  }
     router.refresh();
   }
 
