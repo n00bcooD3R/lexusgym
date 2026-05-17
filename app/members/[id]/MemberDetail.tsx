@@ -183,8 +183,6 @@ async function record() {
     }
     setBusy(false);
   }
-    router.refresh();
-  }
 
   function previewInvoice() {
     const doc = generateInvoice(m, { id: "preview", paid_on: paymentDate, amount: Number(amount) + extraCharges.trainer + extraCharges.diet + extraCharges.admission, method }, { trainerCharges: extraCharges.trainer, dietCharges: extraCharges.diet, admissionFee: extraCharges.admission });
