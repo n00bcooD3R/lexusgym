@@ -110,42 +110,6 @@ export default function SettingsPage() {
         </div>
       </div>
 
-      {/* WhatsApp Configuration */}
-      <div className="glass" style={{ padding: "1.5rem" }}>
-        <h2 style={{ fontSize: "1rem", fontWeight: 700, marginBottom: "1.25rem", display: "flex", alignItems: "center", gap: "0.5rem" }}>
-          📱 <span>WhatsApp Integration</span>
-        </h2>
-        <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", padding: "0.75rem", borderRadius: "0.5rem", background: "rgba(6,182,212,0.08)", border: "1px solid rgba(6,182,212,0.2)" }}>
-            <span style={{ fontSize: "0.9rem" }}>ℹ️</span>
-            <span style={{ fontSize: "0.82rem" }}>
-              Currently in <strong>Demo Mode</strong>. Messages are logged but not sent.
-            </span>
-          </div>
-          <p style={{ fontSize: "0.82rem", color: "var(--text-muted)", margin: 0 }}>
-            To enable real WhatsApp, add these to <code style={{ background: "rgba(0,0,0,0.06)", padding: "0.1rem 0.3rem", borderRadius: "0.25rem" }}>.env.local</code>:
-          </p>
-          <div style={{ fontFamily: "monospace", fontSize: "0.78rem", background: "rgba(0,0,0,0.04)", padding: "1rem", borderRadius: "0.5rem", lineHeight: 1.8 }}>
-            WA_PROVIDER=meta<br />
-            META_WA_TOKEN=your_permanent_token<br />
-            META_WA_PHONE_ID=your_phone_number_id
-          </div>
-          <details>
-            <summary style={{ fontSize: "0.82rem", cursor: "pointer", color: "var(--accent)", fontWeight: 600 }}>
-              📋 Step-by-step setup guide
-            </summary>
-            <ol style={{ fontSize: "0.8rem", display: "flex", flexDirection: "column", gap: "0.5rem", paddingLeft: "1.25rem", marginTop: "0.75rem" }}>
-              <li>Go to <a href="https://developers.facebook.com" target="_blank" rel="noreferrer" style={{ color: "var(--accent)" }}>developers.facebook.com</a></li>
-              <li>Create an app → "Business" type</li>
-              <li>Add "WhatsApp" product</li>
-              <li>Copy the <strong>Phone Number ID</strong> and <strong>Permanent Token</strong></li>
-              <li>Paste them in <code>.env.local</code> as shown above</li>
-              <li>Restart the server</li>
-            </ol>
-          </details>
-        </div>
-      </div>
-
       {/* Message Templates */}
       <div className="glass" style={{ padding: "1.5rem" }}>
         <h2 style={{ fontSize: "1rem", fontWeight: 700, marginBottom: "1.25rem", display: "flex", alignItems: "center", gap: "0.5rem" }}>

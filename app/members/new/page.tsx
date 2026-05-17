@@ -52,8 +52,16 @@ export default function NewMember() {
   }
 
   function upd(k: string, v: any) {
-    if (k === "dob") setForm(prev => ({ ...prev, dob: v, age: calcAge(v) }));
-    else setForm(prev => ({ ...prev, [k]: v }));
+    if (k === "dob") {
+      setForm(prev => ({ ...prev, dob: v, age: calcAge(v) }));
+      return;
+    }
+    if (typeof v === "string") {
+      if (k === "phone") v = v.replace(/[^\d+]/g, "");
+      else if (["admission_no", "age", "fee_amount", "admission_fee", "fee_cycle_days"].includes(k)) v = v.replace(/\D/g, "");
+      else if (["weight", "height"].includes(k)) v = v.replace(/[^\d.]/g, "");
+    }
+    setForm(prev => ({ ...prev, [k]: v }));
   }
 
   async function submit(e: React.FormEvent) {
@@ -128,7 +136,7 @@ export default function NewMember() {
       }
     }
     setLoading(false);
-    router.push(`/members/${data.id}`);
+    router.push(`/members`);
   }
 
   return (
