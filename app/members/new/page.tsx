@@ -12,7 +12,7 @@ export default function NewMember() {
   const [sendWelcome, setSendWelcome] = useState(true);
   const [settings, setSettings] = useState<Record<string, string>>({});
   const [form, setForm] = useState({
-    admission_no: "", name: "", phone: "", address: "",
+    admission_no: "", name: "", phone: "+91", address: "",
     dob: "", age: "", gender: "M", weight: "", height: "",
     fee_amount: "1500", fee_cycle_days: "30",
     is_pt_client: false, notes: ""
