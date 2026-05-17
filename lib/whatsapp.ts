@@ -74,7 +74,7 @@ async function sendViaMeta(to: string, body: string, documentBuffer?: ArrayBuffe
   }
 }
 
-async function sendViaLocal(to: string, body: string): Promise<SendResult> {
+async function sendViaLocal(to: string, body: string, _documentBuffer?: ArrayBuffer | null): Promise<SendResult> {
   const url = process.env.LOCAL_WA_URL;
   const secret = process.env.LOCAL_WA_SECRET;
   if (!url) return { ok: false, error: "LOCAL_WA_URL missing" };
