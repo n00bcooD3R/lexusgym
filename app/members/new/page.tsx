@@ -66,6 +66,7 @@ export default function NewMember() {
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
+    console.log("Form submitted. sendWelcome:", sendWelcome, "phone:", form.phone);
     setErr(""); setAdmError(""); setLoading(true);
     const sb = createClient();
     const { data: ex } = await sb.from("members").select("id").eq("admission_no", form.admission_no).maybeSingle();
@@ -112,31 +113,41 @@ export default function NewMember() {
       paymentData = payRec;
     }
 
+// Send WhatsApp in background (non-blocking)
     if (sendWelcome && form.phone) {
       const gymName = settings.gym_name || "Lexus Fitness Group";
-      let msg = (settings.msg_welcome || "Hello {name}, 👋\n\nWelcome to {gym_name}! 💪🔥\nWe are excited to have you as a part of the {gym_name} family.\n\nYour membership has been successfully activated, and your fitness journey officially starts today. Whether your goal is muscle building, fat loss, strength improvement, endurance, or overall fitness, our team is here to support and guide you every step of the way.\n\nAt {gym_name}, we believe that consistency, discipline, and dedication create real transformation. With our professional training environment, modern equipment, and motivating atmosphere, you now have everything you need to become the strongest version of yourself.\n\nRemember:\n✅ Every workout brings progress\n✅ Every drop of sweat is an investment in yourself\n✅ Small daily efforts create big results over time\n\nWe encourage you to stay committed to your training schedule, maintain proper nutrition, and never give up on your goals. Results take time, but with patience and consistency, success is guaranteed.\n\nIf you need any assistance regarding workouts, diet guidance, membership support, or gym facilities, feel free to contact our team anytime. We are always happy to help.\n\nThank you once again for trusting {gym_name} with your fitness journey.\n\nLet’s train hard, stay focused, and achieve greatness together! 🔥🏋️\n\n— Team {gym_name}")
+      let msg = (settings.msg_welcome || "Hello {name}, 👋\n\nWelcome to {gym_name}! 💪🔥\nWe are excited to have you as a part of the {gym_name} family.\n\nYour membership has been successfully activated, and your fitness journey officially starts today.\n\n— Team {gym_name}")
         .replace(/{name}/g, form.name).replace(/{gym_name}/g, gymName);
       
       if (totalPayment > 0) {
-        msg += `\n\nWe received ₹${totalPayment} (₹${feeAmt} Fee` + (admFee > 0 ? ` + ₹${admFee} Admission` : "") + `). Check the attached invoice!`;
+        msg += `\n\nWe received ₹${totalPayment}. Check the attached invoice!`;
       }
 
+      // Fire and forget - don't wait for WhatsApp
       if (paymentData) {
-        // Send with invoice
         const doc = generateInvoice(data, { ...paymentData, paid_on: today.toISOString().slice(0, 10) }, { admissionFee: admFee });
         const pdfBlob = doc.output("blob");
         const fd = new FormData();
         fd.append("memberId", data.id); 
         fd.append("body", msg);
         fd.append("document", pdfBlob, `Invoice_${data.admission_no}.pdf`);
-        await fetch("/api/wa/send", { method: "POST", body: fd });
+        fetch("/api/wa/send", { method: "POST", body: fd }).then(r => r.json()).then(j => console.log("WhatsApp sent:", j)).catch(e => console.log("WhatsApp error:", e.message));
       } else {
-        // Send without invoice
-        await fetch("/api/wa/send", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ memberId: data.id, body: msg }) });
+        fetch("/api/wa/send", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ memberId: data.id, body: msg }) }).then(r => r.json()).then(j => console.log("WhatsApp sent:", j)).catch(e => console.log("WhatsApp error:", e.message));
       }
+    } else if (totalPayment > 0 && !sendWelcome && paymentData) {
+      // Send just the invoice
+      const doc = generateInvoice(data, { ...paymentData, paid_on: today.toISOString().slice(0, 10) }, { admissionFee: admFee });
+      const pdfBlob = doc.output("blob");
+      const fd = new FormData();
+      fd.append("memberId", data.id); 
+      fd.append("body", `Payment of ₹${totalPayment} received. Invoice attached.`);
+      fd.append("document", pdfBlob, `Invoice_${data.admission_no}.pdf`);
+      fetch("/api/wa/send", { method: "POST", body: fd }).then(r => r.json()).then(j => console.log("Invoice sent:", j)).catch(e => console.log("Invoice error:", e.message));
     }
     setLoading(false);
-    router.push(`/members`);
+    // Redirect to the new member's detail page
+    router.push(`/members/${data.id}`);
   }
 
   return (
