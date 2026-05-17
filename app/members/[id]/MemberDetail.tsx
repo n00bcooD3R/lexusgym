@@ -140,7 +140,8 @@ function PaymentsTab({ m, payments }: any) {
       const doc = generateInvoice(m, { ...payment, paid_on: paymentDate }, { trainerCharges: extraCharges.trainer, dietCharges: extraCharges.diet, admissionFee: extraCharges.admission });
       const pdfBlob = doc.output("blob");
       const expiry = m.next_due_date ? new Date(m.next_due_date).toLocaleDateString("en-IN") : "N/A";
-      const msg = `Hello ${m.name},\n\nThank you for ₹${total}! Your membership is active until ${expiry}.\n\n— Team Lexus Fitness Group`;
+      const paymentMethodStr = method === "upi" ? "UPI/QR" : method === "card" ? "Card" : method === "bank" ? "Bank Transfer" : "Cash";
+      const msg = `Hello ${m.name}, 👋\n\nYour payment of ₹${total} received through ${paymentMethodStr}.\n\nYour Lexus Gym membership has been successfully renewed! 💪🔥\n\nThank you for continuing your fitness journey with us. Your dedication and consistency bring you closer to your goals every day.\n\nLet’s keep training hard, staying focused, and achieving great results together!\n\n— Team Lexus Gym`;
       const fd = new FormData();
       fd.append("memberId", m.id); fd.append("body", msg);
       fd.append("document", pdfBlob, `Invoice_${m.admission_no}.pdf`);
@@ -351,7 +352,6 @@ function MessagesTab({ messages }: any) {
     <div className="card" style={{ padding: 0, overflow: "hidden" }}>
       <div className="section-header" style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
         <span>💬 Recent WhatsApp ({messages.length})</span>
-        <span className="badge badge-demo">Demo Mode</span>
       </div>
       <div className="divide-glass">
         {messages.length === 0 && <div style={{ padding: "2rem", textAlign: "center", color: "var(--text-muted)" }}>No messages sent yet.</div>}
