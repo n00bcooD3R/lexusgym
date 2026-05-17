@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase-server";
 
+export const dynamic = "force-dynamic";
+
 const DEFAULT_SETTINGS = [
   { key: "gym_name", value: "Lexus Fitness Group" },
   { key: "gym_tagline", value: "Fitness Center & Personal Training" },

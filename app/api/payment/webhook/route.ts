@@ -3,6 +3,9 @@ import { createAdminClient } from "@/lib/supabase-server";
 import { sendWhatsApp } from "@/lib/whatsapp";
 import { generateBill } from "@/lib/pdf-bill";
 
+export const dynamic = "force-dynamic";
+
+
 export async function POST(req: NextRequest) {
   const sb = createAdminClient();
   

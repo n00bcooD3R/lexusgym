@@ -4,6 +4,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase-server";
 import { sendWhatsApp } from "@/lib/whatsapp";
 
+export const dynamic = "force-dynamic";
+
+
 const REMINDER_MSG = `Hello {name},
 
 This is a friendly reminder that your Lexus Fitness Group membership will expire in {days} days. 💪

@@ -3,6 +3,9 @@ import { createClient } from "@/lib/supabase-server";
 import { sendWhatsApp } from "@/lib/whatsapp";
 import { buildReminderMsg } from "@/lib/fees";
 
+export const dynamic = "force-dynamic";
+
+
 export async function POST(req: NextRequest) {
   const sb = createClient();
   const { data: { user } } = await sb.auth.getUser();
