@@ -56,7 +56,11 @@ export default function EditForm({ member }: { member: any }) {
   async function remove() {
     if (!confirm("Delete this member permanently?")) return;
     const sb = createClient();
-    await sb.from("members").delete().eq("id", member.id);
+    const { error } = await sb.from("members").delete().eq("id", member.id);
+    if (error) {
+      alert("Delete failed: " + error.message);
+      return;
+    }
     router.push("/members");
   }
 
