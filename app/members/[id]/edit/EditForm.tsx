@@ -55,7 +55,9 @@ export default function EditForm({ member }: { member: any }) {
 
   async function remove() {
     console.log("remove called");
-    if (!confirm("Delete this member permanently?")) { console.log("cancelled"); return; }
+    const confirmed = window.confirm("Delete this member permanently?");
+    console.log("confirm result:", confirmed);
+    if (!confirmed) { console.log("cancelled"); return; }
     console.log("confirmed, calling API...");
     try {
       const res = await fetch("/api/members/delete", {
