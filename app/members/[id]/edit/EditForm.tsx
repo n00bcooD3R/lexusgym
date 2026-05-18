@@ -9,6 +9,8 @@ export default function EditForm({ member }: { member: any }) {
   const [photo, setPhoto] = useState<File | null>(null);
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState("");
+  const [showDelete, setShowDelete] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   function calcAge(dob: string) {
     if (!dob) return "";
@@ -53,29 +55,38 @@ export default function EditForm({ member }: { member: any }) {
     router.push(`/members/${member.id}`);
   }
 
-  async function remove() {
-    console.log("remove called");
-    const confirmed = window.confirm("Delete this member permanently?");
-    console.log("confirm result:", confirmed);
-    if (!confirmed) { console.log("cancelled"); return; }
-    console.log("confirmed, calling API...");
+  async function doDelete() {
+    setDeleting(true);
     try {
       const res = await fetch("/api/members/delete", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id: member.id })
       });
-      console.log("res:", res.status);
       const j = await res.json();
-      console.log("json:", j);
-      if (!j.ok) { alert("Delete failed: " + j.error); return; }
-      console.log("success, redirecting");
+      if (!j.ok) { alert("Delete failed: " + j.error); setDeleting(false); return; }
       router.push("/members");
-    } catch (err: any) { alert("Delete error: " + err.message); }
+    } catch (err: any) { alert("Delete error: " + err.message); setDeleting(false); }
+  }
+
+  function remove() {
+    setShowDelete(true);
   }
 
   return (
     <div className="max-w-2xl mx-auto">
+      {showDelete && (
+        <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 9999 }}>
+          <div style={{ background: "white", padding: "2rem", borderRadius: "1rem", maxWidth: "400px", textAlign: "center" }}>
+            <h3 style={{ marginBottom: "1rem", fontSize: "1.25rem", fontWeight: 700 }}>Delete Member?</h3>
+            <p style={{ marginBottom: "1.5rem", color: "#666" }}>This will permanently delete {member.name} and all their records.</p>
+            <div style={{ display: "flex", gap: "1rem", justifyContent: "center" }}>
+              <button className="btn btn-ghost" onClick={() => setShowDelete(false)} disabled={deleting}>Cancel</button>
+              <button className="btn btn-danger" onClick={doDelete} disabled={deleting}>{deleting ? "Deleting..." : "Delete"}</button>
+            </div>
+          </div>
+        </div>
+      )}
       <h1 className="text-xl font-bold mb-4">Edit Member</h1>
       <div className="card space-y-3">
         <div className="grid grid-cols-2 gap-3">
