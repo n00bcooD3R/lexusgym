@@ -54,9 +54,12 @@ export default function EditForm({ member }: { member: any }) {
   }
 
   async function remove() {
+    console.log("Delete clicked for member:", member.id);
     if (!confirm("Delete this member permanently?")) return;
     const sb = createClient();
+    console.log("Attempting delete...");
     const { error } = await sb.from("members").delete().eq("id", member.id);
+    console.log("Delete result:", error);
     if (error) {
       alert("Delete failed: " + error.message);
       return;
@@ -97,7 +100,7 @@ export default function EditForm({ member }: { member: any }) {
         <div className="flex gap-2">
           <button className="btn btn-primary" onClick={save} disabled={busy}>{busy ? "Saving…" : "Save"}</button>
           <a className="btn btn-ghost" href={`/members/${member.id}`}>Cancel</a>
-          <button className="btn btn-danger ml-auto" onClick={remove}>Delete Member</button>
+          <button type="button" className="btn btn-danger ml-auto" onClick={remove}>Delete Member</button>
         </div>
       </div>
     </div>
