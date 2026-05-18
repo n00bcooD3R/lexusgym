@@ -56,15 +56,23 @@ export default function EditForm({ member }: { member: any }) {
   async function remove() {
     console.log("Delete clicked for member:", member.id);
     if (!confirm("Delete this member permanently?")) return;
+    console.log("User confirmed, creating client...");
     const sb = createClient();
-    console.log("Attempting delete...");
-    const { error } = await sb.from("members").delete().eq("id", member.id);
-    console.log("Delete result:", error);
-    if (error) {
-      alert("Delete failed: " + error.message);
-      return;
+    console.log("Client created, executing delete...");
+    try {
+      const result = await sb.from("members").delete().eq("id", member.id);
+      console.log("Delete result:", result);
+      const { error } = result;
+      if (error) {
+        alert("Delete failed: " + error.message);
+        return;
+      }
+      console.log("Redirecting to /members");
+      router.push("/members");
+    } catch (err: any) {
+      console.error("Delete exception:", err);
+      alert("Delete error: " + err.message);
     }
-    router.push("/members");
   }
 
   return (
