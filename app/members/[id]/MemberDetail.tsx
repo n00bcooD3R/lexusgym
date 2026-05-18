@@ -63,6 +63,13 @@ export default function MemberDetail({ member, payments, workouts, diets, messag
         <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
           <button id="send-reminder-btn" onClick={sendReminder} className="btn btn-cyan">💬 Reminder</button>
           <a href={`/members/${member.id}/edit`} className="btn btn-ghost" id="edit-member-btn">✏️ Edit</a>
+          <button id="delete-member-btn" onClick={async () => {
+            if (!confirm("Delete this member permanently?")) return;
+            const sb = createClient();
+            const { error } = await sb.from("members").delete().eq("id", member.id);
+            if (error) { alert("Delete failed: " + error.message); return; }
+            router.push("/members");
+          }} className="btn btn-danger" style={{ fontSize: "0.85rem", padding: "0.4rem" }}>🗑️ Delete</button>
         </div>
       </div>
 
