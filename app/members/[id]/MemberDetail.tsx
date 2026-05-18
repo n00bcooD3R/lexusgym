@@ -8,6 +8,8 @@ import { generateInvoice } from "@/lib/pdf-bill";
 export default function MemberDetail({ member, payments, workouts, diets, messages }: any) {
   const router = useRouter();
   const [tab, setTab] = useState<"info" | "payments" | "workouts" | "diets" | "messages">("info");
+  const [showDelete, setShowDelete] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const status = feeStatus(member.next_due_date);
 
   const statusBadgeClass = status === "overdue" ? "badge-overdue" : status === "due-soon" ? "badge-duesoon" : status === "ok" ? "badge-ok" : "";
@@ -63,13 +65,25 @@ export default function MemberDetail({ member, payments, workouts, diets, messag
         <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
           <button id="send-reminder-btn" onClick={sendReminder} className="btn btn-cyan">💬 Reminder</button>
           <a href={`/members/${member.id}/edit`} className="btn btn-ghost" id="edit-member-btn">✏️ Edit</a>
-          <button id="delete-member-btn" onClick={async () => {
-            if (!confirm("Delete this member permanently?")) return;
-            const sb = createClient();
-            const { error } = await sb.from("members").delete().eq("id", member.id);
-            if (error) { alert("Delete failed: " + error.message); return; }
-            router.push("/members");
-          }} className="btn btn-danger" style={{ fontSize: "0.85rem", padding: "0.4rem" }}>🗑️ Delete</button>
+          <button id="delete-member-btn" onClick={() => setShowDelete(true)} className="btn btn-danger" style={{ fontSize: "0.85rem", padding: "0.4rem" }}>🗑️ Delete</button>
+          {showDelete && (
+            <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 9999 }}>
+              <div style={{ background: "white", padding: "2rem", borderRadius: "1rem", maxWidth: "400px", textAlign: "center" }}>
+                <h3 style={{ marginBottom: "1rem", fontSize: "1.25rem", fontWeight: 700 }}>Delete Member?</h3>
+                <p style={{ marginBottom: "1.5rem", color: "#666" }}>This will permanently delete {member.name} and all their records.</p>
+                <div style={{ display: "flex", gap: "1rem", justifyContent: "center" }}>
+                  <button className="btn btn-ghost" onClick={() => setShowDelete(false)} disabled={deleting}>Cancel</button>
+                  <button className="btn btn-danger" onClick={async () => {
+                    setDeleting(true);
+                    const res = await fetch("/api/members/delete", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: member.id }) });
+                    const j = await res.json();
+                    if (!j.ok) { alert("Delete failed: " + j.error); setDeleting(false); return; }
+                    router.push("/members");
+                  }} disabled={deleting}>{deleting ? "Deleting..." : "Delete"}</button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
