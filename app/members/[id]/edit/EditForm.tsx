@@ -54,15 +54,20 @@ export default function EditForm({ member }: { member: any }) {
   }
 
   async function remove() {
-    if (!confirm("Delete this member permanently?")) return;
+    console.log("remove called");
+    if (!confirm("Delete this member permanently?")) { console.log("cancelled"); return; }
+    console.log("confirmed, calling API...");
     try {
       const res = await fetch("/api/members/delete", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id: member.id })
       });
+      console.log("res:", res.status);
       const j = await res.json();
+      console.log("json:", j);
       if (!j.ok) { alert("Delete failed: " + j.error); return; }
+      console.log("success, redirecting");
       router.push("/members");
     } catch (err: any) { alert("Delete error: " + err.message); }
   }
