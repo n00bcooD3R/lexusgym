@@ -68,6 +68,11 @@ export default function NewMember() {
     e.preventDefault();
     console.log("Form submitted. sendWelcome:", sendWelcome, "phone:", form.phone);
     setErr(""); setAdmError(""); setLoading(true);
+    
+    if (!form.admission_no.trim()) { setErr("Admission No is required"); setLoading(false); return; }
+    if (!form.name.trim()) { setErr("Full Name is required"); setLoading(false); return; }
+    if (!form.phone.trim() || form.phone === "+91") { setErr("Phone is required"); setLoading(false); return; }
+    
     const sb = createClient();
     const { data: ex } = await sb.from("members").select("id").eq("admission_no", form.admission_no).maybeSingle();
     if (ex) { setAdmError("Admission number already exists."); setLoading(false); return; }
