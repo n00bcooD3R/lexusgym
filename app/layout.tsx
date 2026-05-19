@@ -29,11 +29,11 @@ const FLOAT_ICONS = [
 ];
 
 const NAV_LINKS = [
-  { href: "/dashboard", icon: "📊", label: "Dashboard" },
-  { href: "/members", icon: "👥", label: "Members" },
-  { href: "/members/new", icon: "➕", label: "Add" },
-  { href: "/pt", icon: "🏃", label: "PT" },
-  { href: "/settings", icon: "⚙️", label: "Settings" },
+  { href: "/dashboard", icon: "M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z", label: "Dashboard" },
+  { href: "/members", icon: "M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z", label: "Members" },
+  { href: "/members/new", icon: "M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z", label: "Add" },
+  { href: "/pt", icon: "M13.49 5.48c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm-3.6 13.9l1-4.4 2.1 2v6h2v-7.5l-2.1-2 .6-3c1.3 1.5 3.3 2.5 5.5 2.5v-2c-1.9 0-3.5-1-4.3-2.4l-1-1.6c-.4-.6-1-1-1.7-1-.3 0-.5.1-.8.1l-5.2 2.2v4.7h2v-3.4l1.8-.7-1.6 8.1-4.9-1-.4 2 7 1.4z", label: "PT" },
+  { href: "/settings", icon: "M19.14 12.94c.04-.31.06-.63.06-.94 0-.31-.02-.63-.06-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.04.31-.06.63-.06.94s.02.63.06.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z", label: "Settings" },
 ];
 
 function ThemeToggle() {
@@ -89,7 +89,9 @@ function ThemeToggle() {
 function NavLink({ href, icon, label, active }: { href: string; icon: string; label: string; active: boolean }) {
   return (
     <Link href={href} className={`nav-item ${active ? "nav-item-active" : ""}`} id={`nav-${label.toLowerCase()}`}>
-      <span style={{ fontSize: "1.3rem" }}>{icon}</span>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style={{ opacity: active ? 1 : 0.7 }}>
+        <path d={icon} />
+      </svg>
       <span>{label}</span>
     </Link>
   );
@@ -145,7 +147,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <div className="container-responsive flex items-center justify-between py-3">
             <Link href={isLoginPage ? "/login" : "/dashboard"} id="logo-link" style={{ display: "flex", alignItems: "center", gap: "0.4rem", fontWeight: 800, fontSize: "1.1rem", textDecoration: "none" }}>
               <span style={{ background: "linear-gradient(135deg, #a78bfa, #67e8f9)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>LEXUS</span>
-              <span style={{ fontSize: "1.4rem", filter: "drop-shadow(0 0 6px rgba(139,92,246,0.7))" }}>🏋️</span>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="url(#gymgrad)" style={{ filter: "drop-shadow(0 0 6px rgba(139,92,246,0.7))" }}>
+                <defs><linearGradient id="gymgrad"><stop offset="0%" stopColor="#a78bfa"/><stop offset="100%" stopColor="#67e8f9"/></linearGradient></defs>
+                <path d="M20.57 14.86L22 13.43 20.57 12 17 15.57 8.43 7 12 3.43 10.57 2 9.14 3.43 7.71 2 5.57 4.14 4.14 2.71 2.71 4.14l1.43 1.43L2 7.71l1.43 1.43L2 10.57 3.43 12 7 8.43 15.57 17 12 20.57 13.43 22l1.43-1.43L16.29 22l2.14-2.14 1.43 1.43 1.43-1.43-1.43-1.43L22 16.29z" fill="url(#gymgrad)"/>
+              </svg>
               <span style={{ background: "linear-gradient(135deg, #67e8f9, #a78bfa)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>GYM</span>
             </Link>
             {!isLoginPage && (
@@ -163,7 +168,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     background: pathname.startsWith(n.href) ? "rgba(139,92,246,0.15)" : "transparent",
                     border: pathname.startsWith(n.href) ? "1px solid rgba(139,92,246,0.3)" : "1px solid transparent",
                   }}>
-                    <span>{n.icon}</span>{n.label}
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style={{ opacity: 0.8 }}><path d={n.icon} /></svg>{n.label}
                   </Link>
                 ))}
                 <form action="/api/auth/signout" method="post" style={{ display: "inline" }}>
@@ -189,7 +194,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               {!isLoginPage && (
                 <form action="/api/auth/signout" method="post">
                   <button id="mobile-logout-btn" className="btn btn-ghost" style={{ padding: "0.3rem 0.7rem", fontSize: "0.75rem", minHeight: 32 }}>
-                    🚪
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>
                   </button>
                 </form>
               )}
