@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState, useCallback } from "react";
 import SettingsLoader from "@/components/SettingsLoader";
+import { motion, AnimatePresence } from "framer-motion";
 
 const STARS = Array.from({ length: 60 }, (_, i) => ({
   id: i,
@@ -152,9 +153,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <path d="M20.57 14.86L22 13.43 20.57 12 17 15.57 8.43 7 12 3.43 10.57 2 9.14 3.43 7.71 2 5.57 4.14 4.14 2.71 2.71 4.14l1.43 1.43L2 7.71l1.43 1.43L2 10.57 3.43 12 7 8.43 15.57 17 12 20.57 13.43 22l1.43-1.43L16.29 22l2.14-2.14 1.43 1.43 1.43-1.43-1.43-1.43L22 16.29z" fill="url(#gymgrad)"/>
               </svg>
               <span style={{ background: "linear-gradient(135deg, #67e8f9, #a78bfa)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>GYM</span>
-              <span style={{ fontSize: "0.7rem", fontWeight: 600, color: "var(--accent)", background: "rgba(139,92,246,0.15)", padding: "0.15rem 0.5rem", borderRadius: "0.3rem", border: "1px solid rgba(139,92,246,0.3)" }}>npm</span>
             </Link>
-            <span className="hidden sm:inline" style={{ fontSize: "0.8rem", color: "var(--text-muted)", fontWeight: 500, marginLeft: "0.5rem", borderLeft: "1px solid var(--border)", paddingLeft: "0.5rem" }}>UI UX Pro</span>
             {!isLoginPage && (
               <nav style={{ display: "flex", alignItems: "center", gap: "0.25rem" }}>
                 {NAV_LINKS.map(n => (
@@ -207,7 +206,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
         {/* Main */}
         <main style={{ maxWidth: "72rem", margin: "0 auto", padding: "1rem", paddingBottom: "6rem", position: "relative", zIndex: 1 }}>
-          {children}
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={pathname}
+              initial={{ opacity: 0, y: 15, scale: 0.98 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -10, scale: 0.98 }}
+              transition={{ duration: 0.35, ease: "easeOut" }}
+            >
+              {children}
+            </motion.div>
+          </AnimatePresence>
         </main>
 
         {/* Mobile Bottom Nav - hidden on login */}

@@ -222,9 +222,9 @@ body::before {
 }
 
 .btn:hover::after { opacity: 1; }
-.btn:hover { transform: translateY(-2px) scale(1.02); }
-.btn:active { transform: translateY(0) scale(0.97); }
-.btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+.btn:hover { transform: translateY(-3px) scale(1.03); box-shadow: 0 8px 25px rgba(139,92,246,0.4); }
+.btn:active { transform: translateY(-1px) scale(1.01); }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
 
 .btn-primary {
   background: linear-gradient(135deg, var(--accent), #6d28d9);

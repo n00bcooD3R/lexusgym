@@ -2,6 +2,7 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { feeStatus, formatDate } from "@/lib/fees";
+import { motion } from "framer-motion";
 
 type M = {
   id: string; admission_no: string; name: string; phone: string;
@@ -71,13 +72,19 @@ export default function DashboardClient({ members }: { members: M[] }) {
 
 function StatCard({ label, value, variant, icon }: { label: string; value: number; variant: string; icon: string }) {
   return (
-    <div className={`stat-card ${variant}`}>
+    <motion.div 
+      className={`stat-card ${variant}`}
+      initial={{ opacity: 0, y: 15, scale: 0.95 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ duration: 0.35, ease: "easeOut" }}
+      whileHover={{ scale: 1.03, y: -2 }}
+    >
       <div style={{ fontSize: "1.2rem", marginBottom: "0.4rem" }}>{icon}</div>
       <div style={{ fontSize: "2rem", fontWeight: 800, color: variant === "danger" ? "var(--danger)" : variant === "warn" ? "var(--warn)" : "var(--success)", lineHeight: 1 }}>
         {value}
       </div>
-      <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", marginTop: "0.25rem", fontWeight: 500 }}>{label}</div>
-    </div>
+      <div style={{ fontSize: "0.8rem", color: "var(--text-muted)", marginTop: "0.25rem", fontWeight: 500 }}>{label}</div>
+    </motion.div>
   );
 }
 
@@ -92,16 +99,29 @@ function Section({ title, rows, sending, onSend, variant }: {
     : "rgba(16,185,129,0.2)";
 
   return (
-    <div className="card" style={{ padding: 0, overflow: "hidden", borderColor }}>
+    <motion.div 
+      className="card" 
+      style={{ padding: 0, overflow: "hidden", borderColor }}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, ease: "easeOut" }}
+    >
       <div className="section-header" style={{ borderBottom: `1px solid ${borderColor}` }}>
         {title} ({rows.length})
       </div>
       <div className="divide-glass">
-        {rows.map((m) => (
-          <MemberRow key={m.id} m={m} sending={sending} onSend={onSend} variant={variant} />
+        {rows.map((m, i) => (
+          <motion.div
+            key={m.id}
+            initial={{ opacity: 0, x: -10 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: i * 0.05, duration: 0.25 }}
+          >
+            <MemberRow m={m} sending={sending} onSend={onSend} variant={variant} />
+          </motion.div>
         ))}
       </div>
-    </div>
+    </motion.div>
   );
 }
 
