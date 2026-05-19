@@ -56,7 +56,7 @@ export default function DashboardClient({ members }: { members: M[] }) {
       <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: "0.75rem" }}>
         <StatCard label="Overdue" value={grouped.overdue.length} variant="danger" icon="🔴" />
         <StatCard label="Due Soon" value={grouped.dueSoon.length} variant="warn" icon="🟡" />
-        <StatCard label="Active" value={members.length} variant="success" icon="✅" />
+        <StatCard label="Active" value={members.length} variant="success" icon="🟢" />
       </div>
 
       {/* Toast */}
