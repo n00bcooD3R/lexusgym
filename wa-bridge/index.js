@@ -18,7 +18,9 @@ const client = new Client({
 let currentQR = "";
 
 client.on("qr", (qr) => {
-  console.log("New QR Code generated! Go to /qr to scan it.");
+  console.log("\n📱 Scan this QR with WhatsApp:\n");
+  qrcode.generate(qr, { small: true });
+  console.log("\nOr open http://<your-ip>:3001/qr in browser\n");
   currentQR = qr;
 });
 
