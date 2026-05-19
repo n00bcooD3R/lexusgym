@@ -213,7 +213,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2, ease: "easeOut" }}
-              style={{ width: "100%" }}
+              style={{ width: "100%", maxWidth: "100%" }}
             >
               {children}
             </motion.div>

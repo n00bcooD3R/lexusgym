@@ -609,3 +609,33 @@ main > * {
   from { opacity: 0; transform: translateY(16px); }
   to { opacity: 1; transform: translateY(0); }
 }
+
+/* ── RESPONSIVE MOBILE ── */
+@media (max-width: 480px) {
+  html { font-size: 14px; }
+  body { overflow-x: hidden; }
+  .container-responsive { padding-left: 0.75rem; padding-right: 0.75rem; }
+  main { padding: 0.75rem !important; padding-bottom: 5rem !important; }
+  .btn { padding: 0.7rem 1.2rem; font-size: 1rem; min-height: 42px; }
+  .input { padding: 0.7rem 0.9rem; font-size: 1rem; min-height: 46px; }
+  .nav-item { font-size: 0.75rem; min-width: 56px; padding: 0.4rem 0.5rem; }
+  .nav-item svg { width: 18px; height: 18px; }
+  .card { padding: 0.75rem !important; border-radius: 0.6rem; }
+  .stat-card { padding: 0.75rem; }
+  h1 { font-size: 1.3rem !important; }
+  .section-header { font-size: 0.9rem; padding: 0.6rem 0.75rem; }
+  .glass { padding: 0.75rem !important; border-radius: 0.6rem; }
+  .grid-form, .grid-cards { gap: 0.5rem; }
+  .grid-form > *, .grid-cards > * { min-width: 100%; }
+  .tab { padding: 0.5rem 0.75rem; font-size: 0.85rem; }
+  .app-header { padding: 0.5rem 0.75rem; }
+  .logo-link { font-size: 1rem !important; }
+}
+
+@media (min-width: 481px) and (max-width: 640px) {
+  html { font-size: 15px; }
+  main { padding: 0.85rem !important; }
+  .btn { padding: 0.8rem 1.5rem; font-size: 1.05rem; }
+  .input { padding: 0.8rem 1rem; font-size: 1.05rem; }
+  .nav-item { font-size: 0.85rem; }
+}
