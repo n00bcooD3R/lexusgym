@@ -107,7 +107,18 @@ export default function EditForm({ member }: { member: any }) {
         </div>
         <L label="Address"><textarea className="input" rows={2} value={f.address || ""} onChange={e => set("address", e.target.value)} /></L>
         <L label="Notes"><textarea className="input" rows={2} value={f.notes || ""} onChange={e => set("notes", e.target.value)} /></L>
-        <L label="Update Photo"><input type="file" accept="image/*" onChange={e => setPhoto(e.target.files?.[0] ?? null)} /></L>
+        <L label="Update Photo">
+            <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
+              <label className="btn btn-ghost" style={{ padding: "0.4rem 0.8rem", fontSize: "0.85rem" }}>
+                📷 Camera
+                <input type="file" accept="image/*" capture="environment" style={{ display: "none" }} onChange={e => setPhoto(e.target.files?.[0] ?? null)} />
+              </label>
+              <label className="btn btn-ghost" style={{ padding: "0.4rem 0.8rem", fontSize: "0.85rem" }}>
+                📁 Upload
+                <input type="file" accept="image/*" style={{ display: "none" }} onChange={e => setPhoto(e.target.files?.[0] ?? null)} />
+              </label>
+            </div>
+          </L>
         <label className="flex items-center gap-2 text-sm">
           <input type="checkbox" checked={!!f.is_pt_client} onChange={e => set("is_pt_client", e.target.checked)} /> PT Client
         </label>

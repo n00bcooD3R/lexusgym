@@ -204,7 +204,17 @@ export default function NewMember() {
           <textarea id="new-address" className="input" rows={2} value={form.address} onChange={e => upd("address", e.target.value)} />
         </Field>
         <Field label="Photo">
-          <input id="new-photo" type="file" accept="image/*" className="input" style={{ paddingTop: "0.5rem" }} onChange={e => setPhoto(e.target.files?.[0] ?? null)} />
+          <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
+            <label className="btn btn-ghost" style={{ padding: "0.4rem 0.8rem", fontSize: "0.85rem" }}>
+              📷 Camera
+              <input type="file" accept="image/*" capture="environment" style={{ display: "none" }} onChange={e => setPhoto(e.target.files?.[0] ?? null)} />
+            </label>
+            <label className="btn btn-ghost" style={{ padding: "0.4rem 0.8rem", fontSize: "0.85rem" }}>
+              📁 Upload
+              <input id="new-photo" type="file" accept="image/*" style={{ display: "none" }} onChange={e => setPhoto(e.target.files?.[0] ?? null)} />
+            </label>
+          </div>
+          {photo && <span style={{ fontSize: "0.8rem", color: "var(--accent)" }}>✓ {photo.name}</span>}
         </Field>
         <Field label="Notes">
           <textarea id="new-notes" className="input" rows={2} value={form.notes} onChange={e => upd("notes", e.target.value)} />
