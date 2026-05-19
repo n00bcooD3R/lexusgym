@@ -92,8 +92,8 @@ export default function MemberDetail({ member, payments, workouts, diets, messag
       {/* Tabs */}
       <div style={{ display: "flex", gap: "0.25rem", borderBottom: "1px solid var(--border)", overflowX: "auto" }}>
         {TABS.map(t => (
-          <button key={t.id} onClick={() => setTab(t.id as any)} className={`tab ${tab === t.id ? "tab-active" : "tab-idle"}`} id={`detail-tab-${t.id}`}>
-            <Icon name={t.icon as any} size={16} /> {t.label}
+          <button key={t.id} onClick={() => setTab(t.id as any)} className={`tab ${tab === t.id ? "tab-active" : "tab-idle"}`} id={`detail-tab-${t.id}`} style={{ fontSize: "1rem", padding: "0.6rem 1rem" }}>
+            <Icon name={t.icon as any} size={18} /> {t.label}
           </button>
         ))}
       </div>
@@ -120,8 +120,8 @@ function InfoTab({ m }: any) {
     <div className="glass" style={{ padding: "1.5rem", display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(180px,1fr))", gap: "1.25rem" }}>
       {rows.map(([k, v]) => (
         <div key={k as string} style={{ borderBottom: "1px solid var(--border)", paddingBottom: "1rem" }}>
-          <div style={{ fontSize: "0.85rem", color: "var(--text-muted)", fontWeight: 500, marginBottom: "0.35rem" }}>{k}</div>
-          <div style={{ fontSize: "1.05rem", color: "var(--text)", fontWeight: 600 }}>{v || "—"}</div>
+          <div style={{ fontSize: "0.95rem", color: "var(--text-muted)", fontWeight: 500, marginBottom: "0.4rem" }}>{k}</div>
+          <div style={{ fontSize: "1.15rem", color: "var(--text)", fontWeight: 600 }}>{v || "—"}</div>
         </div>
       ))}
     </div>
@@ -215,43 +215,43 @@ async function record() {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
       <div className="glass" style={{ padding: "1.5rem" }}>
-        <h3 style={{ fontWeight: 700, marginBottom: "1.25rem", fontSize: "1.2rem" }}>Record Payment</h3>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(160px,1fr))", gap: "0.85rem" }}>
-          <input id="pay-date" className="input" type="date" value={paymentDate} onChange={e => setPaymentDate(e.target.value)} />
-          <input id="pay-amount" className="input" type="number" placeholder="Membership Fee" value={amount} onChange={e => setAmount(e.target.value)} />
-          <select id="pay-method" className="input" value={method} onChange={e => setMethod(e.target.value)}>
+        <h3 style={{ fontWeight: 700, marginBottom: "1rem", fontSize: "1rem" }}>Record Payment</h3>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(150px,1fr))", gap: "0.7rem" }}>
+          <input id="pay-date" className="input" type="date" value={paymentDate} onChange={e => setPaymentDate(e.target.value)} style={{ fontSize: "0.9rem" }} />
+          <input id="pay-amount" className="input" type="number" placeholder="Fee" value={amount} onChange={e => setAmount(e.target.value)} style={{ fontSize: "0.9rem" }} />
+          <select id="pay-method" className="input" value={method} onChange={e => setMethod(e.target.value)} style={{ fontSize: "0.9rem" }}>
             <option value="cash">Cash</option><option value="upi">UPI</option><option value="card">Card</option><option value="bank">Bank Transfer</option>
           </select>
-          <input id="pay-notes" className="input" placeholder="Notes (optional)" value={notes} onChange={e => setNotes(e.target.value)} />
+          <input id="pay-notes" className="input" placeholder="Notes" value={notes} onChange={e => setNotes(e.target.value)} style={{ fontSize: "0.9rem" }} />
         </div>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: "0.85rem", marginTop: "0.85rem" }}>
-          <input id="pay-trainer" className="input" type="number" placeholder="Trainer (₹)" value={extraCharges.trainer || ""} onChange={e => setExtraCharges(x => ({ ...x, trainer: Number(e.target.value) || 0 }))} />
-          <input id="pay-diet" className="input" type="number" placeholder="Diet (₹)" value={extraCharges.diet || ""} onChange={e => setExtraCharges(x => ({ ...x, diet: Number(e.target.value) || 0 }))} />
-          <input id="pay-admission" className="input" type="number" placeholder="Admission (₹)" value={extraCharges.admission || ""} onChange={e => setExtraCharges(x => ({ ...x, admission: Number(e.target.value) || 0 }))} />
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: "0.7rem", marginTop: "0.7rem" }}>
+          <input id="pay-trainer" className="input" type="number" placeholder="Trainer" value={extraCharges.trainer || ""} onChange={e => setExtraCharges(x => ({ ...x, trainer: Number(e.target.value) || 0 }))} style={{ fontSize: "0.9rem" }} />
+          <input id="pay-diet" className="input" type="number" placeholder="Diet" value={extraCharges.diet || ""} onChange={e => setExtraCharges(x => ({ ...x, diet: Number(e.target.value) || 0 }))} style={{ fontSize: "0.9rem" }} />
+          <input id="pay-admission" className="input" type="number" placeholder="Admission" value={extraCharges.admission || ""} onChange={e => setExtraCharges(x => ({ ...x, admission: Number(e.target.value) || 0 }))} style={{ fontSize: "0.9rem" }} />
         </div>
-        <label style={{ display: "flex", alignItems: "center", gap: "0.5rem", fontSize: "1rem", marginTop: "0.85rem", cursor: "pointer" }}>
+        <label style={{ display: "flex", alignItems: "center", gap: "0.5rem", fontSize: "0.9rem", marginTop: "0.7rem", cursor: "pointer" }}>
           <input id="pay-send-wa" type="checkbox" checked={sendWA} onChange={e => setSendWA(e.target.checked)} />
-          Send WhatsApp + Invoice PDF
+          Send WhatsApp
         </label>
-        <div style={{ display: "flex", gap: "0.75rem", marginTop: "0.85rem", flexWrap: "wrap" }}>
-          <button id="pay-record-btn" onClick={record} className="btn btn-primary" disabled={busy}>
-            {busy ? <><span className="spinner" /> Saving…</> : <><Icon name="check" size={18} /> Record Payment</>}
+        <div style={{ display: "flex", gap: "0.5rem", marginTop: "0.7rem", flexWrap: "wrap" }}>
+          <button id="pay-record-btn" onClick={record} className="btn btn-primary" disabled={busy} style={{ fontSize: "0.9rem", padding: "0.6rem 1rem" }}>
+            {busy ? <><span className="spinner" /> Saving…</> : <><Icon name="check" size={16} /> Record</>}
           </button>
-          <button id="pay-preview-btn" onClick={previewInvoice} className="btn btn-ghost"><Icon name="eye" size={18} /> Preview Invoice</button>
+          <button id="pay-preview-btn" onClick={previewInvoice} className="btn btn-ghost" style={{ fontSize: "0.9rem", padding: "0.6rem 1rem" }}><Icon name="eye" size={16} /> Preview</button>
         </div>
       </div>
 
       <div className="card" style={{ padding: 0, overflow: "hidden" }}>
-        <div className="section-header" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", fontSize: "1.1rem" }}>
+        <div className="section-header" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", fontSize: "1rem" }}>
           <span>History ({filteredPayments.length}/{payments.length})</span>
-          <input type="month" className="input" style={{ width: "auto", padding: "0.3rem 0.6rem", fontSize: "0.85rem", minHeight: "auto" }} value={filterMonth} onChange={e => setFilterMonth(e.target.value)} />
+          <input type="month" className="input" style={{ width: "auto", padding: "0.3rem 0.5rem", fontSize: "0.8rem", minHeight: "auto" }} value={filterMonth} onChange={e => setFilterMonth(e.target.value)} />
         </div>
         <div className="divide-glass">
           {filteredPayments.length === 0 && <div style={{ padding: "2rem", textAlign: "center", color: "var(--text-muted)", fontSize: "1rem" }}>No payments found.</div>}
           {filteredPayments.map((p: any) => (
-            <div key={p.id} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0.65rem 1rem", fontSize: "0.875rem" }}>
+            <div key={p.id} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0.7rem 1rem", fontSize: "1rem" }}>
               <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                <input type="date" className="input" style={{ width: "auto", fontSize: "0.8rem", padding: "0.2rem 0.4rem", minHeight: "auto" }} value={p.paid_on || ""} onChange={e => updateDate(p.id, e.target.value)} />
+                <input type="date" className="input" style={{ width: "auto", fontSize: "0.9rem", padding: "0.3rem 0.5rem", minHeight: "auto" }} value={p.paid_on || ""} onChange={e => updateDate(p.id, e.target.value)} />
                 <span style={{ color: "var(--text-muted)" }}>{p.method}</span>
               </div>
               <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
