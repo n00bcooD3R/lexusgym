@@ -43,22 +43,22 @@ export default function MemberDetail({ member, payments, workouts, diets, messag
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
       {/* Profile Card */}
-      <div className="glass" style={{ padding: "1.25rem", display: "flex", alignItems: "center", gap: "1rem", flexWrap: "wrap" }}>
+      <div className="glass" style={{ padding: "1.5rem", display: "flex", alignItems: "center", gap: "1.25rem", flexWrap: "wrap" }}>
         {member.photo_url
-          ? <img src={member.photo_url} alt={member.name} style={{ width: "5rem", height: "5rem", borderRadius: "50%", objectFit: "cover", border: "3px solid var(--accent)", boxShadow: "0 0 20px rgba(139,92,246,0.4)" }} />
-          : <div style={{ width: "5rem", height: "5rem", borderRadius: "50%", background: "linear-gradient(135deg,var(--accent),var(--accent2))", color: "white", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, fontSize: "2rem", border: "3px solid var(--border)", flexShrink: 0, boxShadow: "0 0 20px rgba(139,92,246,0.4)" }}>
+          ? <img src={member.photo_url} alt={member.name} style={{ width: "5.5rem", height: "5.5rem", borderRadius: "50%", objectFit: "cover", border: "3px solid var(--accent)", boxShadow: "0 0 20px rgba(139,92,246,0.4)" }} />
+          : <div style={{ width: "5.5rem", height: "5.5rem", borderRadius: "50%", background: "linear-gradient(135deg,var(--accent),var(--accent2))", color: "white", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, fontSize: "2.2rem", border: "3px solid var(--border)", flexShrink: 0, boxShadow: "0 0 20px rgba(139,92,246,0.4)" }}>
             {member.name.charAt(0).toUpperCase()}
           </div>}
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", flexWrap: "wrap" }}>
-            <h1 style={{ fontSize: "1.3rem", fontWeight: 800, margin: 0, color: "var(--text)" }}>{member.name}</h1>
-            <span className={`badge ${statusBadgeClass}`}>{statusLabel}</span>
-            {member.is_pt_client && <span className="badge badge-pt">💪 PT Client</span>}
+            <h1 style={{ fontSize: "1.6rem", fontWeight: 800, margin: 0, color: "var(--text)" }}>{member.name}</h1>
+            <span className={`badge ${statusBadgeClass}`} style={{ fontSize: "0.85rem", padding: "0.3rem 0.65rem" }}>{statusLabel}</span>
+            {member.is_pt_client && <span className="badge badge-pt" style={{ fontSize: "0.85rem" }}>💪 PT Client</span>}
           </div>
-          <div style={{ fontSize: "0.85rem", color: "var(--text-muted)", marginTop: "0.25rem" }}>
+          <div style={{ fontSize: "1rem", color: "var(--text-muted)", marginTop: "0.3rem" }}>
             #{member.admission_no} · {member.phone}
           </div>
-          <div style={{ fontSize: "0.8rem", color: "var(--text-muted)", marginTop: "0.15rem" }}>
+          <div style={{ fontSize: "0.95rem", color: "var(--text-muted)", marginTop: "0.2rem" }}>
             Next due: {member.next_due_date ? formatDate(member.next_due_date) : "—"} · ₹{member.fee_amount}
           </div>
         </div>
@@ -115,11 +115,11 @@ function InfoTab({ m }: any) {
     ["📝 Notes", m.notes],
   ];
   return (
-    <div className="glass" style={{ padding: "1.25rem", display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(180px,1fr))", gap: "1rem" }}>
+    <div className="glass" style={{ padding: "1.5rem", display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(180px,1fr))", gap: "1.25rem" }}>
       {rows.map(([k, v]) => (
-        <div key={k as string} style={{ borderBottom: "1px solid var(--border)", paddingBottom: "0.75rem" }}>
-          <div style={{ fontSize: "0.72rem", color: "var(--text-muted)", fontWeight: 500, marginBottom: "0.25rem" }}>{k}</div>
-          <div style={{ fontSize: "0.9rem", color: "var(--text)" }}>{v || "—"}</div>
+        <div key={k as string} style={{ borderBottom: "1px solid var(--border)", paddingBottom: "1rem" }}>
+          <div style={{ fontSize: "0.85rem", color: "var(--text-muted)", fontWeight: 500, marginBottom: "0.35rem" }}>{k}</div>
+          <div style={{ fontSize: "1.05rem", color: "var(--text)", fontWeight: 600 }}>{v || "—"}</div>
         </div>
       ))}
     </div>
@@ -212,9 +212,9 @@ async function record() {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-      <div className="glass" style={{ padding: "1.25rem" }}>
-        <h3 style={{ fontWeight: 700, marginBottom: "1rem", fontSize: "1rem" }}>💳 Record Payment</h3>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(150px,1fr))", gap: "0.75rem" }}>
+      <div className="glass" style={{ padding: "1.5rem" }}>
+        <h3 style={{ fontWeight: 700, marginBottom: "1.25rem", fontSize: "1.2rem" }}>💳 Record Payment</h3>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(160px,1fr))", gap: "0.85rem" }}>
           <input id="pay-date" className="input" type="date" value={paymentDate} onChange={e => setPaymentDate(e.target.value)} />
           <input id="pay-amount" className="input" type="number" placeholder="Membership Fee" value={amount} onChange={e => setAmount(e.target.value)} />
           <select id="pay-method" className="input" value={method} onChange={e => setMethod(e.target.value)}>
@@ -222,16 +222,16 @@ async function record() {
           </select>
           <input id="pay-notes" className="input" placeholder="Notes (optional)" value={notes} onChange={e => setNotes(e.target.value)} />
         </div>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: "0.75rem", marginTop: "0.75rem" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: "0.85rem", marginTop: "0.85rem" }}>
           <input id="pay-trainer" className="input" type="number" placeholder="Trainer (₹)" value={extraCharges.trainer || ""} onChange={e => setExtraCharges(x => ({ ...x, trainer: Number(e.target.value) || 0 }))} />
           <input id="pay-diet" className="input" type="number" placeholder="Diet (₹)" value={extraCharges.diet || ""} onChange={e => setExtraCharges(x => ({ ...x, diet: Number(e.target.value) || 0 }))} />
           <input id="pay-admission" className="input" type="number" placeholder="Admission (₹)" value={extraCharges.admission || ""} onChange={e => setExtraCharges(x => ({ ...x, admission: Number(e.target.value) || 0 }))} />
         </div>
-        <label style={{ display: "flex", alignItems: "center", gap: "0.5rem", fontSize: "0.875rem", marginTop: "0.75rem", cursor: "pointer" }}>
+        <label style={{ display: "flex", alignItems: "center", gap: "0.5rem", fontSize: "1rem", marginTop: "0.85rem", cursor: "pointer" }}>
           <input id="pay-send-wa" type="checkbox" checked={sendWA} onChange={e => setSendWA(e.target.checked)} />
           Send WhatsApp + Invoice PDF
         </label>
-        <div style={{ display: "flex", gap: "0.75rem", marginTop: "0.75rem", flexWrap: "wrap" }}>
+        <div style={{ display: "flex", gap: "0.75rem", marginTop: "0.85rem", flexWrap: "wrap" }}>
           <button id="pay-record-btn" onClick={record} className="btn btn-primary" disabled={busy}>
             {busy ? <><span className="spinner" /> Saving…</> : "💳 Record Payment"}
           </button>
@@ -240,12 +240,12 @@ async function record() {
       </div>
 
       <div className="card" style={{ padding: 0, overflow: "hidden" }}>
-        <div className="section-header" style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <div className="section-header" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", fontSize: "1.1rem" }}>
           <span>History ({filteredPayments.length}/{payments.length})</span>
-          <input type="month" className="input" style={{ width: "auto", padding: "0.25rem 0.5rem", fontSize: "0.78rem", minHeight: "auto" }} value={filterMonth} onChange={e => setFilterMonth(e.target.value)} />
+          <input type="month" className="input" style={{ width: "auto", padding: "0.3rem 0.6rem", fontSize: "0.85rem", minHeight: "auto" }} value={filterMonth} onChange={e => setFilterMonth(e.target.value)} />
         </div>
         <div className="divide-glass">
-          {filteredPayments.length === 0 && <div style={{ padding: "2rem", textAlign: "center", color: "var(--text-muted)", fontSize: "0.875rem" }}>No payments found.</div>}
+          {filteredPayments.length === 0 && <div style={{ padding: "2rem", textAlign: "center", color: "var(--text-muted)", fontSize: "1rem" }}>No payments found.</div>}
           {filteredPayments.map((p: any) => (
             <div key={p.id} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0.65rem 1rem", fontSize: "0.875rem" }}>
               <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>

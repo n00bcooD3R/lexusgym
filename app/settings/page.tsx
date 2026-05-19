@@ -77,31 +77,32 @@ export default function SettingsPage() {
   );
 
   return (
-    <div style={{ maxWidth: "48rem", margin: "0 auto", display: "flex", flexDirection: "column", gap: "1.5rem" }}>
+    <div style={{ maxWidth: "48rem", margin: "0 auto", display: "flex", flexDirection: "column", gap: "1.25rem" }}>
       {/* Header */}
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "0.75rem" }}>
-        <h1 style={{ fontSize: "1.5rem", fontWeight: 800, background: "linear-gradient(135deg,#a78bfa,#67e8f9)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", margin: 0 }}>
+        <h1 style={{ fontSize: "1.3rem", fontWeight: 800, background: "linear-gradient(135deg,#a78bfa,#67e8f9)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", margin: 0 }}>
           ⚙️ Settings
         </h1>
-        <button id="save-settings-btn" onClick={saveAll} className={`btn ${saved ? "btn-success" : "btn-primary"}`} disabled={saving}>
+        <button id="save-settings-btn" onClick={saveAll} className={`btn ${saved ? "btn-success" : "btn-primary"}`} disabled={saving} style={{ fontSize: "0.95rem", padding: "0.6rem 1.2rem" }}>
           {saving ? <><span className="spinner" /> Saving…</> : saved ? "✅ Saved!" : "💾 Save All"}
         </button>
       </div>
 
       {/* Gym Details */}
-      <div className="glass" style={{ padding: "1.5rem" }}>
-        <h2 style={{ fontSize: "1rem", fontWeight: 700, marginBottom: "1.25rem", display: "flex", alignItems: "center", gap: "0.5rem" }}>
+      <div className="glass" style={{ padding: "1.25rem" }}>
+        <h2 style={{ fontSize: "0.95rem", fontWeight: 700, marginBottom: "1rem", display: "flex", alignItems: "center", gap: "0.5rem" }}>
           🏢 <span>Gym Details</span>
         </h2>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: "1rem" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))", gap: "0.85rem" }}>
           {GYM_KEYS.map(key => (
             <label key={key} style={{ display: "block" }}>
-              <span style={{ fontSize: "0.78rem", color: "var(--text-muted)", display: "block", marginBottom: "0.35rem", fontWeight: 500 }}>
+              <span style={{ fontSize: "0.75rem", color: "var(--text-muted)", display: "block", marginBottom: "0.3rem", fontWeight: 500 }}>
                 {SETTINGS_KEYS[key]}
               </span>
               <input
                 id={`setting-${key}`}
                 className="input"
+                style={{ fontSize: "0.95rem", padding: "0.55rem 0.75rem", minHeight: "40px" }}
                 value={settings[key] || ""}
                 onChange={e => upd(key, e.target.value)}
               />
@@ -111,11 +112,11 @@ export default function SettingsPage() {
       </div>
 
       {/* Message Templates */}
-      <div className="glass" style={{ padding: "1.5rem" }}>
-        <h2 style={{ fontSize: "1rem", fontWeight: 700, marginBottom: "1.25rem", display: "flex", alignItems: "center", gap: "0.5rem" }}>
+      <div className="glass" style={{ padding: "1.25rem" }}>
+        <h2 style={{ fontSize: "0.95rem", fontWeight: 700, marginBottom: "1rem", display: "flex", alignItems: "center", gap: "0.5rem" }}>
           💬 <span>Message Templates</span>
         </h2>
-        <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
           {MSG_KEYS.map(key => (
             <div key={key}>
               <label style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.35rem" }}>
