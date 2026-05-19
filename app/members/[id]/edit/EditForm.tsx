@@ -110,11 +110,11 @@ export default function EditForm({ member }: { member: any }) {
         <L label="Update Photo">
             <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
               <label className="btn btn-ghost" style={{ padding: "0.4rem 0.8rem", fontSize: "0.85rem" }}>
-                📷 Camera
+                Camera
                 <input type="file" accept="image/*" capture="environment" style={{ display: "none" }} onChange={e => setPhoto(e.target.files?.[0] ?? null)} />
               </label>
               <label className="btn btn-ghost" style={{ padding: "0.4rem 0.8rem", fontSize: "0.85rem" }}>
-                📁 Upload
+                Upload
                 <input type="file" accept="image/*" style={{ display: "none" }} onChange={e => setPhoto(e.target.files?.[0] ?? null)} />
               </label>
             </div>

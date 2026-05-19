@@ -13,7 +13,7 @@ export default function MemberDetail({ member, payments, workouts, diets, messag
   const status = feeStatus(member.next_due_date);
 
   const statusBadgeClass = status === "overdue" ? "badge-overdue" : status === "due-soon" ? "badge-duesoon" : status === "ok" ? "badge-ok" : "";
-  const statusLabel = status === "overdue" ? "🔴 OVERDUE" : status === "due-soon" ? "🟡 DUE SOON" : status === "ok" ? "🟢 PAID" : "— NO FEE";
+  const statusLabel = status === "overdue" ? "OVERDUE" : status === "due-soon" ? "DUE SOON" : status === "ok" ? "PAID" : "NO FEE";
 
   function getDaysLeft() {
     if (!member.next_due_date) return null;
@@ -34,10 +34,10 @@ export default function MemberDetail({ member, payments, workouts, diets, messag
   }
 
   const TABS = [
-    { id: "info", label: "ℹ️ Info" },
-    { id: "payments", label: "💳 Payments" },
-    ...(member.is_pt_client ? [{ id: "workouts", label: "🏋️ Workouts" }, { id: "diets", label: "🥗 Diet" }] : []),
-    { id: "messages", label: "💬 Messages" },
+    { id: "info", label: "Info" },
+    { id: "payments", label: "Payments" },
+    ...(member.is_pt_client ? [{ id: "workouts", label: "Workouts" }, { id: "diets", label: "Diet" }] : []),
+    { id: "messages", label: "Messages" },
   ];
 
   return (
@@ -53,7 +53,7 @@ export default function MemberDetail({ member, payments, workouts, diets, messag
           <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", flexWrap: "wrap" }}>
             <h1 style={{ fontSize: "1.6rem", fontWeight: 800, margin: 0, color: "var(--text)" }}>{member.name}</h1>
             <span className={`badge ${statusBadgeClass}`} style={{ fontSize: "0.85rem", padding: "0.3rem 0.65rem" }}>{statusLabel}</span>
-            {member.is_pt_client && <span className="badge badge-pt" style={{ fontSize: "0.85rem" }}>💪 PT Client</span>}
+            {member.is_pt_client && <span className="badge badge-pt" style={{ fontSize: "0.85rem" }}>PT Client</span>}
           </div>
           <div style={{ fontSize: "1rem", color: "var(--text-muted)", marginTop: "0.3rem" }}>
             #{member.admission_no} · {member.phone}
@@ -63,9 +63,9 @@ export default function MemberDetail({ member, payments, workouts, diets, messag
           </div>
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-          <button id="send-reminder-btn" onClick={sendReminder} className="btn btn-cyan">💬 Reminder</button>
-          <a href={`/members/${member.id}/edit`} className="btn btn-ghost" id="edit-member-btn">✏️ Edit</a>
-          <button id="delete-member-btn" onClick={() => setShowDelete(true)} className="btn btn-danger" style={{ fontSize: "0.85rem", padding: "0.4rem" }}>🗑️ Delete</button>
+          <button id="send-reminder-btn" onClick={sendReminder} className="btn btn-cyan">Reminder</button>
+          <a href={`/members/${member.id}/edit`} className="btn btn-ghost" id="edit-member-btn">Edit</a>
+          <button id="delete-member-btn" onClick={() => setShowDelete(true)} className="btn btn-danger" style={{ fontSize: "0.85rem", padding: "0.4rem" }}>Delete</button>
           {showDelete && (
             <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 9999 }}>
               <div style={{ background: "white", padding: "2rem", borderRadius: "1rem", maxWidth: "400px", textAlign: "center" }}>
@@ -107,12 +107,12 @@ export default function MemberDetail({ member, payments, workouts, diets, messag
 
 function InfoTab({ m }: any) {
   const rows = [
-    ["📍 Address", m.address], ["🎂 Age", m.age], ["⚧ Gender", m.gender],
-    ["⚖️ Weight (kg)", m.weight], ["📏 Height (cm)", m.height],
-    ["📅 Join Date", m.join_date], ["💰 Fee Amount", `₹${m.fee_amount}`],
-    ["🔄 Fee Cycle", `${m.fee_cycle_days} days`],
-    ["✅ Last Payment", m.last_payment_date], ["📆 Next Due", m.next_due_date],
-    ["📝 Notes", m.notes],
+    ["Address", m.address], ["Age", m.age], ["Gender", m.gender],
+    ["Weight (kg)", m.weight], ["Height (cm)", m.height],
+    ["Join Date", m.join_date], ["Fee Amount", `₹${m.fee_amount}`],
+    ["Fee Cycle", `${m.fee_cycle_days} days`],
+    ["Last Payment", m.last_payment_date], ["Next Due", m.next_due_date],
+    ["Notes", m.notes],
   ];
   return (
     <div className="glass" style={{ padding: "1.5rem", display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(180px,1fr))", gap: "1.25rem" }}>
@@ -213,7 +213,7 @@ async function record() {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
       <div className="glass" style={{ padding: "1.5rem" }}>
-        <h3 style={{ fontWeight: 700, marginBottom: "1.25rem", fontSize: "1.2rem" }}>💳 Record Payment</h3>
+        <h3 style={{ fontWeight: 700, marginBottom: "1.25rem", fontSize: "1.2rem" }}>Record Payment</h3>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(160px,1fr))", gap: "0.85rem" }}>
           <input id="pay-date" className="input" type="date" value={paymentDate} onChange={e => setPaymentDate(e.target.value)} />
           <input id="pay-amount" className="input" type="number" placeholder="Membership Fee" value={amount} onChange={e => setAmount(e.target.value)} />
@@ -233,9 +233,9 @@ async function record() {
         </label>
         <div style={{ display: "flex", gap: "0.75rem", marginTop: "0.85rem", flexWrap: "wrap" }}>
           <button id="pay-record-btn" onClick={record} className="btn btn-primary" disabled={busy}>
-            {busy ? <><span className="spinner" /> Saving…</> : "💳 Record Payment"}
+            {busy ? <><span className="spinner" /> Saving…</> : "Record Payment"}
           </button>
-          <button id="pay-preview-btn" onClick={previewInvoice} className="btn btn-ghost">👁️ Preview Invoice</button>
+          <button id="pay-preview-btn" onClick={previewInvoice} className="btn btn-ghost">Preview Invoice</button>
         </div>
       </div>
 

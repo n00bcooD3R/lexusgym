@@ -81,17 +81,17 @@ export default function SettingsPage() {
       {/* Header */}
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "0.75rem" }}>
         <h1 style={{ fontSize: "1.3rem", fontWeight: 800, background: "linear-gradient(135deg,#a78bfa,#67e8f9)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", margin: 0 }}>
-          ⚙️ Settings
+          Settings
         </h1>
         <button id="save-settings-btn" onClick={saveAll} className={`btn ${saved ? "btn-success" : "btn-primary"}`} disabled={saving} style={{ fontSize: "0.95rem", padding: "0.6rem 1.2rem" }}>
-          {saving ? <><span className="spinner" /> Saving…</> : saved ? "✅ Saved!" : "💾 Save All"}
+          {saving ? <><span className="spinner" /> Saving…</> : saved ? "Saved!" : "Save All"}
         </button>
       </div>
 
       {/* Gym Details */}
       <div className="glass" style={{ padding: "1.25rem" }}>
         <h2 style={{ fontSize: "0.95rem", fontWeight: 700, marginBottom: "1rem", display: "flex", alignItems: "center", gap: "0.5rem" }}>
-          🏢 <span>Gym Details</span>
+          <span>Gym Details</span>
         </h2>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))", gap: "0.85rem" }}>
           {GYM_KEYS.map(key => (
@@ -114,7 +114,7 @@ export default function SettingsPage() {
       {/* Message Templates */}
       <div className="glass" style={{ padding: "1.25rem" }}>
         <h2 style={{ fontSize: "0.95rem", fontWeight: 700, marginBottom: "1rem", display: "flex", alignItems: "center", gap: "0.5rem" }}>
-          💬 <span>Message Templates</span>
+          <span>Message Templates</span>
         </h2>
         <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
           {MSG_KEYS.map(key => (

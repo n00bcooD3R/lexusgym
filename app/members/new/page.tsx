@@ -158,7 +158,7 @@ export default function NewMember() {
   return (
     <div style={{ maxWidth: "42rem", margin: "0 auto" }}>
       <h1 style={{ fontSize: "1.5rem", fontWeight: 800, background: "linear-gradient(135deg,#a78bfa,#67e8f9)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", marginBottom: "1.25rem" }}>
-        ➕ New Member
+        New Member
       </h1>
 
       <form onSubmit={submit} className="glass" style={{ padding: "1.5rem", display: "flex", flexDirection: "column", gap: "1rem" }}>
@@ -239,7 +239,7 @@ export default function NewMember() {
 
         <div style={{ display: "flex", gap: "0.75rem" }}>
           <button id="new-member-submit" className="btn btn-primary" disabled={loading}>
-            {loading ? <><span className="spinner" /> Saving…</> : "✨ Save Member"}
+            {loading ? <><span className="spinner" /> Saving…</> : "Save Member"}
           </button>
           <a href="/members" className="btn btn-ghost" id="new-member-cancel">Cancel</a>
         </div>

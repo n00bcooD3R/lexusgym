@@ -29,10 +29,10 @@ export default function MembersClient({ members }: { members: any[] }) {
       {/* Header */}
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "0.75rem" }}>
         <h1 style={{ fontSize: "1.5rem", fontWeight: 800, background: "linear-gradient(135deg,#a78bfa,#67e8f9)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", margin: 0 }}>
-          👥 Members ({members.length})
+          Members ({members.length})
         </h1>
         <Link href="/members/new" className="btn btn-primary" id="new-member-btn">
-          ✨ New Member
+          New Member
         </Link>
       </div>
 
@@ -40,7 +40,7 @@ export default function MembersClient({ members }: { members: any[] }) {
       <div style={{ display: "flex", gap: "0.25rem", borderBottom: "1px solid var(--border)" }}>
         {(["name", "admission", "phone"] as Tab[]).map(t => (
           <button key={t} onClick={() => setTab(t)} className={`tab ${tab === t ? "tab-active" : "tab-idle"}`} id={`tab-${t}`}>
-            {t === "name" ? "👤 Name" : t === "admission" ? "🔢 Admission" : "📱 Phone"}
+            {t === "name" ? "Name" : t === "admission" ? "Admission" : "Phone"}
           </button>
         ))}
       </div>

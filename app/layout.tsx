@@ -17,16 +17,16 @@ const STARS = Array.from({ length: 60 }, (_, i) => ({
 }));
 
 const FLOAT_ICONS = [
-  { icon: "🏋️", dur: 18, delay: 0, left: 8, fs: "2rem", op: 0.1 },
-  { icon: "💪", dur: 22, delay: 3, left: 20, fs: "1.5rem", op: 0.08 },
-  { icon: "⭐", dur: 16, delay: 1, left: 35, fs: "1.2rem", op: 0.12 },
-  { icon: "🌟", dur: 25, delay: 6, left: 50, fs: "1.8rem", op: 0.09 },
-  { icon: "🪐", dur: 20, delay: 2, left: 65, fs: "2rem", op: 0.08 },
-  { icon: "✨", dur: 14, delay: 4, left: 78, fs: "1.3rem", op: 0.14 },
-  { icon: "🌙", dur: 28, delay: 8, left: 88, fs: "1.5rem", op: 0.07 },
-  { icon: "🔥", dur: 19, delay: 5, left: 12, fs: "1.4rem", op: 0.09 },
-  { icon: "💎", dur: 23, delay: 7, left: 55, fs: "1.2rem", op: 0.1 },
-  { icon: "🚀", dur: 17, delay: 9, left: 40, fs: "1.6rem", op: 0.08 },
+  { icon: "*", dur: 18, delay: 0, left: 8, fs: "2rem", op: 0.1 },
+  { icon: "*", dur: 22, delay: 3, left: 20, fs: "1.5rem", op: 0.08 },
+  { icon: "*", dur: 16, delay: 1, left: 35, fs: "1.2rem", op: 0.12 },
+  { icon: "*", dur: 25, delay: 6, left: 50, fs: "1.8rem", op: 0.09 },
+  { icon: "*", dur: 20, delay: 2, left: 65, fs: "2rem", op: 0.08 },
+  { icon: "*", dur: 14, delay: 4, left: 78, fs: "1.3rem", op: 0.14 },
+  { icon: "*", dur: 28, delay: 8, left: 88, fs: "1.5rem", op: 0.07 },
+  { icon: "*", dur: 19, delay: 5, left: 12, fs: "1.4rem", op: 0.09 },
+  { icon: "*", dur: 23, delay: 7, left: 55, fs: "1.2rem", op: 0.1 },
+  { icon: "*", dur: 17, delay: 9, left: 40, fs: "1.6rem", op: 0.08 },
 ];
 
 const NAV_LINKS = [
@@ -174,7 +174,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 ))}
                 <form action="/api/auth/signout" method="post" style={{ display: "inline" }}>
                   <button id="logout-btn" className="btn btn-ghost" style={{ padding: "0.4rem 0.85rem", fontSize: "0.875rem", minHeight: 36 }}>
-                    🚪 Logout
+                    Logout
                   </button>
                 </form>
               </nav>
@@ -188,7 +188,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0.6rem 1rem" }}>
             <Link href={isLoginPage ? "/login" : "/dashboard"} id="mobile-logo" style={{ display: "flex", alignItems: "center", gap: "0.3rem", fontWeight: 800, fontSize: "0.95rem", textDecoration: "none" }}>
               <span style={{ background: "linear-gradient(135deg, #a78bfa, #67e8f9)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>LEXUS</span>
-              <span style={{ fontSize: "1.2rem" }}>🏋️</span>
               <span style={{ background: "linear-gradient(135deg, #67e8f9, #a78bfa)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>GYM</span>
             </Link>
             <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
