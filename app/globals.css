@@ -196,10 +196,10 @@ body::before {
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  padding: 0.75rem 1.5rem;
+  padding: 0.85rem 1.75rem;
   border-radius: 0.75rem;
   font-family: 'Outfit', sans-serif;
-  font-size: 1rem;
+  font-size: 1.1rem;
   font-weight: 600;
   cursor: pointer;
   border: none;
@@ -262,14 +262,14 @@ body::before {
 /* ── INPUTS ── */
 .input {
   width: 100%;
-  padding: 0.75rem 1rem;
+  padding: 0.85rem 1.1rem;
   border-radius: 0.75rem;
   background: var(--surface);
   border: 1px solid var(--border);
   color: var(--text);
   font-family: 'Outfit', sans-serif;
-  font-size: 1.05rem;
-  min-height: 50px;
+  font-size: 1.15rem;
+  min-height: 54px;
   backdrop-filter: blur(8px);
   transition: border-color 0.2s, box-shadow 0.2s;
   outline: none;
@@ -448,13 +448,13 @@ body::before {
   flex-direction: column;
   align-items: center;
   gap: 0.2rem;
-  font-size: 0.8rem;
+  font-size: 0.9rem;
   color: var(--text-muted);
   text-decoration: none;
-  padding: 0.5rem 0.8rem;
+  padding: 0.6rem 0.9rem;
   border-radius: 0.75rem;
   transition: all 0.2s;
-  min-width: 64px;
+  min-width: 70px;
   font-family: 'Outfit', sans-serif;
   font-weight: 500;
 }
