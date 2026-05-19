@@ -3,6 +3,7 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import { feeStatus, formatDate } from "@/lib/fees";
 import { motion } from "framer-motion";
+import { Icon } from "@/components/Icons";
 
 type M = {
   id: string; admission_no: string; name: string; phone: string;
@@ -156,7 +157,7 @@ function MemberRow({ m, sending, onSend, variant }: any) {
         id={`send-reminder-${m.id}`}
         style={{ padding: "0.4rem 0.85rem", fontSize: "0.8rem", minWidth: "auto", flexShrink: 0 }}
       >
-        {sending === m.id ? <span className="spinner" /> : "💬"}
+        {sending === m.id ? <span className="spinner" /> : <Icon name="send" size={16} />}
         <span className="hidden sm:inline">Send</span>
       </button>
     </div>

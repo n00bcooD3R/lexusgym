@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase-client";
+import { Icon } from "@/components/Icons";
 
 export default function EditForm({ member }: { member: any }) {
   const router = useRouter();
@@ -110,11 +111,11 @@ export default function EditForm({ member }: { member: any }) {
         <L label="Update Photo">
             <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
               <label className="btn btn-ghost" style={{ padding: "0.4rem 0.8rem", fontSize: "0.85rem" }}>
-                Camera
+                <Icon name="camera" size={18} /> Camera
                 <input type="file" accept="image/*" capture="environment" style={{ display: "none" }} onChange={e => setPhoto(e.target.files?.[0] ?? null)} />
               </label>
               <label className="btn btn-ghost" style={{ padding: "0.4rem 0.8rem", fontSize: "0.85rem" }}>
-                Upload
+                <Icon name="upload" size={18} /> Upload
                 <input type="file" accept="image/*" style={{ display: "none" }} onChange={e => setPhoto(e.target.files?.[0] ?? null)} />
               </label>
             </div>
@@ -127,7 +128,7 @@ export default function EditForm({ member }: { member: any }) {
         </label>
         {err && <p className="text-rose-600 text-sm">{err}</p>}
         <div className="flex gap-2">
-          <button className="btn btn-primary" onClick={save} disabled={busy}>{busy ? "Saving…" : "Save"}</button>
+          <button className="btn btn-primary" onClick={save} disabled={busy}>{busy ? <><span className="spinner" /> Saving...</> : <><Icon name="check" size={18} /> Save</>}</button>
           <a className="btn btn-ghost" href={`/members/${member.id}`}>Cancel</a>
           <button type="button" className="btn btn-danger ml-auto" onClick={remove}>Delete Member</button>
         </div>

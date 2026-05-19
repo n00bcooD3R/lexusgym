@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase-client";
 import { feeStatus, formatDate } from "@/lib/fees";
 import { generateInvoice } from "@/lib/pdf-bill";
+import { Icon } from "@/components/Icons";
 
 export default function MemberDetail({ member, payments, workouts, diets, messages }: any) {
   const router = useRouter();
@@ -35,10 +36,10 @@ export default function MemberDetail({ member, payments, workouts, diets, messag
   }
 
   const TABS = [
-    { id: "info", label: "Info" },
-    { id: "payments", label: "Payments" },
-    ...(member.is_pt_client ? [{ id: "workouts", label: "Workouts" }, { id: "diets", label: "Diet" }] : []),
-    { id: "messages", label: "Messages" },
+    { id: "info", label: "Info", icon: "info" },
+    { id: "payments", label: "Payments", icon: "creditCard" },
+    ...(member.is_pt_client ? [{ id: "workouts", label: "Workouts", icon: "dumbbell" }, { id: "diets", label: "Diet", icon: "activity" }] : []),
+    { id: "messages", label: "Messages", icon: "mail" },
   ];
 
   return (
@@ -64,9 +65,9 @@ export default function MemberDetail({ member, payments, workouts, diets, messag
           </div>
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-          <button id="send-reminder-btn" onClick={sendReminder} className="btn btn-cyan">Reminder</button>
-          <a href={`/members/${member.id}/edit`} className="btn btn-ghost" id="edit-member-btn">Edit</a>
-          <button id="delete-member-btn" onClick={() => setShowDelete(true)} className="btn btn-danger" style={{ fontSize: "0.85rem", padding: "0.4rem" }}>Delete</button>
+          <button id="send-reminder-btn" onClick={sendReminder} className="btn btn-cyan"><Icon name="send" size={18} /> Reminder</button>
+          <a href={`/members/${member.id}/edit`} className="btn btn-ghost" id="edit-member-btn"><Icon name="edit" size={18} /> Edit</a>
+          <button id="delete-member-btn" onClick={() => setShowDelete(true)} className="btn btn-danger" style={{ fontSize: "0.85rem", padding: "0.4rem" }}><Icon name="trash" size={18} /> Delete</button>
           {showDelete && (
             <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 9999 }}>
               <div style={{ background: "white", padding: "2rem", borderRadius: "1rem", maxWidth: "400px", textAlign: "center" }}>
@@ -92,7 +93,7 @@ export default function MemberDetail({ member, payments, workouts, diets, messag
       <div style={{ display: "flex", gap: "0.25rem", borderBottom: "1px solid var(--border)", overflowX: "auto" }}>
         {TABS.map(t => (
           <button key={t.id} onClick={() => setTab(t.id as any)} className={`tab ${tab === t.id ? "tab-active" : "tab-idle"}`} id={`detail-tab-${t.id}`}>
-            {t.label}
+            <Icon name={t.icon as any} size={16} /> {t.label}
           </button>
         ))}
       </div>
@@ -234,9 +235,9 @@ async function record() {
         </label>
         <div style={{ display: "flex", gap: "0.75rem", marginTop: "0.85rem", flexWrap: "wrap" }}>
           <button id="pay-record-btn" onClick={record} className="btn btn-primary" disabled={busy}>
-            {busy ? <><span className="spinner" /> Saving…</> : "Record Payment"}
+            {busy ? <><span className="spinner" /> Saving…</> : <><Icon name="check" size={18} /> Record Payment</>}
           </button>
-          <button id="pay-preview-btn" onClick={previewInvoice} className="btn btn-ghost">Preview Invoice</button>
+          <button id="pay-preview-btn" onClick={previewInvoice} className="btn btn-ghost"><Icon name="eye" size={18} /> Preview Invoice</button>
         </div>
       </div>
 

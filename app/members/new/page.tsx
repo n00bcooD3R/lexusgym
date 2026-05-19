@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase-client";
+import { Icon } from "@/components/Icons";
 
 import { generateInvoice } from "@/lib/pdf-bill";
 
@@ -239,7 +240,7 @@ export default function NewMember() {
 
         <div style={{ display: "flex", gap: "0.75rem" }}>
           <button id="new-member-submit" className="btn btn-primary" disabled={loading}>
-            {loading ? <><span className="spinner" /> Saving…</> : "Save Member"}
+            {loading ? <><span className="spinner" /> Saving…</> : <><Icon name="check" size={18} /> Save Member</>}
           </button>
           <a href="/members" className="btn btn-ghost" id="new-member-cancel">Cancel</a>
         </div>

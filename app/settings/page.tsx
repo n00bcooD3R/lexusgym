@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase-client";
+import { Icon } from "@/components/Icons";
 
 const SETTINGS_KEYS: Record<string, string> = {
   gym_name: "Gym Name", gym_tagline: "Tagline", gym_address: "Address",
@@ -84,14 +85,14 @@ export default function SettingsPage() {
           Settings
         </h1>
         <button id="save-settings-btn" onClick={saveAll} className={`btn ${saved ? "btn-success" : "btn-primary"}`} disabled={saving} style={{ fontSize: "0.95rem", padding: "0.6rem 1.2rem" }}>
-          {saving ? <><span className="spinner" /> Saving…</> : saved ? "Saved!" : "Save All"}
+          {saving ? <><span className="spinner" /> Saving…</> : saved ? <><Icon name="check" size={18} /> Saved!</> : <><Icon name="download" size={18} /> Save All</>}
         </button>
       </div>
 
       {/* Gym Details */}
       <div className="glass" style={{ padding: "1.25rem" }}>
         <h2 style={{ fontSize: "0.95rem", fontWeight: 700, marginBottom: "1rem", display: "flex", alignItems: "center", gap: "0.5rem" }}>
-          <span>Gym Details</span>
+          <Icon name="settings" size={18} /> Gym Details
         </h2>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))", gap: "0.85rem" }}>
           {GYM_KEYS.map(key => (
@@ -114,7 +115,7 @@ export default function SettingsPage() {
       {/* Message Templates */}
       <div className="glass" style={{ padding: "1.25rem" }}>
         <h2 style={{ fontSize: "0.95rem", fontWeight: 700, marginBottom: "1rem", display: "flex", alignItems: "center", gap: "0.5rem" }}>
-          <span>Message Templates</span>
+          <Icon name="mail" size={18} /> Message Templates
         </h2>
         <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
           {MSG_KEYS.map(key => (

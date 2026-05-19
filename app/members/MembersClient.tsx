@@ -2,6 +2,7 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { feeStatus, formatDate } from "@/lib/fees";
+import { Icon } from "@/components/Icons";
 
 type Tab = "name" | "admission" | "phone";
 
@@ -32,7 +33,7 @@ export default function MembersClient({ members }: { members: any[] }) {
           Members ({members.length})
         </h1>
         <Link href="/members/new" className="btn btn-primary" id="new-member-btn">
-          New Member
+          <Icon name="add" size={18} /> New Member
         </Link>
       </div>
 
@@ -40,7 +41,7 @@ export default function MembersClient({ members }: { members: any[] }) {
       <div style={{ display: "flex", gap: "0.25rem", borderBottom: "1px solid var(--border)" }}>
         {(["name", "admission", "phone"] as Tab[]).map(t => (
           <button key={t} onClick={() => setTab(t)} className={`tab ${tab === t ? "tab-active" : "tab-idle"}`} id={`tab-${t}`}>
-            {t === "name" ? "Name" : t === "admission" ? "Admission" : "Phone"}
+            <Icon name="user" size={16} /> {t === "name" ? "Name" : t === "admission" ? "Admission" : "Phone"}
           </button>
         ))}
       </div>

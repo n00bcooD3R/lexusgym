@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState, useCallback } from "react";
 import SettingsLoader from "@/components/SettingsLoader";
 import { motion, AnimatePresence } from "framer-motion";
+import { Icon } from "@/components/Icons";
 
 const STARS = Array.from({ length: 60 }, (_, i) => ({
   id: i,
@@ -174,7 +175,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 ))}
                 <form action="/api/auth/signout" method="post" style={{ display: "inline" }}>
                   <button id="logout-btn" className="btn btn-ghost" style={{ padding: "0.4rem 0.85rem", fontSize: "0.875rem", minHeight: 36 }}>
-                    Logout
+                    <Icon name="logout" size={18} /> Logout
                   </button>
                 </form>
               </nav>
@@ -194,7 +195,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               {!isLoginPage && (
                 <form action="/api/auth/signout" method="post">
                   <button id="mobile-logout-btn" className="btn btn-ghost" style={{ padding: "0.3rem 0.7rem", fontSize: "0.75rem", minHeight: 32 }}>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>
+                    <Icon name="logout" size={18} />
                   </button>
                 </form>
               )}
