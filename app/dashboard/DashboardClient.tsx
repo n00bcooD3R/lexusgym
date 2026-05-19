@@ -54,23 +54,23 @@ export default function DashboardClient({ members }: { members: M[] }) {
 
       {/* Stats */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: "0.75rem" }}>
-        <StatCard label="Overdue" value={grouped.overdue.length} variant="danger" />
-        <StatCard label="Due Soon" value={grouped.dueSoon.length} variant="warn" />
-        <StatCard label="Active" value={members.length} variant="success" />
+        <StatCard label="Overdue" value={grouped.overdue.length} variant="danger" dot="🔴" />
+        <StatCard label="Due Soon" value={grouped.dueSoon.length} variant="warn" dot="🟡" />
+        <StatCard label="Active" value={members.length} variant="success" dot="🟢" />
       </div>
 
       {/* Toast */}
       {toast && <div className="toast">{toast}</div>}
 
       {/* Sections */}
-      <Section title="Overdue" rows={grouped.overdue} sending={sending} onSend={sendReminder} variant="overdue" />
-      <Section title="Due Soon" rows={grouped.dueSoon} sending={sending} onSend={sendReminder} variant="duesoon" />
-      <Section title="All Good" rows={grouped.ok} sending={sending} onSend={sendReminder} variant="ok" />
+      <Section title="Overdue" rows={grouped.overdue} sending={sending} onSend={sendReminder} variant="overdue" dot="🔴" />
+      <Section title="Due Soon" rows={grouped.dueSoon} sending={sending} onSend={sendReminder} variant="duesoon" dot="🟡" />
+      <Section title="All Good" rows={grouped.ok} sending={sending} onSend={sendReminder} variant="ok" dot="🟢" />
     </div>
   );
 }
 
-function StatCard({ label, value, variant }: { label: string; value: number; variant: string }) {
+function StatCard({ label, value, variant, dot }: { label: string; value: number; variant: string; dot?: string }) {
   return (
     <motion.div 
       className={`stat-card ${variant}`}
@@ -79,6 +79,7 @@ function StatCard({ label, value, variant }: { label: string; value: number; var
       transition={{ duration: 0.35, ease: "easeOut" }}
       whileHover={{ scale: 1.03, y: -2 }}
     >
+      <div style={{ fontSize: "1.2rem", marginBottom: "0.3rem" }}>{dot}</div>
       <div style={{ fontSize: "2rem", fontWeight: 800, color: variant === "danger" ? "var(--danger)" : variant === "warn" ? "var(--warn)" : "var(--success)", lineHeight: 1 }}>
         {value}
       </div>
@@ -87,9 +88,9 @@ function StatCard({ label, value, variant }: { label: string; value: number; var
   );
 }
 
-function Section({ title, rows, sending, onSend, variant }: {
+function Section({ title, rows, sending, onSend, variant, dot }: {
   title: string; rows: any[]; sending: string | null;
-  onSend: (m: any) => void; variant: "overdue" | "duesoon" | "ok";
+  onSend: (m: any) => void; variant: "overdue" | "duesoon" | "ok"; dot?: string;
 }) {
   if (!rows.length) return null;
 
@@ -106,7 +107,7 @@ function Section({ title, rows, sending, onSend, variant }: {
       transition={{ duration: 0.4, ease: "easeOut" }}
     >
       <div className="section-header" style={{ borderBottom: `1px solid ${borderColor}` }}>
-        {title} ({rows.length})
+        {dot} {title} ({rows.length})
       </div>
       <div className="divide-glass">
         {rows.map((m, i) => (

@@ -13,6 +13,7 @@ export default function MemberDetail({ member, payments, workouts, diets, messag
   const status = feeStatus(member.next_due_date);
 
   const statusBadgeClass = status === "overdue" ? "badge-overdue" : status === "due-soon" ? "badge-duesoon" : status === "ok" ? "badge-ok" : "";
+  const statusDot = status === "overdue" ? "🔴" : status === "due-soon" ? "🟡" : status === "ok" ? "🟢" : "";
   const statusLabel = status === "overdue" ? "OVERDUE" : status === "due-soon" ? "DUE SOON" : status === "ok" ? "PAID" : "NO FEE";
 
   function getDaysLeft() {
@@ -52,7 +53,7 @@ export default function MemberDetail({ member, payments, workouts, diets, messag
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", flexWrap: "wrap" }}>
             <h1 style={{ fontSize: "1.6rem", fontWeight: 800, margin: 0, color: "var(--text)" }}>{member.name}</h1>
-            <span className={`badge ${statusBadgeClass}`} style={{ fontSize: "0.85rem", padding: "0.3rem 0.65rem" }}>{statusLabel}</span>
+            <span className={`badge ${statusBadgeClass}`} style={{ fontSize: "0.85rem", padding: "0.3rem 0.65rem" }}>{statusDot} {statusLabel}</span>
             {member.is_pt_client && <span className="badge badge-pt" style={{ fontSize: "0.85rem" }}>PT Client</span>}
           </div>
           <div style={{ fontSize: "1rem", color: "var(--text-muted)", marginTop: "0.3rem" }}>
