@@ -43,6 +43,13 @@ export default function SettingsPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [tab, setTab] = useState<"gym" | "messages" | "qr">("gym");
+
+  const TABS = [
+    { id: "gym", label: "Gym Details", icon: "settings" },
+    { id: "messages", label: "Messages", icon: "mail" },
+    { id: "qr", label: "WhatsApp QR", icon: "eye" },
+  ];
 
   useEffect(() => {
     async function load() {
@@ -91,68 +98,87 @@ export default function SettingsPage() {
         </button>
       </div>
 
-      {/* Gym Details */}
-      <div className="glass" style={{ padding: "1.25rem" }}>
-        <h2 style={{ fontSize: "0.95rem", fontWeight: 700, marginBottom: "1rem", display: "flex", alignItems: "center", gap: "0.5rem" }}>
-          <Icon name="settings" size={18} /> Gym Details
-        </h2>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))", gap: "0.85rem" }}>
-          {GYM_KEYS.map(key => (
-            <label key={key} style={{ display: "block" }}>
-              <span style={{ fontSize: "0.75rem", color: "var(--text-muted)", display: "block", marginBottom: "0.3rem", fontWeight: 500 }}>
-                {SETTINGS_KEYS[key]}
-              </span>
-              <input
-                id={`setting-${key}`}
-                className="input"
-                style={{ fontSize: "0.95rem", padding: "0.55rem 0.75rem", minHeight: "40px" }}
-                value={settings[key] || ""}
-                onChange={e => upd(key, e.target.value)}
-              />
-            </label>
-          ))}
-        </div>
-        {settings.wa_bridge_url && (
-          <a
-            href={`${settings.wa_bridge_url}/qr`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn btn-cyan"
-            style={{ marginTop: "1rem", display: "inline-flex", alignItems: "center", gap: "0.5rem" }}
-          >
-            <Icon name="eye" size={18} /> Open WhatsApp QR
-          </a>
-        )}
+      {/* Tabs */}
+      <div style={{ display: "flex", gap: "0.25rem", borderBottom: "1px solid var(--border)", overflowX: "auto" }}>
+        {TABS.map(t => (
+          <button key={t.id} onClick={() => setTab(t.id as any)} className={`tab ${tab === t.id ? "tab-active" : "tab-idle"}`} style={{ fontSize: "1rem", padding: "0.6rem 1rem" }}>
+            <Icon name={t.icon as any} size={18} /> {t.label}
+          </button>
+        ))}
       </div>
 
-      {/* Message Templates */}
-      <div className="glass" style={{ padding: "1.25rem" }}>
-        <h2 style={{ fontSize: "0.95rem", fontWeight: 700, marginBottom: "1rem", display: "flex", alignItems: "center", gap: "0.5rem" }}>
-          <Icon name="mail" size={18} /> Message Templates
-        </h2>
-        <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-          {MSG_KEYS.map(key => (
-            <div key={key}>
-              <label style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.35rem" }}>
-                <span style={{ fontSize: "0.85rem", fontWeight: 600, color: "var(--text)" }}>{SETTINGS_KEYS[key]}</span>
-                {PLACEHOLDERS[key] && (
-                  <span style={{ fontSize: "0.7rem", color: "var(--accent2)", background: "rgba(6,182,212,0.1)", border: "1px solid rgba(6,182,212,0.2)", borderRadius: "0.375rem", padding: "0.1rem 0.4rem" }}>
-                    {PLACEHOLDERS[key]}
-                  </span>
-                )}
+      {/* Tab Content */}
+      {tab === "gym" && (
+        <div className="glass" style={{ padding: "1.25rem" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))", gap: "0.85rem" }}>
+            {GYM_KEYS.map(key => (
+              <label key={key} style={{ display: "block" }}>
+                <span style={{ fontSize: "0.75rem", color: "var(--text-muted)", display: "block", marginBottom: "0.3rem", fontWeight: 500 }}>
+                  {SETTINGS_KEYS[key]}
+                </span>
+                <input
+                  id={`setting-${key}`}
+                  className="input"
+                  style={{ fontSize: "0.95rem", padding: "0.55rem 0.75rem", minHeight: "40px" }}
+                  value={settings[key] || ""}
+                  onChange={e => upd(key, e.target.value)}
+                />
               </label>
-              <textarea
-                id={`setting-${key}`}
-                className="input"
-                rows={5}
-                style={{ fontFamily: "monospace", fontSize: "0.82rem", resize: "vertical" }}
-                value={settings[key] || ""}
-                onChange={e => upd(key, e.target.value)}
-              />
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
+      )}
+
+      {tab === "messages" && (
+        <div className="glass" style={{ padding: "1.25rem" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+            {MSG_KEYS.map(key => (
+              <div key={key}>
+                <label style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.35rem" }}>
+                  <span style={{ fontSize: "0.85rem", fontWeight: 600, color: "var(--text)" }}>{SETTINGS_KEYS[key]}</span>
+                  {PLACEHOLDERS[key] && (
+                    <span style={{ fontSize: "0.7rem", color: "var(--accent2)", background: "rgba(6,182,212,0.1)", border: "1px solid rgba(6,182,212,0.2)", borderRadius: "0.375rem", padding: "0.1rem 0.4rem" }}>
+                      {PLACEHOLDERS[key]}
+                    </span>
+                  )}
+                </label>
+                <textarea
+                  id={`setting-${key}`}
+                  className="input"
+                  rows={5}
+                  style={{ fontFamily: "monospace", fontSize: "0.85rem", resize: "vertical" }}
+                  value={settings[key] || ""}
+                  onChange={e => upd(key, e.target.value)}
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {tab === "qr" && (
+        <div className="glass" style={{ padding: "1.5rem", textAlign: "center" }}>
+          <h3 style={{ fontSize: "1.1rem", fontWeight: 700, marginBottom: "1rem" }}>WhatsApp QR Code</h3>
+          {settings.wa_bridge_url ? (
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "1rem" }}>
+              <iframe
+                src={`${settings.wa_bridge_url}/qr`}
+                style={{ width: "100%", maxWidth: "400px", height: "450px", border: "none", borderRadius: "0.75rem", background: "#fff" }}
+                title="WhatsApp QR"
+              />
+              <p style={{ fontSize: "0.85rem", color: "var(--text-muted)" }}>
+                Scan this QR with your WhatsApp to connect
+              </p>
+            </div>
+          ) : (
+            <div style={{ padding: "2rem", color: "var(--text-muted)" }}>
+              <Icon name="alertCircle" size={48} color="var(--warn)" />
+              <p style={{ marginTop: "1rem" }}>Please set the WhatsApp Bridge URL first</p>
+            </div>
+          )}
+        </div>
+      )}
+
       </div>
-    </div>
   );
 }
