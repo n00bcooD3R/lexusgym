@@ -63,18 +63,20 @@ export default function LoginPage() {
         {/* Logo */}
         <div style={{ textAlign: "center", marginBottom: "2rem" }}>
           <div style={{
-            width: "80px", height: "80px",
+            width: "100px", height: "100px",
             borderRadius: "1.5rem",
-            background: "linear-gradient(135deg, rgba(139,92,246,0.3), rgba(6,182,212,0.3))",
-            border: "1px solid rgba(139,92,246,0.4)",
+            background: "linear-gradient(135deg, rgba(139,92,246,0.2), rgba(6,182,212,0.2))",
+            border: "1px solid rgba(139,92,246,0.3)",
             display: "inline-flex",
             alignItems: "center",
             justifyContent: "center",
-            fontSize: "2.5rem",
             marginBottom: "1rem",
             boxShadow: "0 0 40px rgba(139,92,246,0.3)",
             animation: "pulseGlow 3s ease-in-out infinite",
-          }}>🏋️</div>
+            overflow: "hidden",
+          }}>
+            <img src="/logo.png" alt="Lexus Gym" style={{ width: "70px", height: "70px", objectFit: "contain" }} />
+          </div>
           <h1 style={{
             fontSize: "1.75rem",
             fontWeight: 800,
