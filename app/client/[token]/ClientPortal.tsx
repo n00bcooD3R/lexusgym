@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase-client";
 
 // ─── TYPES ─────────────────────────────────────────────────────────────────────
@@ -231,12 +232,21 @@ function FoodDiary({ memberId }: { memberId: string }) {
 }
 
 // ─── MAIN CLIENT PORTAL ────────────────────────────────────────────────────────
-export default function ClientPortal({ member, workoutDays, dietMeals }: {
+export default function ClientPortal({ member, workoutDays, dietMeals, token }: {
   member: { id: string; name: string; photo_url: string | null; admission_no: string };
   workoutDays: WorkoutDay[];
   dietMeals: DietMeal[];
+  token: string;
 }) {
+  const router = useRouter();
   const [tab, setTab] = useState<"workout" | "diet" | "diary">("workout");
+  const [loggingOut, setLoggingOut] = useState(false);
+
+  async function logout() {
+    setLoggingOut(true);
+    await fetch("/api/pt/logout", { method: "POST" });
+    router.push("/client/login");
+  }
 
   const tabs = [
     { key: "workout" as const, emoji: "💪", label: "Workout" },
@@ -247,15 +257,19 @@ export default function ClientPortal({ member, workoutDays, dietMeals }: {
   return (
     <div style={{ minHeight: "100vh", background: "var(--bg)", fontFamily: "Outfit,sans-serif", paddingBottom: "5rem" }}>
       {/* Header */}
-      <div style={{ background: "rgba(10,10,26,0.9)", backdropFilter: "blur(20px)", borderBottom: "1px solid var(--border)", padding: "1rem", position: "sticky", top: 0, zIndex: 50 }}>
+      <div style={{ background: "rgba(10,10,26,0.9)", backdropFilter: "blur(20px)", borderBottom: "1px solid var(--border)", padding: "0.75rem 1rem", position: "sticky", top: 0, zIndex: 50 }}>
         <div style={{ maxWidth: "42rem", margin: "0 auto", display: "flex", alignItems: "center", gap: "0.75rem" }}>
           {member.photo_url
-            ? <img src={member.photo_url} style={{ width: 42, height: 42, borderRadius: "50%", objectFit: "cover", border: "2px solid var(--accent)" }} />
-            : <div style={{ width: 42, height: 42, borderRadius: "50%", background: "linear-gradient(135deg,var(--accent),var(--accent2))", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, color: "white", fontSize: "1.1rem" }}>{member.name.charAt(0)}</div>}
-          <div>
-            <div style={{ fontWeight: 700, fontSize: "1rem" }}>{member.name}</div>
-            <div style={{ fontSize: "0.7rem", color: "var(--accent)", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em" }}>Lexus Fitness · PT Client</div>
+            ? <img src={member.photo_url} style={{ width: 40, height: 40, borderRadius: "50%", objectFit: "cover", border: "2px solid var(--accent)" }} />
+            : <div style={{ width: 40, height: 40, borderRadius: "50%", background: "linear-gradient(135deg,var(--accent),var(--accent2))", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, color: "white", fontSize: "1rem", flexShrink: 0 }}>{member.name.charAt(0)}</div>}
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ fontWeight: 700, fontSize: "1rem", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{member.name}</div>
+            <div style={{ fontSize: "0.65rem", color: "var(--accent)", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em" }}>Lexus Fitness · PT Client</div>
           </div>
+          <button onClick={logout} disabled={loggingOut}
+            style={{ background: "rgba(244,63,94,0.1)", border: "1px solid rgba(244,63,94,0.25)", color: "#fb7185", borderRadius: "0.5rem", padding: "0.35rem 0.75rem", fontSize: "0.75rem", fontWeight: 600, cursor: "pointer", fontFamily: "Outfit,sans-serif", flexShrink: 0 }}>
+            {loggingOut ? "…" : "🚪 Logout"}
+          </button>
         </div>
       </div>
 

@@ -22,7 +22,17 @@ export async function POST(req: NextRequest) {
     const valid = await bcrypt.compare(password, row.password_hash);
     if (!valid) return NextResponse.json({ ok: false, error: "Invalid username or password" }, { status: 401 });
 
-    return NextResponse.json({ ok: true, token: row.token });
+    // Set secure httpOnly cookie with token — 30 day expiry
+    const res = NextResponse.json({ ok: true, token: row.token });
+    res.cookies.set("client_session", row.token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge: 60 * 60 * 24 * 30, // 30 days
+      path: "/",
+    });
+
+    return res;
   } catch (e: any) {
     return NextResponse.json({ ok: false, error: e.message }, { status: 500 });
   }
