@@ -113,6 +113,49 @@ export default function MemberDetail({ member, payments, workouts, diets, messag
 }
 
 function InfoTab({ m }: any) {
+  const router = useRouter();
+  const [showUpgrade, setShowUpgrade] = useState(false);
+  const [upgrading, setUpgrading] = useState(false);
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPw, setConfirmPw] = useState("");
+  const [showPw, setShowPw] = useState(false);
+  const [upgradeMsg, setUpgradeMsg] = useState<{ text: string; ok: boolean } | null>(null);
+
+  const showUpgradeMsg = (text: string, ok: boolean) => {
+    setUpgradeMsg({ text, ok });
+    setTimeout(() => setUpgradeMsg(null), 3500);
+  };
+
+  async function doUpgrade(e: React.FormEvent) {
+    e.preventDefault();
+    if (password !== confirmPw) { showUpgradeMsg("Passwords do not match", false); return; }
+    if (password.length < 6) { showUpgradeMsg("Password must be at least 6 characters", false); return; }
+    if (username.trim().length < 3) { showUpgradeMsg("Username must be at least 3 characters", false); return; }
+    setUpgrading(true);
+    try {
+      // 1. Mark as PT client
+      const sb = createClient();
+      const { error: upErr } = await sb.from("members").update({ is_pt_client: true }).eq("id", m.id);
+      if (upErr) { showUpgradeMsg("Failed to upgrade: " + upErr.message, false); setUpgrading(false); return; }
+
+      // 2. Set credentials
+      const res = await fetch("/api/pt/credentials", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ memberId: m.id, username, password }),
+      });
+      const j = await res.json();
+      if (!j.ok) { showUpgradeMsg(j.error || "Credential save failed", false); setUpgrading(false); return; }
+
+      showUpgradeMsg("✓ Upgraded to PT client! Reloading…", true);
+      setTimeout(() => router.refresh(), 1200);
+    } catch (err: any) {
+      showUpgradeMsg(err.message, false);
+    }
+    setUpgrading(false);
+  }
+
   const rows = [
     ["Address", m.address], ["Age", m.age], ["Gender", m.gender],
     ["Weight (kg)", m.weight], ["Height (cm)", m.height],
@@ -121,17 +164,118 @@ function InfoTab({ m }: any) {
     ["Last Payment", m.last_payment_date], ["Next Due", m.next_due_date],
     ["Notes", m.notes],
   ];
+
   return (
-    <div className="glass" style={{ padding: "1.5rem", display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(180px,1fr))", gap: "1.25rem" }}>
-      {rows.map(([k, v]) => (
-        <div key={k as string} style={{ borderBottom: "1px solid var(--border)", paddingBottom: "1rem" }}>
-          <div style={{ fontSize: "0.95rem", color: "var(--text-muted)", fontWeight: 500, marginBottom: "0.4rem" }}>{k}</div>
-          <div style={{ fontSize: "1.15rem", color: "var(--text)", fontWeight: 600 }}>{v || "—"}</div>
+    <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+      <div className="glass" style={{ padding: "1.5rem", display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(180px,1fr))", gap: "1.25rem" }}>
+        {rows.map(([k, v]) => (
+          <div key={k as string} style={{ borderBottom: "1px solid var(--border)", paddingBottom: "1rem" }}>
+            <div style={{ fontSize: "0.95rem", color: "var(--text-muted)", fontWeight: 500, marginBottom: "0.4rem" }}>{k}</div>
+            <div style={{ fontSize: "1.15rem", color: "var(--text)", fontWeight: 600 }}>{v || "—"}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* Upgrade to PT — only shown for non-PT members */}
+      {!m.is_pt_client && (
+        <div className="glass" style={{ padding: "1.25rem" }}>
+          {!showUpgrade ? (
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "0.75rem" }}>
+              <div>
+                <div style={{ fontWeight: 700, fontSize: "0.95rem" }}>⬆️ Upgrade to PT Client</div>
+                <div style={{ fontSize: "0.8rem", color: "var(--text-muted)", marginTop: "0.2rem" }}>Enable workout plan, diet plan & client portal access</div>
+              </div>
+              <button
+                id="upgrade-to-pt-btn"
+                onClick={() => setShowUpgrade(true)}
+                className="btn btn-primary"
+                style={{ fontSize: "0.875rem", padding: "0.55rem 1.25rem", minHeight: 38 }}
+              >
+                💪 Upgrade to PT
+              </button>
+            </div>
+          ) : (
+            <div style={{ display: "flex", flexDirection: "column", gap: "0.85rem" }}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                <div style={{ fontWeight: 700, fontSize: "1rem" }}>💪 Setup PT Client Portal</div>
+                <button onClick={() => setShowUpgrade(false)} style={{ background: "none", border: "none", color: "var(--text-muted)", cursor: "pointer", fontSize: "1.2rem" }}>✕</button>
+              </div>
+              <div style={{ fontSize: "0.82rem", color: "var(--text-muted)", background: "rgba(139,92,246,0.08)", border: "1px solid rgba(139,92,246,0.2)", borderRadius: "0.6rem", padding: "0.65rem 0.85rem" }}>
+                This will mark <strong style={{ color: "var(--text)" }}>{m.name}</strong> as a PT client and create their portal login credentials.
+              </div>
+
+              <form onSubmit={doUpgrade} style={{ display: "flex", flexDirection: "column", gap: "0.65rem" }}>
+                <div>
+                  <label style={{ display: "block", fontSize: "0.8rem", fontWeight: 600, color: "var(--text-muted)", marginBottom: "0.3rem" }}>Username</label>
+                  <input
+                    id="upgrade-username"
+                    className="input"
+                    type="text"
+                    placeholder={`e.g. ${m.phone || "john.doe"}`}
+                    value={username}
+                    onChange={e => setUsername(e.target.value)}
+                    required
+                    style={{ fontSize: "0.95rem" }}
+                  />
+                  <div style={{ fontSize: "0.72rem", color: "var(--text-muted)", marginTop: "0.2rem" }}>Tip: use phone number for easy recall</div>
+                </div>
+
+                <div>
+                  <label style={{ display: "block", fontSize: "0.8rem", fontWeight: 600, color: "var(--text-muted)", marginBottom: "0.3rem" }}>Password</label>
+                  <div style={{ position: "relative" }}>
+                    <input
+                      id="upgrade-password"
+                      className="input"
+                      type={showPw ? "text" : "password"}
+                      placeholder="Min 6 characters"
+                      value={password}
+                      onChange={e => setPassword(e.target.value)}
+                      required
+                      style={{ fontSize: "0.95rem", paddingRight: "3rem" }}
+                    />
+                    <button type="button" onClick={() => setShowPw(p => !p)}
+                      style={{ position: "absolute", right: "0.75rem", top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", fontSize: "1rem", color: "var(--text-muted)" }}>
+                      {showPw ? "🙈" : "👁️"}
+                    </button>
+                  </div>
+                </div>
+
+                <div>
+                  <label style={{ display: "block", fontSize: "0.8rem", fontWeight: 600, color: "var(--text-muted)", marginBottom: "0.3rem" }}>Confirm Password</label>
+                  <input
+                    id="upgrade-confirm-pw"
+                    className="input"
+                    type={showPw ? "text" : "password"}
+                    placeholder="Re-enter password"
+                    value={confirmPw}
+                    onChange={e => setConfirmPw(e.target.value)}
+                    required
+                    style={{ fontSize: "0.95rem", borderColor: confirmPw && password !== confirmPw ? "var(--danger)" : undefined }}
+                  />
+                  {confirmPw && password !== confirmPw && <div style={{ fontSize: "0.72rem", color: "var(--danger)", marginTop: "0.2rem" }}>Passwords do not match</div>}
+                </div>
+
+                {upgradeMsg && (
+                  <div style={{ background: upgradeMsg.ok ? "rgba(16,185,129,0.1)" : "rgba(244,63,94,0.1)", border: `1px solid ${upgradeMsg.ok ? "rgba(16,185,129,0.3)" : "rgba(244,63,94,0.3)"}`, borderRadius: "0.5rem", padding: "0.6rem 0.85rem", fontSize: "0.875rem", color: upgradeMsg.ok ? "#34d399" : "#fb7185" }}>
+                    {upgradeMsg.text}
+                  </div>
+                )}
+
+                <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
+                  <button id="confirm-upgrade-btn" type="submit" className="btn btn-primary" disabled={upgrading} style={{ fontSize: "0.9rem", padding: "0.6rem 1.25rem", minHeight: 40 }}>
+                    {upgrading ? <><span className="spinner" /> Upgrading…</> : "💪 Confirm Upgrade"}
+                  </button>
+                  <button type="button" onClick={() => setShowUpgrade(false)} className="btn btn-ghost" style={{ fontSize: "0.9rem", padding: "0.6rem 1rem", minHeight: 40 }}>Cancel</button>
+                </div>
+              </form>
+            </div>
+          )}
         </div>
-      ))}
+      )}
     </div>
   );
 }
+
 
 function PaymentsTab({ m, payments }: any) {
   const router = useRouter();
