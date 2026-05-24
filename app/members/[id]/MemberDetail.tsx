@@ -8,7 +8,7 @@ import { Icon } from "@/components/Icons";
 
 export default function MemberDetail({ member, payments, workouts, diets, messages }: any) {
   const router = useRouter();
-  const [tab, setTab] = useState<"info" | "payments" | "workouts" | "diets" | "messages">("info");
+  const [tab, setTab] = useState<"info" | "payments" | "workouts" | "diets" | "messages" | "portal">("info");
   const [showDelete, setShowDelete] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const status = feeStatus(member.next_due_date);
@@ -38,7 +38,11 @@ export default function MemberDetail({ member, payments, workouts, diets, messag
   const TABS = [
     { id: "info", label: "Info", icon: "info" },
     { id: "payments", label: "Payments", icon: "creditCard" },
-    ...(member.is_pt_client ? [{ id: "workouts", label: "Workouts", icon: "dumbbell" }, { id: "diets", label: "Diet", icon: "activity" }] : []),
+    ...(member.is_pt_client ? [
+      { id: "workouts", label: "Workouts", icon: "dumbbell" },
+      { id: "diets", label: "Diet", icon: "activity" },
+      { id: "portal", label: "Portal Access", icon: "user" },
+    ] : []),
     { id: "messages", label: "Messages", icon: "mail" },
   ];
 
@@ -102,6 +106,7 @@ export default function MemberDetail({ member, payments, workouts, diets, messag
       {tab === "payments" && <PaymentsTab m={member} payments={payments} />}
       {tab === "workouts" && <WorkoutsTab m={member} workouts={workouts} />}
       {tab === "diets" && <DietsTab m={member} diets={diets} />}
+      {tab === "portal" && <PortalTab m={member} />}
       {tab === "messages" && <MessagesTab messages={messages} />}
     </div>
   );
@@ -400,6 +405,159 @@ function DietsTab({ m, diets }: any) {
           {d.notes && <p style={{ fontSize: "0.78rem", color: "var(--text-muted)", marginTop: "0.5rem", fontStyle: "italic" }}>{d.notes}</p>}
         </div>
       ))}
+    </div>
+  );
+}
+
+function PortalTab({ m }: any) {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPw, setConfirmPw] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [msg, setMsg] = useState<{ text: string; ok: boolean } | null>(null);
+  const [showPw, setShowPw] = useState(false);
+  const [existingUser, setExistingUser] = useState<string | null>(null);
+  const [token, setToken] = useState<string | null>(null);
+  const [loadingInfo, setLoadingInfo] = useState(true);
+
+  // Load existing credentials on mount
+  useState(() => {
+    createClient().from("client_tokens").select("username,token").eq("member_id", m.id).single()
+      .then(({ data }) => {
+        if (data?.username) setExistingUser(data.username);
+        if (data?.token) setToken(data.token);
+        setLoadingInfo(false);
+      });
+  });
+
+  const showMsg = (text: string, ok: boolean) => { setMsg({ text, ok }); setTimeout(() => setMsg(null), 3500); };
+
+  async function save(e: React.FormEvent) {
+    e.preventDefault();
+    if (password !== confirmPw) { showMsg("Passwords do not match", false); return; }
+    if (password.length < 6) { showMsg("Password must be at least 6 characters", false); return; }
+    setSaving(true);
+    const res = await fetch("/api/pt/credentials", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ memberId: m.id, username, password }),
+    });
+    const j = await res.json();
+    setSaving(false);
+    if (j.ok) {
+      setExistingUser(username.toLowerCase().trim());
+      setPassword(""); setConfirmPw("");
+      showMsg("✓ Credentials saved! Client can now login.", true);
+    } else {
+      showMsg(j.error || "Failed to save", false);
+    }
+  }
+
+  const portalUrl = token ? `${window.location.origin}/client/${token}` : null;
+  const loginUrl = `${window.location.origin}/client/login`;
+
+  const copyText = (text: string) => { navigator.clipboard.writeText(text); showMsg("Copied!", true); };
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+      {/* Status card */}
+      <div className="glass" style={{ padding: "1.25rem" }}>
+        <div style={{ fontWeight: 700, fontSize: "1rem", marginBottom: "0.75rem" }}>🔐 Portal Access Status</div>
+        {existingUser ? (
+          <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+              <span style={{ background: "rgba(16,185,129,0.15)", color: "#34d399", border: "1px solid rgba(16,185,129,0.3)", borderRadius: "9999px", padding: "0.2rem 0.65rem", fontSize: "0.75rem", fontWeight: 700 }}>✓ ACTIVE</span>
+              <span style={{ color: "var(--text-muted)", fontSize: "0.875rem" }}>Username: <strong style={{ color: "var(--text)" }}>{existingUser}</strong></span>
+            </div>
+            <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap", marginTop: "0.25rem" }}>
+              <button onClick={() => copyText(loginUrl)} className="btn btn-ghost" style={{ fontSize: "0.8rem", padding: "0.4rem 0.8rem", minHeight: 34 }}>📋 Copy Login URL</button>
+              {portalUrl && <button onClick={() => copyText(portalUrl)} className="btn btn-ghost" style={{ fontSize: "0.8rem", padding: "0.4rem 0.8rem", minHeight: 34 }}>🔗 Copy Direct Link</button>}
+            </div>
+            <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "0.5rem", padding: "0.5rem 0.75rem", fontSize: "0.75rem", color: "var(--accent2)", fontFamily: "monospace", wordBreak: "break-all" }}>
+              {loginUrl}
+            </div>
+          </div>
+        ) : (
+          <div style={{ color: "var(--text-muted)", fontSize: "0.9rem" }}>⚠️ No credentials set. Create below so client can login.</div>
+        )}
+      </div>
+
+      {/* Credential form */}
+      <div className="glass" style={{ padding: "1.25rem" }}>
+        <div style={{ fontWeight: 700, fontSize: "1rem", marginBottom: "0.75rem" }}>
+          {existingUser ? "🔄 Update Credentials" : "🔑 Create Client Login"}
+        </div>
+        <form onSubmit={save} style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+          <div>
+            <label style={{ display: "block", fontSize: "0.8rem", fontWeight: 600, color: "var(--text-muted)", marginBottom: "0.3rem" }}>Username</label>
+            <input
+              id="portal-username"
+              className="input"
+              type="text"
+              placeholder={existingUser ? `Current: ${existingUser}` : "e.g. john.doe or phone number"}
+              value={username}
+              onChange={e => setUsername(e.target.value)}
+              required
+              style={{ fontSize: "0.95rem" }}
+            />
+            <div style={{ fontSize: "0.72rem", color: "var(--text-muted)", marginTop: "0.25rem" }}>Tip: use member's phone number as username for easy recall</div>
+          </div>
+
+          <div>
+            <label style={{ display: "block", fontSize: "0.8rem", fontWeight: 600, color: "var(--text-muted)", marginBottom: "0.3rem" }}>Password</label>
+            <div style={{ position: "relative" }}>
+              <input
+                id="portal-password"
+                className="input"
+                type={showPw ? "text" : "password"}
+                placeholder="Min 6 characters"
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                required
+                style={{ fontSize: "0.95rem", paddingRight: "3rem" }}
+              />
+              <button type="button" onClick={() => setShowPw(p => !p)}
+                style={{ position: "absolute", right: "0.75rem", top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", fontSize: "1rem", color: "var(--text-muted)" }}>
+                {showPw ? "🙈" : "👁️"}
+              </button>
+            </div>
+          </div>
+
+          <div>
+            <label style={{ display: "block", fontSize: "0.8rem", fontWeight: 600, color: "var(--text-muted)", marginBottom: "0.3rem" }}>Confirm Password</label>
+            <input
+              id="portal-confirm-pw"
+              className="input"
+              type={showPw ? "text" : "password"}
+              placeholder="Re-enter password"
+              value={confirmPw}
+              onChange={e => setConfirmPw(e.target.value)}
+              required
+              style={{ fontSize: "0.95rem", borderColor: confirmPw && password !== confirmPw ? "var(--danger)" : undefined }}
+            />
+            {confirmPw && password !== confirmPw && <div style={{ fontSize: "0.72rem", color: "var(--danger)", marginTop: "0.25rem" }}>Passwords do not match</div>}
+          </div>
+
+          {msg && (
+            <div style={{ background: msg.ok ? "rgba(16,185,129,0.1)" : "rgba(244,63,94,0.1)", border: `1px solid ${msg.ok ? "rgba(16,185,129,0.3)" : "rgba(244,63,94,0.3)"}`, borderRadius: "0.5rem", padding: "0.6rem 0.85rem", fontSize: "0.875rem", color: msg.ok ? "#34d399" : "#fb7185" }}>
+              {msg.text}
+            </div>
+          )}
+
+          <button id="save-portal-credentials-btn" type="submit" className="btn btn-primary" disabled={saving} style={{ fontSize: "0.95rem", padding: "0.65rem 1.25rem", minHeight: 42, alignSelf: "flex-start" }}>
+            {saving ? <><span className="spinner" /> Saving…</> : existingUser ? "🔄 Update Credentials" : "🔑 Create Login"}
+          </button>
+        </form>
+      </div>
+
+      {/* Instructions */}
+      <div className="card" style={{ fontSize: "0.85rem", color: "var(--text-muted)", lineHeight: 1.7 }}>
+        <div style={{ fontWeight: 700, color: "var(--text)", marginBottom: "0.5rem" }}>📱 Share with Client</div>
+        <div>1. Give client the login URL: <strong style={{ color: "var(--accent2)" }}>/client/login</strong></div>
+        <div>2. Share their username &amp; password directly</div>
+        <div>3. Client logs in → sees workout plan, diet plan &amp; food diary</div>
+        <div style={{ marginTop: "0.5rem", color: "var(--warn)" }}>⚠️ Never share the direct token link publicly</div>
+      </div>
     </div>
   );
 }
