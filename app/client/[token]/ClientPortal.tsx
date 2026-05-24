@@ -207,7 +207,7 @@ function FoodDiary({ memberId }: { memberId: string }) {
             <span style={{ fontWeight: 600, fontSize: "0.8rem", color: "var(--accent)" }}>Entry {i + 1}</span>
             <button onClick={() => removeEntry(i)} style={{ background: "none", border: "none", color: "var(--text-muted)", cursor: "pointer", fontSize: "1rem" }}>✕</button>
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "80px 1fr 80px 80px", gap: "0.4rem" }}>
+          <div className="diary-entry-grid">
             <input className="input" style={{ fontSize: "0.85rem", minHeight: 36 }} placeholder="Time" value={en.time} onChange={e => setEntry(i, { time: e.target.value })} />
             <input className="input" style={{ fontSize: "0.85rem", minHeight: 36 }} placeholder="Food / meal" value={en.food} onChange={e => setEntry(i, { food: e.target.value })} />
             <input className="input" style={{ fontSize: "0.85rem", minHeight: 36 }} placeholder="Qty" value={en.qty} onChange={e => setEntry(i, { qty: e.target.value })} />

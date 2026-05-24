@@ -94,7 +94,7 @@ export default function MemberDetail({ member, payments, workouts, diets, messag
       </div>
 
       {/* Tabs */}
-      <div style={{ display: "flex", gap: "0.25rem", borderBottom: "1px solid var(--border)", overflowX: "auto" }}>
+      <div className="tabs-scroll">
         {TABS.map(t => (
           <button key={t.id} onClick={() => setTab(t.id as any)} className={`tab ${tab === t.id ? "tab-active" : "tab-idle"}`} id={`detail-tab-${t.id}`} style={{ fontSize: "1rem", padding: "0.6rem 1rem" }}>
             <Icon name={t.icon as any} size={18} /> {t.label}
@@ -167,13 +167,15 @@ function InfoTab({ m }: any) {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-      <div className="glass" style={{ padding: "1.5rem", display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(180px,1fr))", gap: "1.25rem" }}>
+      <div className="glass" style={{ padding: "1.5rem" }}>
+        <div className="member-info-grid">
         {rows.map(([k, v]) => (
           <div key={k as string} style={{ borderBottom: "1px solid var(--border)", paddingBottom: "1rem" }}>
             <div style={{ fontSize: "0.95rem", color: "var(--text-muted)", fontWeight: 500, marginBottom: "0.4rem" }}>{k}</div>
             <div style={{ fontSize: "1.15rem", color: "var(--text)", fontWeight: 600 }}>{v || "—"}</div>
           </div>
         ))}
+        </div>
       </div>
 
       {/* Upgrade to PT — only shown for non-PT members */}
@@ -373,7 +375,7 @@ async function record() {
           </select>
           <input id="pay-notes" className="input" placeholder="Notes" value={notes} onChange={e => setNotes(e.target.value)} style={{ fontSize: "0.9rem" }} />
         </div>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: "0.7rem", marginTop: "0.7rem" }}>
+        <div className="charges-grid">
           <input id="pay-trainer" className="input" type="number" placeholder="Trainer" value={extraCharges.trainer || ""} onChange={e => setExtraCharges(x => ({ ...x, trainer: Number(e.target.value) || 0 }))} style={{ fontSize: "0.9rem" }} />
           <input id="pay-diet" className="input" type="number" placeholder="Diet" value={extraCharges.diet || ""} onChange={e => setExtraCharges(x => ({ ...x, diet: Number(e.target.value) || 0 }))} style={{ fontSize: "0.9rem" }} />
           <input id="pay-admission" className="input" type="number" placeholder="Admission" value={extraCharges.admission || ""} onChange={e => setExtraCharges(x => ({ ...x, admission: Number(e.target.value) || 0 }))} style={{ fontSize: "0.9rem" }} />
@@ -450,7 +452,7 @@ function WorkoutsTab({ m, workouts }: any) {
         <h3 style={{ fontWeight: 700, marginBottom: "1rem", fontSize: "1rem" }}>🏋️ Add Workout Day</h3>
         <input id="workout-label" className="input" style={{ marginBottom: "0.75rem" }} placeholder="Day label (e.g. Mon - Push)" value={label} onChange={e => setLabel(e.target.value)} />
         {rows.map((r, i) => (
-          <div key={i} style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: "0.5rem", marginBottom: "0.5rem" }}>
+          <div key={i} className="workout-add-grid">
             <input className="input" placeholder="Exercise" value={r.name} onChange={e => { const c = [...rows]; c[i].name = e.target.value; setRows(c); }} />
             <input className="input" placeholder="Sets" value={r.sets} onChange={e => { const c = [...rows]; c[i].sets = e.target.value; setRows(c); }} />
             <input className="input" placeholder="Reps" value={r.reps} onChange={e => { const c = [...rows]; c[i].reps = e.target.value; setRows(c); }} />

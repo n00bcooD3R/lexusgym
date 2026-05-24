@@ -93,7 +93,7 @@ function WorkoutEditor({ memberId }: { memberId: string }) {
                 <span style={{ fontWeight: 700, fontSize: "0.85rem", color: "var(--accent)" }}>Exercise {ei + 1}</span>
                 {day.exercises.length > 1 && <button onClick={() => removeExercise(activeDay, ei)} style={{ background: "rgba(244,63,94,0.15)", color: "#fb7185", border: "none", borderRadius: "0.4rem", padding: "0.2rem 0.5rem", cursor: "pointer", fontSize: "0.75rem" }}>✕</button>}
               </div>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 80px 80px 90px 80px", gap: "0.5rem", flexWrap: "wrap" }}>
+              <div className="exercise-grid">
                 <input className="input" style={{ fontSize: "0.9rem", minHeight: 38 }} placeholder="Exercise name" value={ex.name} onChange={e => updateExercise(activeDay, ei, { name: e.target.value })} />
                 <input className="input" style={{ fontSize: "0.9rem", minHeight: 38 }} placeholder="Sets" value={ex.sets} onChange={e => updateExercise(activeDay, ei, { sets: e.target.value })} />
                 <input className="input" style={{ fontSize: "0.9rem", minHeight: 38 }} placeholder="Reps" value={ex.reps} onChange={e => updateExercise(activeDay, ei, { reps: e.target.value })} />
@@ -175,12 +175,12 @@ function DietEditor({ memberId }: { memberId: string }) {
               onChange={e => updateMeal(mi, { meal_label: e.target.value })} placeholder="Meal name" />
             <button onClick={() => deleteMeal(meal, mi)} style={{ background: "rgba(244,63,94,0.15)", color: "#fb7185", border: "none", borderRadius: "0.4rem", padding: "0.3rem 0.6rem", cursor: "pointer", fontSize: "0.8rem", flexShrink: 0 }}>✕</button>
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 90px 80px 70px 70px 70px", gap: "0.4rem", fontSize: "0.7rem", color: "var(--text-muted)", padding: "0 0.1rem" }}>
+          <div className="diet-header-grid">
             <span>Food</span><span>Qty</span><span>Calories</span><span>Protein</span><span>Carbs</span><span>Fat</span>
           </div>
           {meal.items.map((it, ii) => (
             <div key={ii} style={{ display: "flex", gap: "0.4rem", alignItems: "center" }}>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 90px 80px 70px 70px 70px", gap: "0.4rem", flex: 1 }}>
+              <div className="diet-items-grid">
                 <input className="input" style={{ fontSize: "0.85rem", minHeight: 34 }} placeholder="Food" value={it.food} onChange={e => updateItem(mi, ii, { food: e.target.value })} />
                 <input className="input" style={{ fontSize: "0.85rem", minHeight: 34 }} placeholder="e.g. 100g" value={it.qty} onChange={e => updateItem(mi, ii, { qty: e.target.value })} />
                 <input className="input" style={{ fontSize: "0.85rem", minHeight: 34 }} placeholder="kcal" value={it.calories} onChange={e => updateItem(mi, ii, { calories: e.target.value })} />
