@@ -21,7 +21,8 @@ export async function middleware(req: NextRequest) {
   const isApiAuth = pathname.startsWith("/api/auth");
   const isCron = pathname.startsWith("/api/cron");
   const isUpdatePassword = pathname.startsWith("/update-password");
-  if (!user && !isLogin && !isApiAuth && !isCron && !isUpdatePassword) {
+  const isClientPortal = pathname.startsWith("/client/");
+  if (!user && !isLogin && !isApiAuth && !isCron && !isUpdatePassword && !isClientPortal) {
     return NextResponse.redirect(new URL("/login", req.url));
   }
   return res;
