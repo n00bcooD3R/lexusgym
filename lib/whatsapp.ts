@@ -132,6 +132,7 @@ async function sendViaEvolution(to: string, body: string, documentBuffer?: Array
     // ── Send PDF / document ──────────────────────────────────────────────────
     if (documentBuffer) {
       const base64 = Buffer.from(documentBuffer).toString("base64");
+      const mediaData = `data:application/pdf;base64,${base64}`;
       const res = await fetch(`${url}/message/sendMedia/${instance}`, {
         method: "POST",
         headers,
@@ -140,7 +141,7 @@ async function sendViaEvolution(to: string, body: string, documentBuffer?: Array
           mediatype: "document",
           mimetype: "application/pdf",
           caption: body,
-          media: base64,
+          media: mediaData,
           fileName: "Invoice.pdf"
         })
       });
