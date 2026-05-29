@@ -24,7 +24,25 @@ export default function MemberDetail({ member, payments, workouts, diets, messag
 
   async function sendReminder() {
     const daysLeft = getDaysLeft();
-    const body = `Hello ${member.name},\n\nYour Lexus Fitness Group membership expires in ${daysLeft} days. 💪\n\n— Team Lexus Fitness Group`;
+    
+    // Fetch dynamic templates from the database
+    let template = "Hello {name},\n\nYour {gym_name} membership expires in {days} days. 💪\n\n— Team {gym_name}";
+    let gymName = "Lexus Fitness Group";
+    
+    try {
+      const resSettings = await fetch("/api/settings/list");
+      const settings = await resSettings.json();
+      if (settings.msg_reminder) template = settings.msg_reminder;
+      if (settings.gym_name) gymName = settings.gym_name;
+    } catch (err) {
+      console.error("Failed to load settings:", err);
+    }
+
+    const body = template
+      .replace(/{name}/g, member.name)
+      .replace(/{gym_name}/g, gymName)
+      .replace(/{days}/g, String(daysLeft || 30));
+
     const res = await fetch("/api/wa/send", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ memberId: member.id, body }) });
     const j = await res.json();
     if (j.simulated) {
