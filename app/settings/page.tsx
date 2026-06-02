@@ -159,23 +159,16 @@ export default function SettingsPage() {
       {tab === "qr" && (
         <div className="glass" style={{ padding: "1.5rem", textAlign: "center" }}>
           <h3 style={{ fontSize: "1.1rem", fontWeight: 700, marginBottom: "1rem" }}>WhatsApp QR Code</h3>
-          {settings.wa_bridge_url ? (
-            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "1rem" }}>
-              <iframe
-                src={`${settings.wa_bridge_url}/qr`}
-                style={{ width: "100%", maxWidth: "400px", height: "450px", border: "none", borderRadius: "0.75rem", background: "#fff" }}
-                title="WhatsApp QR"
-              />
-              <p style={{ fontSize: "0.85rem", color: "var(--text-muted)" }}>
-                Scan this QR with your WhatsApp to connect
-              </p>
-            </div>
-          ) : (
-            <div style={{ padding: "2rem", color: "var(--text-muted)" }}>
-              <Icon name="alertCircle" size={48} color="var(--warn)" />
-              <p style={{ marginTop: "1rem" }}>Please set the WhatsApp Bridge URL first</p>
-            </div>
-          )}
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "1rem" }}>
+            <img
+              src="/whatsapp-qr.png"
+              style={{ width: "100%", maxWidth: "320px", height: "auto", border: "none", borderRadius: "0.75rem", background: "#fff", padding: "0.5rem", boxShadow: "0 4px 12px rgba(0,0,0,0.1)" }}
+              alt="WhatsApp Connection QR"
+            />
+            <p style={{ fontSize: "0.85rem", color: "var(--text-muted)", maxWidth: "320px" }}>
+              Scan this QR with your phone (Linked Devices &rarr; Link a Device) to connect to the WhatsApp Bridge.
+            </p>
+          </div>
         </div>
       )}
 
