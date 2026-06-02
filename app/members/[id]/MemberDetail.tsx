@@ -310,6 +310,50 @@ function PaymentsTab({ m, payments }: any) {
 
   const filteredPayments = filterMonth ? payments.filter((p: any) => p.paid_on?.startsWith(filterMonth)) : payments;
 
+  async function clearAllPayments() {
+    const confirmDelete = confirm("⚠️ WARNING: This will permanently delete ALL recorded payments for this member and reset their payment status to overdue. Are you sure you want to proceed?");
+    if (!confirmDelete) return;
+    
+    setBusy(true);
+    try {
+      const sb = createClient();
+      
+      // 1. Delete all payments for this member
+      const { error: deleteError } = await sb.from("payments").delete().eq("member_id", m.id);
+      if (deleteError) {
+        alert("Error deleting payments: " + deleteError.message);
+        setBusy(false);
+        return;
+      }
+      
+      // 2. Determine yesterday's date string
+      const yesterday = new Date();
+      yesterday.setDate(yesterday.getDate() - 1);
+      const year = yesterday.getFullYear();
+      const month = String(yesterday.getMonth() + 1).padStart(2, '0');
+      const day = String(yesterday.getDate()).padStart(2, '0');
+      const yesterdayStr = `${year}-${month}-${day}`;
+      
+      // We set next_due_date to yesterday's date so they are instantly overdue
+      const { error: updateError } = await sb.from("members").update({
+        last_payment_date: null,
+        next_due_date: yesterdayStr
+      }).eq("id", m.id);
+      
+      if (updateError) {
+        alert("Error resetting member status: " + updateError.message);
+        setBusy(false);
+        return;
+      }
+      
+      alert("All payments removed successfully. Member status is now Overdue.");
+      router.refresh();
+    } catch (err: any) {
+      alert("Error: " + (err.message || "Unknown error"));
+    }
+    setBusy(false);
+  }
+
   async function deletePayment(id: string) {
     if (!confirm("Delete this payment?")) return;
     await createClient().from("payments").delete().eq("id", id);
@@ -402,11 +446,14 @@ async function record() {
           <input id="pay-send-wa" type="checkbox" checked={sendWA} onChange={e => setSendWA(e.target.checked)} />
           Send WhatsApp
         </label>
-        <div style={{ display: "flex", gap: "0.5rem", marginTop: "0.7rem", flexWrap: "wrap" }}>
+        <div style={{ display: "flex", gap: "0.5rem", marginTop: "0.7rem", flexWrap: "wrap", width: "100%" }}>
           <button id="pay-record-btn" onClick={record} className="btn btn-primary" disabled={busy} style={{ fontSize: "0.9rem", padding: "0.6rem 1rem" }}>
             {busy ? <><span className="spinner" /> Saving…</> : <><Icon name="check" size={16} /> Record</>}
           </button>
           <button id="pay-preview-btn" onClick={previewInvoice} className="btn btn-ghost" style={{ fontSize: "0.9rem", padding: "0.6rem 1rem" }}><Icon name="eye" size={16} /> Preview</button>
+          <button id="pay-clear-btn" onClick={clearAllPayments} className="btn btn-danger" disabled={busy} style={{ fontSize: "0.9rem", padding: "0.6rem 1rem", marginLeft: "auto" }}>
+            {busy ? <><span className="spinner" /> Resetting…</> : <><Icon name="trash" size={16} /> No Payment</>}
+          </button>
         </div>
       </div>
 
