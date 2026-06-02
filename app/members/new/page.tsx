@@ -6,6 +6,14 @@ import { Icon } from "@/components/Icons";
 
 import { generateInvoice } from "@/lib/pdf-bill";
 
+const getTodayString = () => {
+  const d = new Date();
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
 export default function NewMember() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
@@ -18,7 +26,7 @@ export default function NewMember() {
     admission_no: "", name: "", phone: "+91", address: "",
     dob: "", age: "", gender: "M", weight: "", height: "",
     fee_amount: "1000", fee_cycle_days: "30", admission_fee: "",
-    is_pt_client: false, notes: ""
+    is_pt_client: false, notes: "", join_date: getTodayString()
   });
 
   useEffect(() => {
@@ -86,8 +94,15 @@ export default function NewMember() {
       photo_url = sb.storage.from("member-photos").getPublicUrl(path).data.publicUrl;
     }
 
-    const today = new Date();
-    const due = new Date(today); due.setDate(due.getDate() + Number(form.fee_cycle_days || 30));
+    const joinDateStr = form.join_date || getTodayString();
+    const parts = joinDateStr.split("-");
+    const due = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
+    due.setDate(due.getDate() + Number(form.fee_cycle_days || 30));
+    const dueYear = due.getFullYear();
+    const dueMonth = String(due.getMonth() + 1).padStart(2, '0');
+    const dueDay = String(due.getDate()).padStart(2, '0');
+    const dueDateStr = `${dueYear}-${dueMonth}-${dueDay}`;
+
     const payload: any = {
       admission_no: form.admission_no, name: form.name, phone: form.phone,
       address: form.address, dob: form.dob || null,
@@ -95,11 +110,12 @@ export default function NewMember() {
       weight: form.weight ? Number(form.weight) : null, height: form.height ? Number(form.height) : null,
       fee_amount: Number(form.fee_amount || 0), fee_cycle_days: Number(form.fee_cycle_days || 30),
       is_pt_client: form.is_pt_client, notes: form.notes, photo_url,
-      last_payment_date: today.toISOString().slice(0, 10),
-      next_due_date: due.toISOString().slice(0, 10)
+      join_date: joinDateStr,
+      last_payment_date: joinDateStr,
+      next_due_date: dueDateStr
     };
 
-    const { data, error } = await sb.from("members").insert(payload).select("id, name, phone, admission_no, next_due_date, fee_amount").single();
+    const { data, error } = await sb.from("members").insert(payload).select("id, name, phone, admission_no, next_due_date, fee_amount, fee_cycle_days, address").single();
     if (error) { setErr(error.message); setLoading(false); return; }
 
     // Create initial payment record
@@ -114,12 +130,12 @@ export default function NewMember() {
         amount: totalPayment,
         method: "cash",
         notes: "Initial Membership + Admission",
-        paid_on: today.toISOString().slice(0, 10)
+        paid_on: joinDateStr
       }).select().single();
       paymentData = payRec;
     }
 
-// Send WhatsApp in background (non-blocking)
+    // Send WhatsApp in background
     if (sendWelcome && form.phone) {
       const gymName = settings.gym_name || "Lexus Fitness Group";
       let msg = (settings.msg_welcome || "Hello {name}, 👋\n\nWelcome to {gym_name}! 💪🔥\nWe are excited to have you as a part of the {gym_name} family.\n\nYour membership has been successfully activated, and your fitness journey officially starts today.\n\n— Team {gym_name}")
@@ -129,27 +145,34 @@ export default function NewMember() {
         msg += `\n\nWe received ₹${totalPayment}. Check the attached invoice!`;
       }
 
-      // Fire and forget - don't wait for WhatsApp
-      if (paymentData) {
-        const doc = generateInvoice(data, { ...paymentData, paid_on: today.toISOString().slice(0, 10) }, { admissionFee: admFee });
+      try {
+        if (paymentData) {
+          const doc = generateInvoice(data, { ...paymentData, paid_on: joinDateStr }, { admissionFee: admFee });
+          const pdfBlob = doc.output("blob");
+          const fd = new FormData();
+          fd.append("memberId", data.id); 
+          fd.append("body", msg);
+          fd.append("document", pdfBlob, `Invoice_${data.admission_no}.pdf`);
+          await fetch("/api/wa/send", { method: "POST", body: fd });
+        } else {
+          await fetch("/api/wa/send", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ memberId: data.id, body: msg }) });
+        }
+      } catch (e: any) {
+        console.error("WhatsApp error:", e.message);
+      }
+    } else if (totalPayment > 0 && !sendWelcome && paymentData) {
+      try {
+        // Send just the invoice
+        const doc = generateInvoice(data, { ...paymentData, paid_on: joinDateStr }, { admissionFee: admFee });
         const pdfBlob = doc.output("blob");
         const fd = new FormData();
         fd.append("memberId", data.id); 
-        fd.append("body", msg);
+        fd.append("body", `Payment of ₹${totalPayment} received. Invoice attached.`);
         fd.append("document", pdfBlob, `Invoice_${data.admission_no}.pdf`);
-        fetch("/api/wa/send", { method: "POST", body: fd }).then(r => r.json()).then(j => console.log("WhatsApp sent:", j)).catch(e => console.log("WhatsApp error:", e.message));
-      } else {
-        fetch("/api/wa/send", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ memberId: data.id, body: msg }) }).then(r => r.json()).then(j => console.log("WhatsApp sent:", j)).catch(e => console.log("WhatsApp error:", e.message));
+        await fetch("/api/wa/send", { method: "POST", body: fd });
+      } catch (e: any) {
+        console.error("Invoice error:", e.message);
       }
-    } else if (totalPayment > 0 && !sendWelcome && paymentData) {
-      // Send just the invoice
-      const doc = generateInvoice(data, { ...paymentData, paid_on: today.toISOString().slice(0, 10) }, { admissionFee: admFee });
-      const pdfBlob = doc.output("blob");
-      const fd = new FormData();
-      fd.append("memberId", data.id); 
-      fd.append("body", `Payment of ₹${totalPayment} received. Invoice attached.`);
-      fd.append("document", pdfBlob, `Invoice_${data.admission_no}.pdf`);
-      fetch("/api/wa/send", { method: "POST", body: fd }).then(r => r.json()).then(j => console.log("Invoice sent:", j)).catch(e => console.log("Invoice error:", e.message));
     }
     setLoading(false);
     // Redirect to the new member's detail page
@@ -172,6 +195,9 @@ export default function NewMember() {
           </Field>
           <Field label="Phone (with country code) *">
             <input required id="new-phone" className="input" placeholder="+919876543210" value={form.phone} onChange={e => upd("phone", e.target.value)} />
+          </Field>
+          <Field label="Joining Date *">
+            <input required id="new-join-date" type="date" className="input" value={form.join_date} onChange={e => upd("join_date", e.target.value)} />
           </Field>
           <Field label="Date of Birth">
             <input id="new-dob" type="date" className="input" value={form.dob} onChange={e => upd("dob", e.target.value)} />

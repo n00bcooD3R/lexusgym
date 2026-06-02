@@ -49,7 +49,8 @@ export default function EditForm({ member }: { member: any }) {
       dob: f.dob || null, gender: f.gender, weight: f.weight ? Number(f.weight) : null,
       height: f.height ? Number(f.height) : null, fee_amount: Number(f.fee_amount),
       fee_cycle_days: Number(f.fee_cycle_days), is_pt_client: f.is_pt_client,
-      active: f.active, notes: f.notes, photo_url, next_due_date: f.next_due_date
+      active: f.active, notes: f.notes, photo_url, next_due_date: f.next_due_date,
+      join_date: f.join_date || null
     }).eq("id", member.id);
     setBusy(false);
     if (error) { setErr(error.message); return; }
@@ -93,6 +94,7 @@ export default function EditForm({ member }: { member: any }) {
         <div className="grid grid-cols-2 gap-3">
           <L label="Name"><input className="input" value={f.name || ""} onChange={e => set("name", e.target.value)} /></L>
           <L label="Phone"><input className="input" value={f.phone || ""} onChange={e => set("phone", e.target.value)} /></L>
+          <L label="Join Date"><input type="date" className="input" value={f.join_date || ""} onChange={e => set("join_date", e.target.value)} /></L>
           <L label="Date of Birth"><input type="date" className="input" value={f.dob || ""} onChange={e => set("dob", e.target.value)} /></L>
           <L label="Age"><input type="number" className="input" value={f.age || ""} onChange={e => setDirect("age", e.target.value)} /></L>
           <L label="Gender">

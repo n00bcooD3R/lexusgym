@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  gym-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: gym-app
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      # Update these to match the local Supabase API key values once deployed
+      - NEXT_PUBLIC_SUPABASE_URL=http://140.245.226.179:8000
+      - NEXT_PUBLIC_SUPABASE_ANON_KEY=your_local_anon_key_here
+      - SUPABASE_SERVICE_ROLE_KEY=your_local_service_role_key_here
+      - WA_PROVIDER=evolution
+      - EVOLUTION_API_URL=http://140.245.226.179:8080
+      - EVOLUTION_API_KEY=lexusgym2026secret
+      - EVOLUTION_INSTANCE=gymapp
+      - SECRET=lexus_gym_2026
+      - CRON_SECRET=gym_cron_secret_2024
