@@ -4,25 +4,18 @@ import Link from "next/link";
 import { feeStatus, formatDate } from "@/lib/fees";
 import { Icon } from "@/components/Icons";
 
-type Tab = "name" | "admission" | "phone" | "newest";
+type Tab = "name" | "admission" | "phone";
 
 export default function MembersClient({ members }: { members: any[] }) {
   const [tab, setTab] = useState<Tab>("name");
   const [q, setQ] = useState("");
+  const [sortNewest, setSortNewest] = useState(false);
 
   const filtered = useMemo(() => {
     let list = [...members];
-    if (tab === "newest") {
+    if (sortNewest) {
       // Sort by created_at descending (last added to first)
       list.sort((a, b) => new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime());
-      
-      const needle = q.trim().toLowerCase();
-      if (!needle) return list;
-      return list.filter((m) => 
-        m.name.toLowerCase().includes(needle) || 
-        m.admission_no.toLowerCase().includes(needle) || 
-        (m.phone || "").toLowerCase().includes(needle)
-      );
     }
 
     const needle = q.trim().toLowerCase();
@@ -33,12 +26,11 @@ export default function MembersClient({ members }: { members: any[] }) {
       if (tab === "phone") return (m.phone || "").toLowerCase().includes(needle);
       return true;
     });
-  }, [members, tab, q]);
+  }, [members, tab, q, sortNewest]);
 
   const placeholder = tab === "name" ? "Search by name…"
     : tab === "admission" ? "Search by admission no…"
-    : tab === "phone" ? "Search by phone…"
-    : "Search members…";
+    : "Search by phone…";
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
@@ -47,21 +39,25 @@ export default function MembersClient({ members }: { members: any[] }) {
         <h1 style={{ fontSize: "1.5rem", fontWeight: 800, background: "linear-gradient(135deg,#a78bfa,#67e8f9)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", margin: 0 }}>
           Members ({members.length})
         </h1>
-        <Link href="/members/new" className="btn btn-primary" id="new-member-btn">
-          <Icon name="add" size={18} /> New Member
-        </Link>
+        <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
+          <button 
+            onClick={() => setSortNewest(prev => !prev)} 
+            className={`btn ${sortNewest ? "btn-cyan" : "btn-ghost"}`}
+            style={{ fontSize: "0.95rem", padding: "0.55rem 1rem", minHeight: "38px" }}
+          >
+            <Icon name="calendar" size={16} /> Newest First
+          </button>
+          <Link href="/members/new" className="btn btn-primary" id="new-member-btn" style={{ fontSize: "0.95rem", padding: "0.55rem 1rem", minHeight: "38px" }}>
+            <Icon name="add" size={16} /> New Member
+          </Link>
+        </div>
       </div>
 
       {/* Search Tabs */}
-      <div style={{ display: "flex", gap: "0.25rem", borderBottom: "1px solid var(--border)", overflowX: "auto" }}>
-        {(["name", "admission", "phone", "newest"] as Tab[]).map(t => (
+      <div style={{ display: "flex", gap: "0.25rem", borderBottom: "1px solid var(--border)" }}>
+        {(["name", "admission", "phone"] as Tab[]).map(t => (
           <button key={t} onClick={() => setTab(t)} className={`tab ${tab === t ? "tab-active" : "tab-idle"}`} id={`tab-${t}`}>
-            <Icon name={t === "newest" ? "calendar" : "user"} size={16} /> {
-              t === "name" ? "Name" 
-              : t === "admission" ? "Admission" 
-              : t === "phone" ? "Phone" 
-              : "New Members"
-            }
+            <Icon name="user" size={16} /> {t === "name" ? "Name" : t === "admission" ? "Admission" : "Phone"}
           </button>
         ))}
       </div>
