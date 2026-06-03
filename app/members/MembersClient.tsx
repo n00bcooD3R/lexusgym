@@ -4,16 +4,30 @@ import Link from "next/link";
 import { feeStatus, formatDate } from "@/lib/fees";
 import { Icon } from "@/components/Icons";
 
-type Tab = "name" | "admission" | "phone";
+type Tab = "name" | "admission" | "phone" | "newest";
 
 export default function MembersClient({ members }: { members: any[] }) {
   const [tab, setTab] = useState<Tab>("name");
   const [q, setQ] = useState("");
 
   const filtered = useMemo(() => {
+    let list = [...members];
+    if (tab === "newest") {
+      // Sort by created_at descending (last added to first)
+      list.sort((a, b) => new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime());
+      
+      const needle = q.trim().toLowerCase();
+      if (!needle) return list;
+      return list.filter((m) => 
+        m.name.toLowerCase().includes(needle) || 
+        m.admission_no.toLowerCase().includes(needle) || 
+        (m.phone || "").toLowerCase().includes(needle)
+      );
+    }
+
     const needle = q.trim().toLowerCase();
-    if (!needle) return members;
-    return members.filter((m) => {
+    if (!needle) return list;
+    return list.filter((m) => {
       if (tab === "name") return m.name.toLowerCase().includes(needle);
       if (tab === "admission") return m.admission_no.toLowerCase().includes(needle);
       if (tab === "phone") return (m.phone || "").toLowerCase().includes(needle);
@@ -23,7 +37,8 @@ export default function MembersClient({ members }: { members: any[] }) {
 
   const placeholder = tab === "name" ? "Search by name…"
     : tab === "admission" ? "Search by admission no…"
-    : "Search by phone…";
+    : tab === "phone" ? "Search by phone…"
+    : "Search members…";
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
@@ -38,10 +53,15 @@ export default function MembersClient({ members }: { members: any[] }) {
       </div>
 
       {/* Search Tabs */}
-      <div style={{ display: "flex", gap: "0.25rem", borderBottom: "1px solid var(--border)" }}>
-        {(["name", "admission", "phone"] as Tab[]).map(t => (
+      <div style={{ display: "flex", gap: "0.25rem", borderBottom: "1px solid var(--border)", overflowX: "auto" }}>
+        {(["name", "admission", "phone", "newest"] as Tab[]).map(t => (
           <button key={t} onClick={() => setTab(t)} className={`tab ${tab === t ? "tab-active" : "tab-idle"}`} id={`tab-${t}`}>
-            <Icon name="user" size={16} /> {t === "name" ? "Name" : t === "admission" ? "Admission" : "Phone"}
+            <Icon name={t === "newest" ? "calendar" : "user"} size={16} /> {
+              t === "name" ? "Name" 
+              : t === "admission" ? "Admission" 
+              : t === "phone" ? "Phone" 
+              : "New Members"
+            }
           </button>
         ))}
       </div>

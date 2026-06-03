@@ -9,7 +9,7 @@ export default async function MembersPage() {
 
   const { data: members } = await sb
     .from("members")
-    .select("id, admission_no, name, phone, photo_url, next_due_date, fee_amount, is_pt_client, active")
+    .select("id, admission_no, name, phone, photo_url, next_due_date, fee_amount, is_pt_client, active, created_at")
     .order("name", { ascending: true });
 
   return <MembersClient members={members ?? []} />;
