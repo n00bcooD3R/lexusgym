@@ -45,7 +45,7 @@ export default function MembersClient({ members }: { members: any[] }) {
             className={`btn ${sortNewest ? "btn-cyan" : "btn-ghost"}`}
             style={{ fontSize: "0.95rem", padding: "0.55rem 1rem", minHeight: "38px" }}
           >
-            <Icon name="calendar" size={16} /> Newest First
+            <Icon name="calendar" size={16} /> New Joines
           </button>
           <Link href="/members/new" className="btn btn-primary" id="new-member-btn" style={{ fontSize: "0.95rem", padding: "0.55rem 1rem", minHeight: "38px" }}>
             <Icon name="add" size={16} /> New Member
