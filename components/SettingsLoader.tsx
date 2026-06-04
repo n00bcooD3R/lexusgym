@@ -1,6 +1,6 @@
 "use client";
 import { useEffect } from "react";
-import { setGymDetails, setLogoBase64 } from "@/lib/pdf-bill";
+import { setGymDetails, setLogoBase64, setSealBase64 } from "@/lib/pdf-bill";
 
 export default function SettingsLoader() {
   useEffect(() => {
@@ -91,8 +91,23 @@ export default function SettingsLoader() {
       }
     }
 
+    async function loadSeal() {
+      try {
+        const sealRes = await fetch("/paid-seal.png");
+        const sealBlob = await sealRes.blob();
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setSealBase64(reader.result as string);
+        };
+        reader.readAsDataURL(sealBlob);
+      } catch (e) {
+        console.log("Seal load error", e);
+      }
+    }
+
     loadSettings();
     loadLogo();
+    loadSeal();
   }, []);
 
   return null;

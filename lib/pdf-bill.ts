@@ -21,9 +21,14 @@ export function setGymDetails(details: Record<string, string>) {
 }
 
 let logoBase64 = "";
+let sealBase64 = "";
 
 export function setLogoBase64(base64: string) {
   logoBase64 = base64;
+}
+
+export function setSealBase64(base64: string) {
+  sealBase64 = base64;
 }
 
 export function getGymDetails() {
@@ -230,6 +235,18 @@ export function generateInvoice(member: any, payment: any, extra?: { trainerChar
   doc.setFontSize(8.5);
   doc.setTextColor(100);
   doc.text("Authorized Signature", 50, sigY + 4.5, { align: "center" });
+
+  // Draw seal if available
+  if (sealBase64) {
+    try {
+      const sealSize = 24; // 24mm diameter round seal
+      const sealX = 50 - (sealSize / 2);
+      const sealY = sigY - 17; // centers and overlaps signature line
+      doc.addImage(sealBase64, "PNG", sealX, sealY, sealSize, sealSize);
+    } catch (err) {
+      console.error("Error drawing seal:", err);
+    }
+  }
   
   doc.line(135, sigY, 185, sigY);
   doc.text("Member Signature", 160, sigY + 4.5, { align: "center" });
