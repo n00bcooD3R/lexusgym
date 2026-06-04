@@ -21,11 +21,17 @@ export async function GET() {
   try {
     const sb = createAdminClient();
     
+    // Fetch existing settings keys to prevent overwriting user edits
+    const { data: existing } = await sb.from("settings").select("key");
+    const existingKeys = new Set(existing?.map((s: any) => s.key) || []);
+    
     for (const setting of DEFAULT_SETTINGS) {
-      await sb.from("settings").upsert(setting, { onConflict: "key" });
+      if (!existingKeys.has(setting.key)) {
+        await sb.from("settings").insert(setting);
+      }
     }
     
-    return NextResponse.json({ ok: true, message: "Settings seeded" });
+    return NextResponse.json({ ok: true, message: "Settings seeded successfully" });
   } catch (e: any) {
     return NextResponse.json({ ok: false, error: e.message }, { status: 500 });
   }
