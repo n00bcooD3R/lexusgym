@@ -1,6 +1,6 @@
 "use client";
 import { useEffect } from "react";
-import { setGymDetails } from "@/lib/pdf-bill";
+import { setGymDetails, setLogoBase64 } from "@/lib/pdf-bill";
 
 export default function SettingsLoader() {
   useEffect(() => {
@@ -16,7 +16,23 @@ export default function SettingsLoader() {
         console.log("Settings load error", e);
       }
     }
+
+    async function loadLogo() {
+      try {
+        const logoRes = await fetch("/logo.png");
+        const logoBlob = await logoRes.blob();
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setLogoBase64(reader.result as string);
+        };
+        reader.readAsDataURL(logoBlob);
+      } catch (e) {
+        console.log("Logo load error", e);
+      }
+    }
+
     loadSettings();
+    loadLogo();
   }, []);
 
   return null;
