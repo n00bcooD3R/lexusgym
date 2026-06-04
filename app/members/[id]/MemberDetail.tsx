@@ -26,7 +26,7 @@ export default function MemberDetail({ member, payments, workouts, diets, messag
     const daysLeft = getDaysLeft();
     
     // Fetch dynamic templates from the database
-    let template = "Hello {name},\n\nYour {gym_name} membership expires in {days} days. 💪\n\n— Team {gym_name}";
+    let template = "Hello {name},\n\nYour {gym_name} membership expires in {days} days. 💪\nPlease renew soon!\n\n— Team {gym_name}";
     let gymName = "Lexus Fitness Group";
     
     try {
@@ -41,7 +41,7 @@ export default function MemberDetail({ member, payments, workouts, diets, messag
     const body = template
       .replace(/{name}/g, member.name)
       .replace(/{gym_name}/g, gymName)
-      .replace(/{days}/g, String(daysLeft || 30));
+      .replace(/{days}/g, String(daysLeft ?? 30));
 
     const res = await fetch("/api/wa/send", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ memberId: member.id, body }) });
     const j = await res.json();
@@ -405,7 +405,24 @@ async function record() {
         const pdfBlob = doc.output("blob");
         const expiry = nextDue.toLocaleDateString("en-IN");
         const paymentMethodStr = method === "upi" ? "UPI/QR" : method === "card" ? "Card" : method === "bank" ? "Bank Transfer" : "Cash";
-        const msg = `Hello ${m.name}, 👋\n\nYour payment of ₹${total} received through ${paymentMethodStr}.\n\nYour Lexus Gym membership has been successfully renewed! 💪🔥\n\nThank you for continuing your fitness journey with us.\n\n— Team Lexus Gym`;
+
+        // Fetch msg_payment template from settings
+        let gymName = "Lexus Fitness Group";
+        let msgTemplate = "Hello {name},\n\nThank you for ₹{amount}! 💪\nMembership active until {expiry}.\n\n— Team {gym_name}";
+        try {
+          const resSettings = await fetch("/api/settings/list");
+          const settingsData = await resSettings.json();
+          if (settingsData.gym_name) gymName = settingsData.gym_name;
+          if (settingsData.msg_payment) msgTemplate = settingsData.msg_payment;
+        } catch { /* use defaults */ }
+
+        const msg = msgTemplate
+          .replace(/{name}/g, m.name)
+          .replace(/{gym_name}/g, gymName)
+          .replace(/{amount}/g, String(total))
+          .replace(/{expiry}/g, expiry)
+          .replace(/{method}/g, paymentMethodStr);
+
         const fd = new FormData();
         fd.append("memberId", m.id); fd.append("body", msg);
         fd.append("document", pdfBlob, `Invoice_${m.admission_no}.pdf`);

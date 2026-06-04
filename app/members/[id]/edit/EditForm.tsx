@@ -4,6 +4,13 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase-client";
 import { Icon } from "@/components/Icons";
 
+const PLANS = [
+  { id: "flex",      label: "Flex Plan",      months: 1,  days: 30,  color: "#06b6d4", glow: "rgba(6,182,212,0.35)" },
+  { id: "power",     label: "Power Plan",     months: 3,  days: 90,  color: "#8b5cf6", glow: "rgba(139,92,246,0.35)" },
+  { id: "transform",label: "Transform Plan", months: 6,  days: 180, color: "#f59e0b", glow: "rgba(245,158,11,0.35)" },
+  { id: "prime",     label: "Prime Plan",     months: 12, days: 365, color: "#10b981", glow: "rgba(16,185,129,0.35)" },
+];
+
 export default function EditForm({ member }: { member: any }) {
   const router = useRouter();
   const [f, setF] = useState({ ...member });
@@ -105,7 +112,57 @@ export default function EditForm({ member }: { member: any }) {
           <L label="Weight (kg)"><input type="number" step="0.1" className="input" value={f.weight || ""} onChange={e => set("weight", e.target.value)} /></L>
           <L label="Height (cm)"><input type="number" step="0.1" className="input" value={f.height || ""} onChange={e => set("height", e.target.value)} /></L>
           <L label="Fee (₹)"><input type="number" className="input" value={f.fee_amount || 0} onChange={e => set("fee_amount", e.target.value)} /></L>
-          <L label="Cycle (days)"><input type="number" className="input" value={f.fee_cycle_days || 30} onChange={e => set("fee_cycle_days", e.target.value)} /></L>
+        </div>
+
+        {/* ── Membership Plan Picker ── */}
+        <div>
+          <div style={{ fontSize: "0.78rem", color: "#64748b", fontWeight: 500, marginBottom: "0.5rem" }}>Membership Plan</div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(2,1fr)", gap: "0.5rem" }}>
+            {PLANS.map(p => {
+              const selected = Number(f.fee_cycle_days) === p.days;
+              return (
+                <button
+                  key={p.id}
+                  type="button"
+                  onClick={() => set("fee_cycle_days", p.days)}
+                  style={{
+                    border: `2px solid ${selected ? p.color : "#e2e8f0"}`,
+                    borderRadius: "0.65rem",
+                    padding: "0.6rem 0.75rem",
+                    background: selected ? `rgba(${p.glow.slice(5,-1)},0.1)` : "var(--surface, #f8fafc)",
+                    boxShadow: selected ? `0 0 12px ${p.glow}` : "none",
+                    cursor: "pointer",
+                    textAlign: "left",
+                    transition: "all 0.18s ease",
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "0.1rem",
+                  }}
+                >
+                  <span style={{ fontSize: "0.65rem", fontWeight: 700, color: p.color, textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                    {p.months === 1 ? "1 Month" : `${p.months} Months`}
+                  </span>
+                  <span style={{ fontSize: "0.875rem", fontWeight: 800, color: selected ? p.color : "inherit" }}>
+                    {p.label}
+                  </span>
+                  <span style={{ fontSize: "0.68rem", color: "#94a3b8" }}>{p.days} days</span>
+                </button>
+              );
+            })}
+          </div>
+          <div style={{ marginTop: "0.45rem", display: "flex", alignItems: "center", gap: "0.5rem" }}>
+            <span style={{ fontSize: "0.72rem", color: "#94a3b8", whiteSpace: "nowrap" }}>Custom days:</span>
+            <input
+              type="number"
+              className="input"
+              style={{ maxWidth: "90px", fontSize: "0.85rem", padding: "0.25rem 0.5rem", minHeight: "auto" }}
+              value={f.fee_cycle_days || 30}
+              onChange={e => set("fee_cycle_days", e.target.value)}
+            />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-3">
           <L label="Next Due Date"><input type="date" className="input" value={f.next_due_date || ""} onChange={e => set("next_due_date", e.target.value)} /></L>
         </div>
         <L label="Address"><textarea className="input" rows={2} value={f.address || ""} onChange={e => set("address", e.target.value)} /></L>
