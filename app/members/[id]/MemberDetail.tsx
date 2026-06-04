@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase-client";
 import { feeStatus, formatDate } from "@/lib/fees";
-import { generateInvoice, generateInvoiceAsync } from "@/lib/pdf-bill";
+import { generateInvoice } from "@/lib/pdf-bill";
 import { Icon } from "@/components/Icons";
 
 export default function MemberDetail({ member, payments, workouts, diets, messages, partner }: any) {
@@ -306,8 +306,32 @@ function InfoTab({ m }: any) {
 }
 
 
+const PLANS = [
+  { id: "flex",      label: "Flex Plan",      months: 1,  days: 30,  fee: 1000,  color: "#06b6d4", glow: "rgba(6,182,212,0.35)" },
+  { id: "power",     label: "Power Plan",     months: 3,  days: 90,  fee: 2700,  color: "#8b5cf6", glow: "rgba(139,92,246,0.35)" },
+  { id: "transform", label: "Transform Plan", months: 6,  days: 180, fee: 5400,  color: "#f59e0b", glow: "rgba(245,158,11,0.35)" },
+  { id: "prime",     label: "Prime Plan",     months: 12, days: 365, fee: 9999,  color: "#10b981", glow: "rgba(16,185,129,0.35)" },
+];
+
+const addDays = (dateStr: string, days: number) => {
+  const d = new Date(dateStr);
+  d.setDate(d.getDate() + days);
+  return d.toISOString().slice(0, 10);
+};
+
+const addMonths = (dateStr: string, months: number) => {
+  const d = new Date(dateStr);
+  d.setMonth(d.getMonth() + months);
+  return d.toISOString().slice(0, 10);
+};
+
 function PaymentsTab({ m, payments, partner }: any) {
   const router = useRouter();
+
+  // Find if member's current fee settings match one of the plans
+  const matchedPlan = PLANS.find(p => p.days === m.fee_cycle_days && p.fee === m.fee_amount);
+  const [selectedPlan, setSelectedPlan] = useState(matchedPlan ? matchedPlan.id : "manual");
+
   const [amount, setAmount] = useState(String(m.fee_amount));
   const [method, setMethod] = useState("cash");
   const [notes, setNotes] = useState("");
@@ -316,9 +340,42 @@ function PaymentsTab({ m, payments, partner }: any) {
   const [syncPartner, setSyncPartner] = useState(true);
   const [extraCharges, setExtraCharges] = useState({ trainer: 0, diet: 0, admission: 0 });
   const [paymentDate, setPaymentDate] = useState(new Date().toISOString().slice(0, 10));
+
+  // Default next_due_date to: today's date + m.fee_cycle_days
+  const [expiringDate, setExpiringDate] = useState(() => {
+    const todayStr = new Date().toISOString().slice(0, 10);
+    return addDays(todayStr, m.fee_cycle_days || 30);
+  });
+
   const [filterMonth, setFilterMonth] = useState("");
 
   const filteredPayments = filterMonth ? payments.filter((p: any) => p.paid_on?.startsWith(filterMonth)) : payments;
+
+  function handlePlanSelect(planId: string) {
+    setSelectedPlan(planId);
+    if (planId !== "manual") {
+      const p = PLANS.find(x => x.id === planId);
+      if (p) {
+        setAmount(String(p.fee));
+        setExpiringDate(addDays(paymentDate, p.days));
+      }
+    }
+  }
+
+  function handlePaymentDateChange(newDate: string) {
+    setPaymentDate(newDate);
+    if (selectedPlan !== "manual") {
+      const p = PLANS.find(x => x.id === selectedPlan);
+      if (p) {
+        setExpiringDate(addDays(newDate, p.days));
+      }
+    }
+  }
+
+  function handleDurationSelect(months: number) {
+    setSelectedPlan("manual");
+    setExpiringDate(addMonths(paymentDate, months));
+  }
 
   async function clearAllPayments() {
     const confirmDelete = confirm("⚠️ WARNING: This will permanently delete ALL recorded payments for this member and reset their payment status to overdue. Are you sure you want to proceed?");
@@ -375,7 +432,7 @@ function PaymentsTab({ m, payments, partner }: any) {
     router.refresh();
   }
 
-async function record() {
+  async function record() {
     if (!amount || Number(amount) <= 0) {
       alert("Please enter a valid amount");
       return;
@@ -400,20 +457,19 @@ async function record() {
         return;
       }
       
-      // Then update the member's next due date manually to ensure it works
-      const paymentDateObj = new Date(paymentDate);
-      const nextDue = new Date(paymentDateObj);
-      nextDue.setDate(nextDue.getDate() + (m.fee_cycle_days || 30));
-      
+      // Update the member's next due date using the expiringDate directly
       await sb.from("members").update({ 
         last_payment_date: paymentDate,
-        next_due_date: nextDue.toISOString().slice(0, 10)
+        next_due_date: expiringDate
       }).eq("id", m.id);
       
       if (sendWA && payment) {
-        const doc = await generateInvoiceAsync(m, { ...payment, paid_on: paymentDate }, { trainerCharges: extraCharges.trainer, dietCharges: extraCharges.diet, admissionFee: extraCharges.admission });
+        const doc = generateInvoice(m, { ...payment, paid_on: paymentDate }, { trainerCharges: extraCharges.trainer, dietCharges: extraCharges.diet, admissionFee: extraCharges.admission });
         const pdfBlob = doc.output("blob");
-        const expiry = nextDue.toLocaleDateString("en-IN");
+        
+        // format expiring date nicely for WA message
+        const expiryDateObj = new Date(expiringDate);
+        const expiry = expiryDateObj.toLocaleDateString("en-IN");
         const paymentMethodStr = method === "upi" ? "UPI/QR" : method === "card" ? "Card" : method === "bank" ? "Bank Transfer" : "Cash";
 
         // Fetch msg_payment template from settings
@@ -442,11 +498,7 @@ async function record() {
       // Partner payment sync (couple pack main account)
       if (m.is_couple_main && m.couple_partner_id && syncPartner && partner) {
         const partnerFee = partner.fee_amount || m.fee_amount;
-        const partnerCycleDays = partner.fee_cycle_days || m.fee_cycle_days || 30;
-        const partnerNextDue = new Date(paymentDate);
-        partnerNextDue.setDate(partnerNextDue.getDate() + partnerCycleDays);
-        const partnerDueStr = partnerNextDue.toISOString().slice(0, 10);
-
+        
         await sb.from("payments").insert({
           member_id: m.couple_partner_id,
           amount: partnerFee,
@@ -456,7 +508,7 @@ async function record() {
         });
         await sb.from("members").update({
           last_payment_date: paymentDate,
-          next_due_date: partnerDueStr,
+          next_due_date: expiringDate, // Sync partner to the exact same expiringDate
         }).eq("id", m.couple_partner_id);
       }
 
@@ -477,14 +529,143 @@ async function record() {
     <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
       <div className="glass" style={{ padding: "1.5rem" }}>
         <h3 style={{ fontWeight: 700, marginBottom: "1rem", fontSize: "1rem" }}>Record Payment</h3>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(150px,1fr))", gap: "0.7rem" }}>
-          <input id="pay-date" className="input" type="date" value={paymentDate} onChange={e => setPaymentDate(e.target.value)} style={{ fontSize: "0.9rem" }} />
-          <input id="pay-amount" className="input" type="number" placeholder="Fee" value={amount} onChange={e => setAmount(e.target.value)} style={{ fontSize: "0.9rem" }} />
-          <select id="pay-method" className="input" value={method} onChange={e => setMethod(e.target.value)} style={{ fontSize: "0.9rem" }}>
-            <option value="cash">Cash</option><option value="upi">UPI</option><option value="card">Card</option><option value="bank">Bank Transfer</option>
-          </select>
-          <input id="pay-notes" className="input" placeholder="Notes" value={notes} onChange={e => setNotes(e.target.value)} style={{ fontSize: "0.9rem" }} />
+
+        {/* ── Membership Plan Picker ── */}
+        <div style={{ marginBottom: "1rem" }}>
+          <div style={{ fontSize: "0.78rem", color: "var(--text-muted)", fontWeight: 500, marginBottom: "0.5rem" }}>Membership Plan</div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(130px, 1fr))", gap: "0.5rem" }}>
+            {PLANS.map(p => {
+              const selected = selectedPlan === p.id;
+              return (
+                <button
+                  key={p.id}
+                  type="button"
+                  id={`pay-plan-${p.id}`}
+                  onClick={() => handlePlanSelect(p.id)}
+                  style={{
+                    border: `2px solid ${selected ? p.color : "var(--border)"}`,
+                    borderRadius: "0.65rem",
+                    padding: "0.6rem 0.75rem",
+                    background: selected ? `rgba(${p.glow.slice(5,-1)},0.1)` : "var(--surface)",
+                    boxShadow: selected ? `0 0 12px ${p.glow}` : "none",
+                    cursor: "pointer",
+                    textAlign: "left",
+                    transition: "all 0.18s ease",
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "0.15rem",
+                  }}
+                >
+                  <span style={{ fontSize: "0.65rem", fontWeight: 700, color: p.color, textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                    {p.months === 1 ? "1 Month" : `${p.months} Months`}
+                  </span>
+                  <span style={{ fontSize: "0.85rem", fontWeight: 800, color: selected ? p.color : "var(--text)" }}>
+                    {p.label}
+                  </span>
+                  <span style={{ fontSize: "0.75rem", fontWeight: 700, color: selected ? p.color : "var(--text-muted)" }}>
+                    ₹{p.fee.toLocaleString("en-IN")}
+                  </span>
+                </button>
+              );
+            })}
+
+            {/* Manual option */}
+            {(() => {
+              const selected = selectedPlan === "manual";
+              return (
+                <button
+                  key="manual"
+                  type="button"
+                  id="pay-plan-manual"
+                  onClick={() => handlePlanSelect("manual")}
+                  style={{
+                    border: `2px solid ${selected ? "var(--accent, #a78bfa)" : "var(--border)"}`,
+                    borderRadius: "0.65rem",
+                    padding: "0.6rem 0.75rem",
+                    background: selected ? "rgba(167,139,250,0.1)" : "var(--surface)",
+                    boxShadow: selected ? "0 0 12px rgba(167,139,250,0.3)" : "none",
+                    cursor: "pointer",
+                    textAlign: "left",
+                    transition: "all 0.18s ease",
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "0.15rem",
+                  }}
+                >
+                  <span style={{ fontSize: "0.65rem", fontWeight: 700, color: "var(--accent, #a78bfa)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                    Custom
+                  </span>
+                  <span style={{ fontSize: "0.85rem", fontWeight: 800, color: selected ? "var(--accent, #a78bfa)" : "var(--text)" }}>
+                    Manual Fees
+                  </span>
+                  <span style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
+                    Custom Amount
+                  </span>
+                </button>
+              );
+            })()}
+          </div>
         </div>
+
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))", gap: "0.7rem", marginBottom: "0.8rem" }}>
+          <div>
+            <label style={{ fontSize: "0.75rem", color: "var(--text-muted)", display: "block", marginBottom: "0.25rem" }}>Payment Date</label>
+            <input id="pay-date" className="input" type="date" value={paymentDate} onChange={e => handlePaymentDateChange(e.target.value)} style={{ fontSize: "0.9rem", width: "100%" }} />
+          </div>
+
+          <div>
+            <label style={{ fontSize: "0.75rem", color: "var(--text-muted)", display: "block", marginBottom: "0.25rem" }}>Expiring Date</label>
+            <input id="pay-expiry-date" className="input" type="date" value={expiringDate} onChange={e => setExpiringDate(e.target.value)} style={{ fontSize: "0.9rem", width: "100%" }} />
+          </div>
+
+          <div>
+            <label style={{ fontSize: "0.75rem", color: "var(--text-muted)", display: "block", marginBottom: "0.25rem" }}>Amount (₹)</label>
+            <input id="pay-amount" className="input" type="number" placeholder="Fee" value={amount} onChange={e => { setAmount(e.target.value); setSelectedPlan("manual"); }} style={{ fontSize: "0.9rem", width: "100%" }} />
+          </div>
+
+          <div>
+            <label style={{ fontSize: "0.75rem", color: "var(--text-muted)", display: "block", marginBottom: "0.25rem" }}>Method</label>
+            <select id="pay-method" className="input" value={method} onChange={e => setMethod(e.target.value)} style={{ fontSize: "0.9rem", width: "100%" }}>
+              <option value="cash">Cash</option><option value="upi">UPI</option><option value="card">Card</option><option value="bank">Bank Transfer</option>
+            </select>
+          </div>
+        </div>
+
+        {/* Quick Expiration Presets */}
+        <div style={{ marginBottom: "1rem" }}>
+          <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", marginBottom: "0.3rem" }}>Quick Expiry Preset:</div>
+          <div style={{ display: "flex", gap: "0.4rem", flexWrap: "wrap" }}>
+            {[
+              { label: "1 Month", val: 1 },
+              { label: "2 Months", val: 2 },
+              { label: "3 Months", val: 3 },
+              { label: "6 Months", val: 6 },
+              { label: "12 Months", val: 12 },
+            ].map(preset => (
+              <button
+                key={preset.label}
+                type="button"
+                onClick={() => handleDurationSelect(preset.val)}
+                className="btn btn-ghost"
+                style={{
+                  padding: "0.25rem 0.5rem",
+                  fontSize: "0.75rem",
+                  minHeight: "auto",
+                  border: "1px solid var(--border)",
+                  borderRadius: "0.4rem"
+                }}
+              >
+                +{preset.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div style={{ marginBottom: "0.8rem" }}>
+          <label style={{ fontSize: "0.75rem", color: "var(--text-muted)", display: "block", marginBottom: "0.25rem" }}>Payment Notes</label>
+          <input id="pay-notes" className="input" placeholder="Notes (e.g. May dues)" value={notes} onChange={e => setNotes(e.target.value)} style={{ fontSize: "0.9rem", width: "100%" }} />
+        </div>
+
         <div className="charges-grid">
           <input id="pay-trainer" className="input" type="number" placeholder="Trainer" value={extraCharges.trainer || ""} onChange={e => setExtraCharges(x => ({ ...x, trainer: Number(e.target.value) || 0 }))} style={{ fontSize: "0.9rem" }} />
           <input id="pay-diet" className="input" type="number" placeholder="Diet" value={extraCharges.diet || ""} onChange={e => setExtraCharges(x => ({ ...x, diet: Number(e.target.value) || 0 }))} style={{ fontSize: "0.9rem" }} />

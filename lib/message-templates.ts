@@ -2,8 +2,7 @@ import { createAdminClient } from "./supabase-server";
 
 let settingsCache: Record<string, string> | null = null;
 let lastFetch = 0;
-const CACHE_DURATION = 5000; // 5s — refresh quickly after settings save
-
+const CACHE_DURATION = 60000;
 
 export async function getSettings(): Promise<Record<string, string>> {
   const now = Date.now();

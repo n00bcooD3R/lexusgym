@@ -11,7 +11,7 @@ const PLANS = [
   { id: "prime",     label: "Prime Plan",     months: 12, days: 365, fee: 9999,  color: "#10b981", glow: "rgba(16,185,129,0.35)" },
 ];
 
-import { generateInvoiceAsync } from "@/lib/pdf-bill";
+import { generateInvoice } from "@/lib/pdf-bill";
 
 const getTodayString = () => {
   const d = new Date();
@@ -188,7 +188,7 @@ export default function NewMember() {
 
       try {
         if (paymentData) {
-          const doc = await generateInvoiceAsync(data, { ...paymentData, paid_on: joinDateStr }, { admissionFee: admFee });
+          const doc = generateInvoice(data, { ...paymentData, paid_on: joinDateStr }, { admissionFee: admFee });
           const pdfBlob = doc.output("blob");
           const fd = new FormData();
           fd.append("memberId", data.id); 
@@ -204,7 +204,7 @@ export default function NewMember() {
     } else if (totalPayment > 0 && !sendWelcome && paymentData) {
       try {
         // Send just the invoice
-        const doc = await generateInvoiceAsync(data, { ...paymentData, paid_on: joinDateStr }, { admissionFee: admFee });
+        const doc = generateInvoice(data, { ...paymentData, paid_on: joinDateStr }, { admissionFee: admFee });
         const pdfBlob = doc.output("blob");
         const fd = new FormData();
         fd.append("memberId", data.id); 
