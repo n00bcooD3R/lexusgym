@@ -88,9 +88,14 @@ export default function SettingsPage() {
     try {
       const res = await fetch(`/api/members/search?q=${encodeURIComponent(q)}`);
       const data = await res.json();
-      setSearchResults(data.filter((m: any) => !m.is_staff));
+      if (Array.isArray(data)) {
+        setSearchResults(data.filter((m: any) => !m.is_staff));
+      } else {
+        setSearchResults([]);
+      }
     } catch (err) {
       console.error(err);
+      setSearchResults([]);
     }
     setSearching(false);
   }
@@ -291,10 +296,10 @@ export default function SettingsPage() {
                 top: "100%",
                 left: 0,
                 right: 0,
-                background: "var(--surface)",
+                background: "var(--bg2)",
                 border: "1px solid var(--border)",
                 borderRadius: "0.5rem",
-                boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+                boxShadow: "0 4px 12px rgba(0,0,0,0.3)",
                 zIndex: 10,
                 maxHeight: "180px",
                 overflowY: "auto",
@@ -311,7 +316,8 @@ export default function SettingsPage() {
                       borderBottom: "1px solid var(--border)",
                       display: "flex",
                       justifyContent: "space-between",
-                      alignItems: "center"
+                      alignItems: "center",
+                      transition: "background 0.15s"
                     }}
                     onMouseEnter={e => (e.currentTarget.style.background = "var(--surface-hover)")}
                     onMouseLeave={e => (e.currentTarget.style.background = "transparent")}

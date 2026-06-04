@@ -48,7 +48,19 @@ export function generateInvoice(member: any, payment: any, extra?: { trainerChar
   // 1. Gym Logo & Details Header
   if (logoBase64) {
     try {
-      doc.addImage(logoBase64, "PNG", 155, 18, 30, 30);
+      const props = doc.getImageProperties(logoBase64);
+      const ratio = props.width / props.height;
+      const maxWidth = 35;
+      const maxHeight = 20;
+      let targetWidth = maxWidth;
+      let targetHeight = targetWidth / ratio;
+      if (targetHeight > maxHeight) {
+        targetHeight = maxHeight;
+        targetWidth = targetHeight * ratio;
+      }
+      const logoX = 190 - targetWidth;
+      const fileType = props.fileType || "PNG";
+      doc.addImage(logoBase64, fileType, logoX, 18, targetWidth, targetHeight);
     } catch (err) {
       console.error("Error drawing logo:", err);
     }
@@ -78,78 +90,78 @@ export function generateInvoice(member: any, payment: any, extra?: { trainerChar
 
   // 2. Invoice Meta Details Card (Billed To vs Invoice Info)
   doc.setFillColor(248, 250, 252);
-  doc.roundedRect(20, 58, 170, 32, 2, 2, "F");
+  doc.roundedRect(20, 54, 170, 28, 2, 2, "F");
 
   // Billed To (Left Column)
   doc.setFont("helvetica", "bold");
   doc.setFontSize(8.5);
   doc.setTextColor(primaryRGB[0], primaryRGB[1], primaryRGB[2]);
-  doc.text("BILLED TO", 25, 65);
+  doc.text("BILLED TO", 25, 60);
 
   doc.setFont("helvetica", "bold");
   doc.setFontSize(11);
   doc.setTextColor(30);
-  doc.text(member.name, 25, 71);
+  doc.text(member.name, 25, 66);
 
   doc.setFont("helvetica", "normal");
   doc.setFontSize(9);
   doc.setTextColor(70);
-  doc.text(`Member ID / Adm No: ${member.admission_no}`, 25, 76);
-  doc.text(`Phone: ${member.phone}`, 25, 81);
+  doc.text(`Member ID / Adm No: ${member.admission_no}`, 25, 71);
+  doc.text(`Phone: ${member.phone}`, 25, 76);
   if (member.address) {
-    doc.text(`Address: ${member.address.slice(0, 45)}`, 25, 86);
+    doc.text(`Address: ${member.address.slice(0, 45)}`, 25, 81);
   }
 
   // Invoice Details (Right Column)
   doc.setFont("helvetica", "bold");
   doc.setFontSize(8.5);
   doc.setTextColor(primaryRGB[0], primaryRGB[1], primaryRGB[2]);
-  doc.text("INVOICE DETAILS", 115, 65);
+  doc.text("INVOICE DETAILS", 115, 60);
 
   doc.setFont("helvetica", "normal");
   doc.setFontSize(9);
   doc.setTextColor(70);
-  doc.text(`Invoice No: LFG-${payment.id?.slice(0, 8).toUpperCase() || "INV"}`, 115, 71);
-  doc.text(`Date: ${date}`, 115, 76);
-  doc.text(`Method: ${(payment.method || "cash").toUpperCase()}`, 115, 81);
+  doc.text(`Invoice No: LFG-${payment.id?.slice(0, 8).toUpperCase() || "INV"}`, 115, 66);
+  doc.text(`Date: ${date}`, 115, 71);
+  doc.text(`Method: ${(payment.method || "cash").toUpperCase()}`, 115, 76);
 
   // Soft green PAID badge
   doc.setFillColor(209, 250, 229);
-  doc.roundedRect(160, 61, 22, 6, 1.5, 1.5, "F");
+  doc.roundedRect(160, 56, 22, 6, 1.5, 1.5, "F");
   
   doc.setFont("helvetica", "bold");
   doc.setFontSize(8);
   doc.setTextColor(5, 150, 105);
-  doc.text("PAID", 171, 65.2, { align: "center" });
+  doc.text("PAID", 171, 60.2, { align: "center" });
 
   // 3. Membership Details Section
   doc.setFont("helvetica", "bold");
   doc.setFontSize(9);
   doc.setTextColor(primaryRGB[0], primaryRGB[1], primaryRGB[2]);
-  doc.text("MEMBERSHIP TIMELINE", 20, 99);
+  doc.text("MEMBERSHIP TIMELINE", 20, 91);
   
   doc.setDrawColor(241, 245, 249);
-  doc.line(20, 101, 190, 101);
+  doc.line(20, 93, 190, 93);
 
   doc.setFont("helvetica", "normal");
   doc.setFontSize(9.5);
   doc.setTextColor(60);
   
-  doc.text(`Join Date: ${joinDate}`, 25, 107);
-  doc.text(`Cycle Start: ${date}`, 25, 112);
+  doc.text(`Join Date: ${joinDate}`, 25, 98);
+  doc.text(`Cycle Start: ${date}`, 25, 103);
   
-  doc.text(`Expiry Date: ${expiryDate}`, 115, 107);
-  doc.text(`Duration: ${member.fee_cycle_days || 30} Days`, 115, 112);
+  doc.text(`Expiry Date: ${expiryDate}`, 115, 98);
+  doc.text(`Duration: ${member.fee_cycle_days || 30} Days`, 115, 103);
 
   // 4. Billing Table Header
   doc.setFillColor(primaryRGB[0], primaryRGB[1], primaryRGB[2]);
-  doc.rect(20, 122, 170, 8, "F");
+  doc.rect(20, 112, 170, 8, "F");
   
   doc.setFont("helvetica", "bold");
   doc.setFontSize(9);
   doc.setTextColor(255);
-  doc.text("Item Description", 25, 127.5);
-  doc.text("Amount", 180, 127.5, { align: "right" });
+  doc.text("Item Description", 25, 117.5);
+  doc.text("Amount", 180, 117.5, { align: "right" });
 
   // Generate dynamic table rows
   const items = [
@@ -159,7 +171,7 @@ export function generateInvoice(member: any, payment: any, extra?: { trainerChar
   if (diet > 0) items.push({ desc: "Diet Plan Charges", amt: diet });
   if (admission > 0) items.push({ desc: "Admission & Registration Fee", amt: admission });
 
-  let currentY = 130;
+  let currentY = 120;
   doc.setFont("helvetica", "normal");
   doc.setFontSize(9.5);
   doc.setTextColor(50);
@@ -170,7 +182,7 @@ export function generateInvoice(member: any, payment: any, extra?: { trainerChar
       doc.rect(20, currentY, 170, 8, "F");
     }
     doc.text(item.desc, 25, currentY + 5.5);
-    doc.text(`₹${item.amt.toLocaleString("en-IN")}`, 180, currentY + 5.5, { align: "right" });
+    doc.text(`Rs. ${item.amt.toLocaleString("en-IN")}`, 180, currentY + 5.5, { align: "right" });
     
     doc.setDrawColor(241, 245, 249);
     doc.setLineWidth(0.5);
@@ -180,22 +192,23 @@ export function generateInvoice(member: any, payment: any, extra?: { trainerChar
   });
 
   // Total Summary Block
-  const totalBoxY = currentY + 4;
+  const totalBoxY = currentY + 3;
   doc.setFillColor(243, 244, 246);
-  doc.roundedRect(120, totalBoxY, 70, 14, 1.5, 1.5, "F");
+  doc.roundedRect(120, totalBoxY, 70, 12, 1.5, 1.5, "F");
   
   doc.setFont("helvetica", "bold");
   doc.setFontSize(8.5);
   doc.setTextColor(100);
-  doc.text("TOTAL AMOUNT PAID", 125, totalBoxY + 9);
+  doc.text("TOTAL AMOUNT PAID", 125, totalBoxY + 7.8);
   
   doc.setFontSize(11);
   doc.setTextColor(primaryRGB[0], primaryRGB[1], primaryRGB[2]);
-  doc.text(`₹${total.toLocaleString("en-IN")}`, 185, totalBoxY + 9, { align: "right" });
+  doc.text(`Rs. ${total.toLocaleString("en-IN")}`, 185, totalBoxY + 7.8, { align: "right" });
 
   // Notes
-  let notesY = totalBoxY + 23;
+  let notesEnd = totalBoxY + 12;
   if (payment.notes) {
+    const notesY = totalBoxY + 16;
     doc.setFont("helvetica", "bold");
     doc.setFontSize(8.5);
     doc.setTextColor(100);
@@ -205,43 +218,45 @@ export function generateInvoice(member: any, payment: any, extra?: { trainerChar
     doc.setFontSize(9);
     doc.setTextColor(70);
     doc.text(payment.notes, 20, notesY + 5);
-    notesY += 12;
+    notesEnd = notesY + 10;
   }
 
-  // 5. Signature Fields
+  // 5. Signature Fields (Positioned dynamically relative to notesEnd)
+  const sigY = Math.max(notesEnd + 14, 155);
   doc.setDrawColor(226, 232, 240);
   doc.setLineWidth(0.5);
-  doc.line(25, 245, 75, 245);
+  doc.line(25, sigY, 75, sigY);
   doc.setFont("helvetica", "normal");
   doc.setFontSize(8.5);
   doc.setTextColor(100);
-  doc.text("Authorized Signature", 50, 249, { align: "center" });
+  doc.text("Authorized Signature", 50, sigY + 4.5, { align: "center" });
   
-  doc.line(135, 245, 185, 245);
-  doc.text("Member Signature", 160, 249, { align: "center" });
+  doc.line(135, sigY, 185, sigY);
+  doc.text("Member Signature", 160, sigY + 4.5, { align: "center" });
 
-  // 6. Terms & Footer
-  const footerY = 258;
+  // 6. Terms & Footer (Positioned dynamically relative to sigY)
+  const termsY = sigY + 12;
   doc.setFont("helvetica", "bold");
   doc.setFontSize(8);
   doc.setTextColor(120);
-  doc.text("Terms & Conditions:", 20, footerY);
+  doc.text("Terms & Conditions:", 20, termsY);
   
   doc.setFont("helvetica", "normal");
   doc.setFontSize(8);
   doc.setTextColor(140);
-  doc.text("• This is a computer-generated digital receipt and requires no physical signature.", 20, footerY + 4.5);
-  doc.text("• Fees once paid are non-refundable and non-transferable under any circumstances.", 20, footerY + 8.5);
-  doc.text("• Please adhere to gym safety protocols and respect trainer instructions.", 20, footerY + 12.5);
+  doc.text("• This is a computer-generated digital receipt and requires no physical signature.", 20, termsY + 4);
+  doc.text("• Fees once paid are non-refundable and non-transferable under any circumstances.", 20, termsY + 7.5);
+  doc.text("• Please adhere to gym safety protocols and respect trainer instructions.", 20, termsY + 11);
 
-  // Footer Thank You Bar
+  // Footer Thank You Bar (Positioned dynamically relative to termsY)
+  const footerBarY = termsY + 16;
   doc.setFillColor(99, 102, 241, 0.05);
-  doc.rect(20, 280, 170, 8, "F");
+  doc.rect(20, footerBarY, 170, 7, "F");
   
   doc.setFont("helvetica", "bold");
   doc.setFontSize(8.5);
   doc.setTextColor(primaryRGB[0], primaryRGB[1], primaryRGB[2]);
-  doc.text(`Thank you for choosing ${gymDetails.name}! Let's reach your goals together.`, 105, 285.2, { align: "center" });
+  doc.text(`Thank you for choosing ${gymDetails.name}! Let's reach your goals together.`, 105, footerBarY + 4.5, { align: "center" });
 
   return doc;
 }
