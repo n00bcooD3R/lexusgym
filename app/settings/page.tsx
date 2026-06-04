@@ -69,12 +69,20 @@ export default function SettingsPage() {
 
   async function saveAll() {
     setSaving(true);
-    const sb = createClient();
-    for (const [key, value] of Object.entries(settings)) {
-      await sb.from("settings").upsert({ key, value, updated_at: new Date().toISOString() }, { onConflict: "key" });
+    try {
+      const sb = createClient();
+      const upserts = Object.entries(settings).map(([key, value]) =>
+        sb.from("settings").upsert({ key, value, updated_at: new Date().toISOString() }, { onConflict: "key" })
+      );
+      const results = await Promise.all(upserts);
+      const failed = results.find(r => r.error);
+      if (failed?.error) throw new Error(failed.error.message);
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2500);
+    } catch (e: any) {
+      alert("Failed to save settings: " + e.message);
     }
-    setSaving(false); setSaved(true);
-    setTimeout(() => setSaved(false), 2500);
+    setSaving(false);
   }
 
   const upd = (k: string, v: string) => setSettings(s => ({ ...s, [k]: v }));

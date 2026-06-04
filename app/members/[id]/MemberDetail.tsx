@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase-client";
 import { feeStatus, formatDate } from "@/lib/fees";
-import { generateInvoice } from "@/lib/pdf-bill";
+import { generateInvoice, generateInvoiceAsync } from "@/lib/pdf-bill";
 import { Icon } from "@/components/Icons";
 
 export default function MemberDetail({ member, payments, workouts, diets, messages, partner }: any) {
@@ -411,7 +411,7 @@ async function record() {
       }).eq("id", m.id);
       
       if (sendWA && payment) {
-        const doc = generateInvoice(m, { ...payment, paid_on: paymentDate }, { trainerCharges: extraCharges.trainer, dietCharges: extraCharges.diet, admissionFee: extraCharges.admission });
+        const doc = await generateInvoiceAsync(m, { ...payment, paid_on: paymentDate }, { trainerCharges: extraCharges.trainer, dietCharges: extraCharges.diet, admissionFee: extraCharges.admission });
         const pdfBlob = doc.output("blob");
         const expiry = nextDue.toLocaleDateString("en-IN");
         const paymentMethodStr = method === "upi" ? "UPI/QR" : method === "card" ? "Card" : method === "bank" ? "Bank Transfer" : "Cash";
