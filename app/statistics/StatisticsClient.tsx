@@ -54,9 +54,21 @@ export default function StatisticsClient({
     return Array.from(monthsSet).sort().reverse();
   }, [payments]);
 
+  // Filter Mode: monthly vs custom date range
+  const [filterMode, setFilterMode] = useState<"month" | "custom">("month");
+
   // Current selected month
   const [selectedMonth, setSelectedMonth] = useState(() => {
     return uniqueMonths[0] || new Date().toISOString().slice(0, 7);
+  });
+
+  // Custom date ranges
+  const [startDate, setStartDate] = useState(() => {
+    const now = new Date();
+    return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-01`;
+  });
+  const [endDate, setEndDate] = useState(() => {
+    return new Date().toISOString().slice(0, 10);
   });
 
   const [gymSettings, setGymSettings] = useState<any>({
@@ -84,11 +96,16 @@ export default function StatisticsClient({
     fetchSettings();
   }, []);
 
-  // Compute selected month's stats
+  // Compute selected month's/period's stats
   const monthStats = useMemo(() => {
-    const monthPayments = payments.filter(
-      (p) => p.paid_on && p.paid_on.startsWith(selectedMonth)
-    );
+    const monthPayments = payments.filter((p) => {
+      if (!p.paid_on) return false;
+      if (filterMode === "month") {
+        return p.paid_on.startsWith(selectedMonth);
+      } else {
+        return p.paid_on >= startDate && p.paid_on <= endDate;
+      }
+    });
 
     let totalRevenue = 0;
     let newRevenue = 0;
@@ -113,9 +130,14 @@ export default function StatisticsClient({
       const amt = Number(p.amount) || 0;
       totalRevenue += amt;
 
-      // New Admission check: join_date matches selectedMonth YYYY-MM
+      // New Admission check: join_date matches selected filter
       const joinDate = p.members?.join_date;
-      const isNew = joinDate && joinDate.startsWith(selectedMonth);
+      const isNew = joinDate && (
+        filterMode === "month"
+          ? joinDate.startsWith(selectedMonth)
+          : (joinDate >= startDate && joinDate <= endDate)
+      );
+
       if (isNew) {
         newRevenue += amt;
       } else {
@@ -171,12 +193,12 @@ export default function StatisticsClient({
     });
 
     // New admissions count from members list (excluding staff)
-    const newCount = members.filter(
-      (m) =>
-        !m.is_staff &&
-        m.join_date &&
-        m.join_date.startsWith(selectedMonth)
-    ).length;
+    const newCount = members.filter((m) => {
+      if (m.is_staff || !m.join_date) return false;
+      return filterMode === "month"
+        ? m.join_date.startsWith(selectedMonth)
+        : (m.join_date >= startDate && m.join_date <= endDate);
+    }).length;
 
     return {
       payments: monthPayments,
@@ -187,12 +209,13 @@ export default function StatisticsClient({
       plans,
       methods,
     };
-  }, [payments, members, selectedMonth]);
+  }, [payments, members, selectedMonth, filterMode, startDate, endDate]);
 
-  // Compute 6-month history list ending in selectedMonth
+  // Compute 6-month history list ending in selectedMonth (or custom end month)
   const last6Months = useMemo(() => {
     const result: string[] = [];
-    const [yearStr, monthStr] = selectedMonth.split("-");
+    const endMonth = filterMode === "month" ? selectedMonth : endDate.slice(0, 7);
+    const [yearStr, monthStr] = endMonth.split("-");
     let y = parseInt(yearStr);
     let m = parseInt(monthStr);
 
@@ -206,7 +229,7 @@ export default function StatisticsClient({
       }
     }
     return result;
-  }, [selectedMonth]);
+  }, [selectedMonth, filterMode, endDate]);
 
   // Historical data points
   const historyData = useMemo(() => {
@@ -241,36 +264,71 @@ export default function StatisticsClient({
     });
   }, [payments, last6Months]);
 
-  // Month-over-month growth calculator
+  // Period comparative growth calculator
   const MoMGrowth = useMemo(() => {
-    const [yearStr, monthStr] = selectedMonth.split("-");
-    let y = parseInt(yearStr);
-    let m = parseInt(monthStr) - 1;
-    if (m === 0) {
-      m = 12;
-      y--;
-    }
-    const prevMonthStr = `${y}-${String(m).padStart(2, "0")}`;
-
     const currentRevenue = monthStats.totalRevenue;
-    const prevPayments = payments.filter(
-      (p) => p.paid_on && p.paid_on.startsWith(prevMonthStr)
-    );
-    const prevRevenue = prevPayments.reduce(
-      (acc, p) => acc + (Number(p.amount) || 0),
-      0
-    );
 
-    const difference = currentRevenue - prevRevenue;
-    const percentage = prevRevenue > 0 ? (difference / prevRevenue) * 100 : 0;
+    if (filterMode === "month") {
+      const [yearStr, monthStr] = selectedMonth.split("-");
+      let y = parseInt(yearStr);
+      let m = parseInt(monthStr) - 1;
+      if (m === 0) {
+        m = 12;
+        y--;
+      }
+      const prevMonthStr = `${y}-${String(m).padStart(2, "0")}`;
 
-    return {
-      prevMonthStr,
-      prevRevenue,
-      difference,
-      percentage,
-    };
-  }, [payments, selectedMonth, monthStats.totalRevenue]);
+      const prevPayments = payments.filter(
+        (p) => p.paid_on && p.paid_on.startsWith(prevMonthStr)
+      );
+      const prevRevenue = prevPayments.reduce(
+        (acc, p) => acc + (Number(p.amount) || 0),
+        0
+      );
+
+      const difference = currentRevenue - prevRevenue;
+      const percentage = prevRevenue > 0 ? (difference / prevRevenue) * 100 : 0;
+
+      return {
+        label: "Growth vs Previous Month",
+        prevRevenue,
+        difference,
+        percentage,
+      };
+    } else {
+      // Custom date range: calculate difference in days
+      const start = new Date(startDate);
+      const end = new Date(endDate);
+      const diffTime = Math.abs(end.getTime() - start.getTime());
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+
+      const prevStart = new Date(start);
+      prevStart.setDate(prevStart.getDate() - diffDays);
+      const prevEnd = new Date(start);
+      prevEnd.setDate(prevEnd.getDate() - 1);
+
+      const prevStartStr = prevStart.toISOString().slice(0, 10);
+      const prevEndStr = prevEnd.toISOString().slice(0, 10);
+
+      const prevPayments = payments.filter(
+        (p) => p.paid_on && p.paid_on >= prevStartStr && p.paid_on <= prevEndStr
+      );
+      const prevRevenue = prevPayments.reduce(
+        (acc, p) => acc + (Number(p.amount) || 0),
+        0
+      );
+
+      const difference = currentRevenue - prevRevenue;
+      const percentage = prevRevenue > 0 ? (difference / prevRevenue) * 100 : 0;
+
+      return {
+        label: `Growth vs Prior Period (${diffDays} days)`,
+        prevRevenue,
+        difference,
+        percentage,
+      };
+    }
+  }, [payments, selectedMonth, monthStats.totalRevenue, filterMode, startDate, endDate]);
 
   // Date Formatting Utilities
   function formatMonthName(monthStr: string) {
@@ -495,10 +553,20 @@ export default function StatisticsClient({
     doc.setFont("helvetica", "bold");
     doc.setFontSize(11);
     doc.setTextColor(textColor[0], textColor[1], textColor[2]);
-    doc.text("MONTHLY REVENUE REPORT", pageWidth - 15, y + 10, { align: "right" });
+    doc.text(
+      filterMode === "month" ? "MONTHLY REVENUE REPORT" : "REVENUE PERFORMANCE REPORT",
+      pageWidth - 15,
+      y + 10,
+      { align: "right" }
+    );
     doc.setFont("helvetica", "normal");
     doc.setFontSize(9.5);
-    doc.text(`Report Month: ${formatMonthName(selectedMonth)}`, pageWidth - 15, y + 16, { align: "right" });
+    
+    const periodLabel = filterMode === "month"
+      ? `Report Month: ${formatMonthName(selectedMonth)}`
+      : `Period: ${new Date(startDate).toLocaleDateString("en-IN")} - ${new Date(endDate).toLocaleDateString("en-IN")}`;
+      
+    doc.text(periodLabel, pageWidth - 15, y + 16, { align: "right" });
     doc.text(`Generated: ${new Date().toLocaleDateString("en-IN")}`, pageWidth - 15, y + 22, { align: "right" });
 
     // Header divider line
@@ -522,7 +590,7 @@ export default function StatisticsClient({
     doc.setFontSize(8.5);
     doc.setTextColor(mutedTextColor[0], mutedTextColor[1], mutedTextColor[2]);
     doc.text("Total Collections", 20, y + 18);
-    doc.text("New Admissions Revenue", 80, y + 18);
+    doc.text(filterMode === "month" ? "New Admissions Revenue" : "Period Joins Revenue", 80, y + 18);
     doc.text("Renewals Revenue", 145, y + 18);
 
     doc.setFont("helvetica", "bold");
@@ -621,7 +689,12 @@ export default function StatisticsClient({
         doc.setFont("helvetica", "bold");
         doc.setFontSize(9);
         doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
-        doc.text(`Monthly Transaction Register — ${formatMonthName(selectedMonth)}`, 15, y);
+        
+        const pageHeader = filterMode === "month"
+          ? `Monthly Transaction Register — ${formatMonthName(selectedMonth)}`
+          : `Transaction Register — ${new Date(startDate).toLocaleDateString("en-IN")} to ${new Date(endDate).toLocaleDateString("en-IN")}`;
+          
+        doc.text(pageHeader, 15, y);
         doc.line(15, y + 2, pageWidth - 15, y + 2);
 
         y += 8;
@@ -685,13 +758,17 @@ export default function StatisticsClient({
         align: "right",
       });
       doc.text(
-        `${gymSettings.gym_name || "Lexus Fitness Group"} Monthly Report — Confidential`,
+        `${gymSettings.gym_name || "Lexus Fitness Group"} Report — Confidential`,
         15,
         pageHeight - 8
       );
     }
 
-    doc.save(`LexusGym_Report_${selectedMonth}.pdf`);
+    const saveName = filterMode === "month"
+      ? `LexusGym_Report_${selectedMonth}.pdf`
+      : `LexusGym_Report_${startDate}_to_${endDate}.pdf`;
+      
+    doc.save(saveName);
   }
 
   // Assemble charts datasets
@@ -742,40 +819,112 @@ export default function StatisticsClient({
         </div>
 
         {/* Filters and Actions */}
-        <div style={{ display: "flex", alignItems: "center", gap: "0.6rem" }}>
-          <div style={{ position: "relative", display: "inline-flex", alignItems: "center" }}>
-            <span
+        <div style={{ display: "flex", alignItems: "center", gap: "0.6rem", flexWrap: "wrap" }}>
+          {/* Mode Switcher */}
+          <div style={{ display: "flex", gap: "0.15rem", background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "0.6rem", padding: "0.2rem" }}>
+            <button
+              type="button"
+              onClick={() => setFilterMode("month")}
               style={{
-                position: "absolute",
-                left: "0.75rem",
-                color: "var(--text-muted)",
-                pointerEvents: "none",
-                display: "flex",
-                alignItems: "center",
-              }}
-            >
-              <Icon name="calendar" size={16} />
-            </span>
-            <select
-              className="input"
-              value={selectedMonth}
-              onChange={(e) => setSelectedMonth(e.target.value)}
-              style={{
-                fontSize: "0.9rem",
-                padding: "0.4rem 1rem 0.4rem 2.2rem",
-                minHeight: "36px",
-                width: "auto",
+                padding: "0.35rem 0.7rem",
+                fontSize: "0.8rem",
+                borderRadius: "0.45rem",
+                border: "none",
                 cursor: "pointer",
-                borderRadius: "0.6rem",
+                background: filterMode === "month" ? "rgba(139,92,246,0.15)" : "transparent",
+                color: filterMode === "month" ? "#a78bfa" : "var(--text-muted)",
+                fontWeight: 600,
+                transition: "all 0.15s"
               }}
             >
-              {uniqueMonths.map((m) => (
-                <option key={m} value={m}>
-                  {formatMonthName(m)}
-                </option>
-              ))}
-            </select>
+              Month
+            </button>
+            <button
+              type="button"
+              onClick={() => setFilterMode("custom")}
+              style={{
+                padding: "0.35rem 0.7rem",
+                fontSize: "0.8rem",
+                borderRadius: "0.45rem",
+                border: "none",
+                cursor: "pointer",
+                background: filterMode === "custom" ? "rgba(139,92,246,0.15)" : "transparent",
+                color: filterMode === "custom" ? "#a78bfa" : "var(--text-muted)",
+                fontWeight: 600,
+                transition: "all 0.15s"
+              }}
+            >
+              Range
+            </button>
           </div>
+
+          {filterMode === "month" ? (
+            <div style={{ position: "relative", display: "inline-flex", alignItems: "center" }}>
+              <span
+                style={{
+                  position: "absolute",
+                  left: "0.75rem",
+                  color: "var(--text-muted)",
+                  pointerEvents: "none",
+                  display: "flex",
+                  alignItems: "center",
+                }}
+              >
+                <Icon name="calendar" size={16} />
+              </span>
+              <select
+                className="input"
+                value={selectedMonth}
+                onChange={(e) => setSelectedMonth(e.target.value)}
+                style={{
+                  fontSize: "0.9rem",
+                  padding: "0.4rem 1rem 0.4rem 2.2rem",
+                  minHeight: "36px",
+                  width: "auto",
+                  cursor: "pointer",
+                  borderRadius: "0.6rem",
+                }}
+              >
+                {uniqueMonths.map((m) => (
+                  <option key={m} value={m}>
+                    {formatMonthName(m)}
+                  </option>
+                ))}
+              </select>
+            </div>
+          ) : (
+            <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
+              <input
+                type="date"
+                className="input"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+                style={{
+                  fontSize: "0.85rem",
+                  padding: "0.3rem 0.5rem",
+                  minHeight: "36px",
+                  width: "125px",
+                  borderRadius: "0.6rem",
+                  cursor: "pointer",
+                }}
+              />
+              <span style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}>to</span>
+              <input
+                type="date"
+                className="input"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+                style={{
+                  fontSize: "0.85rem",
+                  padding: "0.3rem 0.5rem",
+                  minHeight: "36px",
+                  width: "125px",
+                  borderRadius: "0.6rem",
+                  cursor: "pointer",
+                }}
+              />
+            </div>
+          )}
 
           <button
             onClick={handlePdfExport}
@@ -806,7 +955,7 @@ export default function StatisticsClient({
             ₹{monthStats.totalRevenue.toLocaleString("en-IN")}
           </div>
           <div style={{ fontSize: "0.8rem", color: "var(--text-muted)", marginTop: "0.1rem" }}>
-            Total Collections ({formatMonthShort(selectedMonth)})
+            Total Collections ({filterMode === "month" ? formatMonthShort(selectedMonth) : "Custom Period"})
           </div>
         </motion.div>
 
@@ -834,7 +983,7 @@ export default function StatisticsClient({
             {MoMGrowth.percentage.toFixed(1)}%
           </div>
           <div style={{ fontSize: "0.8rem", color: "var(--text-muted)", marginTop: "0.1rem" }}>
-            {MoMGrowth.difference >= 0 ? "Growth" : "Loss"} vs Previous Month
+            {MoMGrowth.label}
           </div>
         </motion.div>
 
