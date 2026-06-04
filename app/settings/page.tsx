@@ -70,13 +70,22 @@ export default function SettingsPage() {
 
   async function saveAll() {
     setSaving(true);
-    const sb = createClient();
-    for (const [key, value] of Object.entries(settings)) {
-      await sb.from("settings").upsert({ key, value, updated_at: new Date().toISOString() }, { onConflict: "key" });
+    try {
+      const sb = createClient();
+      for (const [key, value] of Object.entries(settings)) {
+        const { error } = await sb.from("settings").upsert({ key, value, updated_at: new Date().toISOString() }, { onConflict: "key" });
+        if (error) {
+          throw new Error(`Failed to save key "${key}": ${error.message}`);
+        }
+      }
+      setGymDetails(settings);
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2500);
+    } catch (err: any) {
+      alert(err.message || "An error occurred while saving settings.");
+    } finally {
+      setSaving(false);
     }
-    setGymDetails(settings);
-    setSaving(false); setSaved(true);
-    setTimeout(() => setSaved(false), 2500);
   }
 
   const upd = (k: string, v: string) => setSettings(s => ({ ...s, [k]: v }));
