@@ -6,7 +6,7 @@ import { feeStatus, formatDate } from "@/lib/fees";
 import { generateInvoice } from "@/lib/pdf-bill";
 import { Icon } from "@/components/Icons";
 
-export default function MemberDetail({ member, payments, workouts, diets, messages }: any) {
+export default function MemberDetail({ member, payments, workouts, diets, messages, partner }: any) {
   const router = useRouter();
   const [tab, setTab] = useState<"info" | "payments" | "workouts" | "diets" | "messages" | "portal">("info");
   const [showDelete, setShowDelete] = useState(false);
@@ -78,6 +78,15 @@ export default function MemberDetail({ member, payments, workouts, diets, messag
             <h1 style={{ fontSize: "1.6rem", fontWeight: 800, margin: 0, color: "var(--text)" }}>{member.name}</h1>
             <span className={`badge ${statusBadgeClass}`} style={{ fontSize: "0.85rem", padding: "0.3rem 0.65rem" }}>{statusDot} {statusLabel}</span>
             {member.is_pt_client && <span className="badge badge-pt" style={{ fontSize: "0.85rem" }}>PT Client</span>}
+            {member.couple_partner_id && (
+              <a
+                href={`/members/${member.couple_partner_id}`}
+                style={{ fontSize: "0.78rem", fontWeight: 700, background: "rgba(244,63,94,0.15)", color: "#f43f5e", border: "1px solid rgba(244,63,94,0.3)", borderRadius: "9999px", padding: "0.2rem 0.65rem", textDecoration: "none", display: "inline-flex", alignItems: "center", gap: "0.3rem" }}
+              >
+                💑 {member.is_couple_main ? "Couple · Main" : "Couple · Partner"}
+                {partner && <span style={{ fontWeight: 400, opacity: 0.8 }}>· {partner.name}</span>}
+              </a>
+            )}
           </div>
           <div style={{ fontSize: "1rem", color: "var(--text-muted)", marginTop: "0.3rem" }}>
             #{member.admission_no} · {member.phone}
@@ -121,7 +130,7 @@ export default function MemberDetail({ member, payments, workouts, diets, messag
       </div>
 
       {tab === "info" && <InfoTab m={member} />}
-      {tab === "payments" && <PaymentsTab m={member} payments={payments} />}
+      {tab === "payments" && <PaymentsTab m={member} payments={payments} partner={partner} />}
       {tab === "workouts" && <WorkoutsTab m={member} workouts={workouts} />}
       {tab === "diets" && <DietsTab m={member} diets={diets} />}
       {tab === "portal" && <PortalTab m={member} />}
@@ -297,13 +306,14 @@ function InfoTab({ m }: any) {
 }
 
 
-function PaymentsTab({ m, payments }: any) {
+function PaymentsTab({ m, payments, partner }: any) {
   const router = useRouter();
   const [amount, setAmount] = useState(String(m.fee_amount));
   const [method, setMethod] = useState("cash");
   const [notes, setNotes] = useState("");
   const [busy, setBusy] = useState(false);
   const [sendWA, setSendWA] = useState(true);
+  const [syncPartner, setSyncPartner] = useState(true);
   const [extraCharges, setExtraCharges] = useState({ trainer: 0, diet: 0, admission: 0 });
   const [paymentDate, setPaymentDate] = useState(new Date().toISOString().slice(0, 10));
   const [filterMonth, setFilterMonth] = useState("");
@@ -429,6 +439,27 @@ async function record() {
         await fetch("/api/wa/send", { method: "POST", body: fd });
       }
       
+      // Partner payment sync (couple pack main account)
+      if (m.is_couple_main && m.couple_partner_id && syncPartner && partner) {
+        const partnerFee = partner.fee_amount || m.fee_amount;
+        const partnerCycleDays = partner.fee_cycle_days || m.fee_cycle_days || 30;
+        const partnerNextDue = new Date(paymentDate);
+        partnerNextDue.setDate(partnerNextDue.getDate() + partnerCycleDays);
+        const partnerDueStr = partnerNextDue.toISOString().slice(0, 10);
+
+        await sb.from("payments").insert({
+          member_id: m.couple_partner_id,
+          amount: partnerFee,
+          method,
+          notes: `[Couple Pack] Synced from ${m.name}'s payment`,
+          paid_on: paymentDate,
+        });
+        await sb.from("members").update({
+          last_payment_date: paymentDate,
+          next_due_date: partnerDueStr,
+        }).eq("id", m.couple_partner_id);
+      }
+
       alert("Payment recorded successfully!");
       router.refresh();
     } catch (err: any) {
@@ -463,6 +494,12 @@ async function record() {
           <input id="pay-send-wa" type="checkbox" checked={sendWA} onChange={e => setSendWA(e.target.checked)} />
           Send WhatsApp
         </label>
+        {m.is_couple_main && m.couple_partner_id && partner && (
+          <label style={{ display: "flex", alignItems: "center", gap: "0.5rem", fontSize: "0.9rem", marginTop: "0.4rem", cursor: "pointer", color: "#f43f5e" }}>
+            <input id="pay-sync-partner" type="checkbox" checked={syncPartner} onChange={e => setSyncPartner(e.target.checked)} />
+            💑 Also record payment for partner ({partner.name} · ₹{partner.fee_amount})
+          </label>
+        )}
         <div style={{ display: "flex", gap: "0.5rem", marginTop: "0.7rem", flexWrap: "wrap", width: "100%" }}>
           <button id="pay-record-btn" onClick={record} className="btn btn-primary" disabled={busy} style={{ fontSize: "0.9rem", padding: "0.6rem 1rem" }}>
             {busy ? <><span className="spinner" /> Saving…</> : <><Icon name="check" size={16} /> Record</>}
