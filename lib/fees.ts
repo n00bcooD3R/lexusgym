@@ -1,6 +1,7 @@
-export type FeeStatus = "overdue" | "due-soon" | "ok" | "none";
+export type FeeStatus = "overdue" | "due-soon" | "ok" | "none" | "staff";
 
-export function feeStatus(nextDue: string | null, todayISO?: string): FeeStatus {
+export function feeStatus(nextDue: string | null, todayISO?: string, isStaff?: boolean): FeeStatus {
+  if (isStaff) return "staff";
   if (!nextDue) return "none";
   const today = todayISO ? new Date(todayISO) : new Date();
   today.setHours(0, 0, 0, 0);

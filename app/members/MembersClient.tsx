@@ -88,8 +88,8 @@ export default function MembersClient({ members }: { members: any[] }) {
         )}
         <div className="divide-glass">
           {filtered.map((m) => {
-            const s = feeStatus(m.next_due_date);
-            const nameColor = s === "overdue" ? "#fb7185" : s === "due-soon" ? "#fbbf24" : "var(--text)";
+            const s = feeStatus(m.next_due_date, undefined, m.is_staff);
+            const nameColor = s === "staff" ? "#a78bfa" : s === "overdue" ? "#fb7185" : s === "due-soon" ? "#fbbf24" : "var(--text)";
             return (
               <Link key={m.id} href={`/members/${m.id}`} id={`member-row-${m.id}`}
                 style={{ display: "flex", alignItems: "center", gap: "0.75rem", padding: "0.75rem 1rem", textDecoration: "none", color: "var(--text)", transition: "background 0.2s" }}
@@ -103,12 +103,13 @@ export default function MembersClient({ members }: { members: any[] }) {
                   <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", display: "flex", alignItems: "center", gap: "0.35rem", flexWrap: "wrap" }}>
                     #{m.admission_no} · {m.phone}
                     {m.is_pt_client && <span className="badge badge-pt">PT</span>}
+                    {m.is_staff && <span className="badge" style={{ background: "rgba(139,92,246,0.15)", color: "#a78bfa", border: "1px solid rgba(139,92,246,0.3)" }}>Staff</span>}
                     {!m.active && <span className="badge" style={{ background: "rgba(148,163,184,0.15)", color: "var(--text-muted)", border: "1px solid var(--border)" }}>Inactive</span>}
                   </div>
                 </div>
                 <div style={{ textAlign: "right", fontSize: "0.75rem" }}>
-                  <div style={{ color: nameColor, fontWeight: 500 }}>{m.next_due_date ? formatDate(m.next_due_date) : "—"}</div>
-                  <div style={{ color: "var(--text-muted)" }}>₹{m.fee_amount}</div>
+                  <div style={{ color: nameColor, fontWeight: 500 }}>{s === "staff" ? "Staff" : m.next_due_date ? formatDate(m.next_due_date) : "—"}</div>
+                  <div style={{ color: "var(--text-muted)" }}>{s === "staff" ? "Unlimited" : `₹${m.fee_amount}`}</div>
                 </div>
                 {s === "overdue" && <span className="badge badge-overdue">!</span>}
                 {s === "due-soon" && <span className="badge badge-duesoon">~</span>}

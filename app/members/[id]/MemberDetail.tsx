@@ -11,11 +11,11 @@ export default function MemberDetail({ member, payments, workouts, diets, messag
   const [tab, setTab] = useState<"info" | "payments" | "workouts" | "diets" | "messages" | "portal">("info");
   const [showDelete, setShowDelete] = useState(false);
   const [deleting, setDeleting] = useState(false);
-  const status = feeStatus(member.next_due_date);
+  const status = feeStatus(member.next_due_date, undefined, member.is_staff);
 
-  const statusBadgeClass = status === "overdue" ? "badge-overdue" : status === "due-soon" ? "badge-duesoon" : status === "ok" ? "badge-ok" : "";
-  const statusDot = status === "overdue" ? "🔴" : status === "due-soon" ? "🟡" : status === "ok" ? "🟢" : "";
-  const statusLabel = status === "overdue" ? "OVERDUE" : status === "due-soon" ? "DUE SOON" : status === "ok" ? "PAID" : "NO FEE";
+  const statusBadgeClass = status === "overdue" ? "badge-overdue" : status === "due-soon" ? "badge-duesoon" : status === "ok" ? "badge-ok" : status === "staff" ? "badge-staff" : "";
+  const statusDot = status === "overdue" ? "🔴" : status === "due-soon" ? "🟡" : status === "ok" ? "🟢" : status === "staff" ? "💜" : "";
+  const statusLabel = status === "overdue" ? "OVERDUE" : status === "due-soon" ? "DUE SOON" : status === "ok" ? "PAID" : status === "staff" ? "STAFF / WORKER" : "NO FEE";
 
   function getDaysLeft() {
     if (!member.next_due_date) return null;
@@ -76,7 +76,16 @@ export default function MemberDetail({ member, payments, workouts, diets, messag
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", flexWrap: "wrap" }}>
             <h1 style={{ fontSize: "1.6rem", fontWeight: 800, margin: 0, color: "var(--text)" }}>{member.name}</h1>
-            <span className={`badge ${statusBadgeClass}`} style={{ fontSize: "0.85rem", padding: "0.3rem 0.65rem" }}>{statusDot} {statusLabel}</span>
+            <span 
+              className={`badge ${statusBadgeClass}`} 
+              style={{ 
+                fontSize: "0.85rem", 
+                padding: "0.3rem 0.65rem",
+                ...(status === "staff" ? { background: "rgba(139,92,246,0.15)", color: "#a78bfa", border: "1px solid rgba(139,92,246,0.3)" } : {})
+              }}
+            >
+              {statusDot} {statusLabel}
+            </span>
             {member.is_pt_client && <span className="badge badge-pt" style={{ fontSize: "0.85rem" }}>PT Client</span>}
             {member.couple_partner_id && (
               <a
@@ -92,11 +101,13 @@ export default function MemberDetail({ member, payments, workouts, diets, messag
             #{member.admission_no} · {member.phone}
           </div>
           <div style={{ fontSize: "0.95rem", color: "var(--text-muted)", marginTop: "0.2rem" }}>
-            Next due: {member.next_due_date ? formatDate(member.next_due_date) : "—"} · ₹{member.fee_amount}
+            {member.is_staff 
+              ? "Staff / Employee (Unlimited Access)" 
+              : `Next due: ${member.next_due_date ? formatDate(member.next_due_date) : "—"} · ₹${member.fee_amount}`}
           </div>
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-          <button id="send-reminder-btn" onClick={sendReminder} className="btn btn-cyan"><Icon name="send" size={18} /> Reminder</button>
+          {!member.is_staff && <button id="send-reminder-btn" onClick={sendReminder} className="btn btn-cyan"><Icon name="send" size={18} /> Reminder</button>}
           <a href={`/members/${member.id}/edit`} className="btn btn-ghost" id="edit-member-btn"><Icon name="edit" size={18} /> Edit</a>
           <button id="delete-member-btn" onClick={() => setShowDelete(true)} className="btn btn-danger" style={{ fontSize: "0.85rem", padding: "0.4rem" }}><Icon name="trash" size={18} /> Delete</button>
           {showDelete && (

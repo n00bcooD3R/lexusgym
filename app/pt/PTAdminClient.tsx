@@ -338,7 +338,7 @@ export default function PTAdminClient({ members }: { members: any[] }) {
         )}
         <div className="divide-glass">
           {filtered.map(m => {
-            const s = feeStatus(m.next_due_date);
+            const s = feeStatus(m.next_due_date, undefined, m.is_staff);
             return (
               <button key={m.id} onClick={() => setSelected(m)} style={{ width: "100%", background: "none", border: "none", cursor: "pointer", textAlign: "left" }}
                 onMouseEnter={e => (e.currentTarget.style.background = "var(--surface-hover)")}
@@ -348,11 +348,11 @@ export default function PTAdminClient({ members }: { members: any[] }) {
                     ? <img src={m.photo_url} style={{ width: 40, height: 40, borderRadius: "50%", objectFit: "cover", border: "2px solid var(--accent)" }} />
                     : <div style={{ width: 40, height: 40, borderRadius: "50%", background: "linear-gradient(135deg,var(--accent),var(--accent2))", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, color: "white" }}>{m.name.charAt(0)}</div>}
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontWeight: 600, color: s === "overdue" ? "#fb7185" : s === "due-soon" ? "#fbbf24" : "var(--text)" }}>{m.name}</div>
+                    <div style={{ fontWeight: 600, color: s === "staff" ? "#a78bfa" : s === "overdue" ? "#fb7185" : s === "due-soon" ? "#fbbf24" : "var(--text)" }}>{m.name}</div>
                     <div style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>#{m.admission_no} · {m.phone}</div>
                   </div>
                   <span style={{ fontSize: "0.75rem", color: "var(--text-muted)", marginRight: "0.5rem" }}>
-                    {s === "overdue" ? "🔴 Overdue" : s === "due-soon" ? "🟡 Due soon" : "🟢 Active"}
+                    {s === "overdue" ? "🔴 Overdue" : s === "due-soon" ? "🟡 Due soon" : s === "staff" ? "💜 Staff" : "🟢 Active"}
                   </span>
                   <span style={{ color: "var(--text-muted)", fontSize: "1rem" }}>›</span>
                 </div>

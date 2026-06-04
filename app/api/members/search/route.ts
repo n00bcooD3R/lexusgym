@@ -13,7 +13,7 @@ export async function GET(req: Request) {
   const sb = createAdminClient();
   const { data } = await sb
     .from("members")
-    .select("id, name, admission_no, phone")
+    .select("id, name, admission_no, phone, is_staff")
     .or(`name.ilike.%${q}%,phone.ilike.%${q}%,admission_no.ilike.%${q}%`)
     .neq("id", exclude)
     .limit(8);

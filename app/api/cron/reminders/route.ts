@@ -46,12 +46,13 @@ export async function GET(req: NextRequest) {
 
   const { data: members } = await sb
     .from("members")
-    .select("id, name, phone, fee_amount, next_due_date, active")
+    .select("id, name, phone, fee_amount, next_due_date, active, is_staff")
     .eq("active", true)
     .or(`next_due_date.eq.${todayStr},next_due_date.eq.${in1Str},next_due_date.eq.${in2Str},next_due_date.eq.${in3Str},next_due_date.eq.${in4Str},next_due_date.lt.${todayStr}`);
 
   const results: any[] = [];
   for (const m of members || []) {
+    if (m.is_staff) continue;
     if (!m.phone) continue;
     
     const dueDate = m.next_due_date ? new Date(m.next_due_date) : null;

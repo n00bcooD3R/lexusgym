@@ -44,13 +44,88 @@ export default function SettingsPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
-  const [tab, setTab] = useState<"gym" | "messages" | "qr">("gym");
+  const [tab, setTab] = useState<"gym" | "messages" | "qr" | "staff">("gym");
 
   const TABS = [
     { id: "gym", label: "Gym Details", icon: "settings" },
     { id: "messages", label: "Messages", icon: "mail" },
     { id: "qr", label: "WhatsApp QR", icon: "eye" },
+    { id: "staff", label: "Staff List", icon: "user" },
   ];
+
+  // Staff list state
+  const [staff, setStaff] = useState<any[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [searching, setSearching] = useState(false);
+
+  // Load staff function
+  async function loadStaff() {
+    try {
+      const sb = createClient();
+      const { data } = await sb.from("members").select("id, name, phone, admission_no, is_staff").eq("is_staff", true).order("name");
+      setStaff(data || []);
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  // Load staff on tab switch to staff
+  useEffect(() => {
+    if (tab === "staff") {
+      loadStaff();
+    }
+  }, [tab]);
+
+  // Search members to add to staff
+  async function searchMember(q: string) {
+    setSearchQuery(q);
+    if (q.length < 2) {
+      setSearchResults([]);
+      return;
+    }
+    setSearching(true);
+    try {
+      const res = await fetch(`/api/members/search?q=${encodeURIComponent(q)}`);
+      const data = await res.json();
+      setSearchResults(data.filter((m: any) => !m.is_staff));
+    } catch (err) {
+      console.error(err);
+    }
+    setSearching(false);
+  }
+
+  // Add staff
+  async function addStaff(m: any) {
+    try {
+      const sb = createClient();
+      const { error } = await sb.from("members").update({ is_staff: true }).eq("id", m.id);
+      if (error) {
+        alert("Error adding staff: " + error.message);
+      } else {
+        setSearchQuery("");
+        setSearchResults([]);
+        loadStaff();
+      }
+    } catch (err: any) {
+      alert(err.message);
+    }
+  }
+
+  // Remove staff
+  async function removeStaff(id: string) {
+    try {
+      const sb = createClient();
+      const { error } = await sb.from("members").update({ is_staff: false }).eq("id", id);
+      if (error) {
+        alert("Error removing staff: " + error.message);
+      } else {
+        loadStaff();
+      }
+    } catch (err: any) {
+      alert(err.message);
+    }
+  }
 
   useEffect(() => {
     async function load() {
@@ -179,6 +254,117 @@ export default function SettingsPage() {
             <p style={{ fontSize: "0.85rem", color: "var(--text-muted)", maxWidth: "320px" }}>
               Scan this QR with your phone (Linked Devices &rarr; Link a Device) to connect to the WhatsApp Bridge.
             </p>
+          </div>
+        </div>
+      )}
+
+      {tab === "staff" && (
+        <div className="glass" style={{ padding: "1.25rem", display: "flex", flexDirection: "column", gap: "1rem" }}>
+          <div>
+            <h3 style={{ fontSize: "1.1rem", fontWeight: 700, marginBottom: "0.5rem" }}>Manage Gym Staff</h3>
+            <p style={{ fontSize: "0.85rem", color: "var(--text-muted)", marginBottom: "1rem" }}>
+              Staff members are gym workers who have unlimited access and do not require fee tracking. They are hidden from the overdue and due-soon lists.
+            </p>
+          </div>
+
+          {/* Add Staff Search */}
+          <div style={{ position: "relative" }}>
+            <span style={{ fontSize: "0.75rem", color: "var(--text-muted)", display: "block", marginBottom: "0.3rem", fontWeight: 500 }}>
+              Search Member to Add as Staff
+            </span>
+            <input
+              type="text"
+              className="input"
+              placeholder="Type member name..."
+              value={searchQuery}
+              onChange={e => searchMember(e.target.value)}
+              style={{ fontSize: "0.95rem" }}
+            />
+            {searching && (
+              <span className="spinner" style={{ position: "absolute", right: "0.75rem", bottom: "0.6rem", width: "1.2rem", height: "1.2rem" }} />
+            )}
+            
+            {/* Search Results Dropdown */}
+            {searchResults.length > 0 && (
+              <div style={{
+                position: "absolute",
+                top: "100%",
+                left: 0,
+                right: 0,
+                background: "var(--surface)",
+                border: "1px solid var(--border)",
+                borderRadius: "0.5rem",
+                boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+                zIndex: 10,
+                maxHeight: "180px",
+                overflowY: "auto",
+                marginTop: "0.25rem"
+              }}>
+                {searchResults.map((m: any) => (
+                  <div
+                    key={m.id}
+                    onClick={() => addStaff(m)}
+                    style={{
+                      padding: "0.6rem 0.85rem",
+                      cursor: "pointer",
+                      fontSize: "0.9rem",
+                      borderBottom: "1px solid var(--border)",
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center"
+                    }}
+                    onMouseEnter={e => (e.currentTarget.style.background = "var(--surface-hover)")}
+                    onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
+                  >
+                    <span>{m.name} <span style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>({m.phone})</span></span>
+                    <span style={{ fontSize: "0.75rem", color: "var(--accent)" }}>Add to Staff +</span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Current Staff List */}
+          <div style={{ marginTop: "0.5rem" }}>
+            <span style={{ fontSize: "0.78rem", color: "var(--text-muted)", display: "block", marginBottom: "0.5rem", fontWeight: 600 }}>
+              Current Staff Members ({staff.length})
+            </span>
+            <div style={{ border: "1px solid var(--border)", borderRadius: "0.5rem", overflow: "hidden" }}>
+              {staff.length === 0 ? (
+                <div style={{ padding: "1.5rem", textAlign: "center", color: "var(--text-muted)", fontSize: "0.85rem" }}>
+                  No staff members added yet.
+                </div>
+              ) : (
+                <div style={{ display: "flex", flexDirection: "column" }}>
+                  {staff.map((s: any, idx: number) => (
+                    <div
+                      key={s.id}
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        padding: "0.6rem 0.85rem",
+                        fontSize: "0.9rem",
+                        borderBottom: idx < staff.length - 1 ? "1px solid var(--border)" : "none",
+                        background: "var(--surface)"
+                      }}
+                    >
+                      <div>
+                        <div style={{ fontWeight: 600 }}>{s.name}</div>
+                        <div style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>#{s.admission_no} · {s.phone}</div>
+                      </div>
+                      <button
+                        onClick={() => removeStaff(s.id)}
+                        className="btn btn-danger"
+                        style={{ padding: "0.3rem 0.6rem", fontSize: "0.75rem", minHeight: "auto", width: "auto" }}
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         </div>
       )}

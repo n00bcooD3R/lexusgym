@@ -9,7 +9,7 @@ type M = {
   id: string; admission_no: string; name: string; phone: string;
   photo_url: string | null; fee_amount: number;
   next_due_date: string | null; last_payment_date: string | null;
-  is_pt_client: boolean; active: boolean;
+  is_pt_client: boolean; active: boolean; is_staff: boolean;
 };
 
 export default function DashboardClient({ members }: { members: M[] }) {
@@ -19,6 +19,10 @@ export default function DashboardClient({ members }: { members: M[] }) {
   const grouped = useMemo(() => {
     const overdue: M[] = [], dueSoon: M[] = [], ok: M[] = [];
     for (const m of members) {
+      if (m.is_staff) {
+        ok.push(m);
+        continue;
+      }
       const s = feeStatus(m.next_due_date);
       if (s === "overdue") overdue.push(m);
       else if (s === "due-soon") dueSoon.push(m);
@@ -127,7 +131,7 @@ function Section({ title, rows, sending, onSend, variant, dot }: {
 }
 
 function MemberRow({ m, sending, onSend, variant }: any) {
-  const status = feeStatus(m.next_due_date);
+  const status = feeStatus(m.next_due_date, undefined, m.is_staff);
   return (
     <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", padding: "0.75rem 1rem", transition: "background 0.2s" }}
       onMouseEnter={e => (e.currentTarget.style.background = "var(--surface-hover)")}
@@ -135,8 +139,9 @@ function MemberRow({ m, sending, onSend, variant }: any) {
       <Link href={`/members/${m.id}`} style={{ display: "flex", alignItems: "center", gap: "0.75rem", flex: 1, minWidth: 0, textDecoration: "none", color: "var(--text)" }}>
         <Avatar src={m.photo_url} name={m.name} />
         <div style={{ minWidth: 0, flex: 1 }}>
-          <div style={{ fontWeight: 600, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", color: variant === "overdue" ? "#fb7185" : variant === "duesoon" ? "#fbbf24" : "var(--text)" }}>
+          <div style={{ fontWeight: 600, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", color: status === "staff" ? "#a78bfa" : variant === "overdue" ? "#fb7185" : variant === "duesoon" ? "#fbbf24" : "var(--text)" }}>
             {m.name}
+            {m.is_staff && <span className="badge" style={{ marginLeft: "0.4rem", background: "rgba(139,92,246,0.15)", color: "#a78bfa", border: "1px solid rgba(139,92,246,0.3)", fontSize: "0.7rem", padding: "0.1rem 0.35rem" }}>Staff</span>}
           </div>
           <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", display: "flex", alignItems: "center", gap: "0.4rem" }}>
             #{m.admission_no} · {m.phone}
@@ -145,21 +150,25 @@ function MemberRow({ m, sending, onSend, variant }: any) {
         </div>
       </Link>
       <div style={{ textAlign: "right", fontSize: "0.75rem", display: "none" }} className="sm-show">
-        <div style={{ color: variant === "overdue" ? "#fb7185" : variant === "duesoon" ? "#fbbf24" : "var(--text-muted)" }}>
-          {m.next_due_date ? formatDate(m.next_due_date) : "—"}
+        <div style={{ color: status === "staff" ? "#a78bfa" : variant === "overdue" ? "#fb7185" : variant === "duesoon" ? "#fbbf24" : "var(--text-muted)" }}>
+          {status === "staff" ? "Staff" : m.next_due_date ? formatDate(m.next_due_date) : "—"}
         </div>
-        <div style={{ color: "var(--text-muted)" }}>₹{m.fee_amount}</div>
+        <div style={{ color: "var(--text-muted)" }}>
+          {status === "staff" ? "Unlimited" : `₹${m.fee_amount}`}
+        </div>
       </div>
-      <button
-        disabled={sending === m.id}
-        onClick={() => onSend(m)}
-        className="btn btn-primary"
-        id={`send-reminder-${m.id}`}
-        style={{ padding: "0.4rem 0.85rem", fontSize: "0.8rem", minWidth: "auto", flexShrink: 0 }}
-      >
-        {sending === m.id ? <span className="spinner" /> : <Icon name="send" size={16} />}
-        <span className="hidden sm:inline">Send</span>
-      </button>
+      {status !== "staff" && (
+        <button
+          disabled={sending === m.id}
+          onClick={() => onSend(m)}
+          className="btn btn-primary"
+          id={`send-reminder-${m.id}`}
+          style={{ padding: "0.4rem 0.85rem", fontSize: "0.8rem", minWidth: "auto", flexShrink: 0 }}
+        >
+          {sending === m.id ? <span className="spinner" /> : <Icon name="send" size={16} />}
+          <span className="hidden sm:inline">Send</span>
+        </button>
+      )}
     </div>
   );
 }
