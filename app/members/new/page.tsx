@@ -11,7 +11,7 @@ const PLANS = [
   { id: "prime",     label: "Prime Plan",     months: 12, days: 365, fee: 9999,  color: "#10b981", glow: "rgba(16,185,129,0.35)" },
 ];
 
-import { generateInvoice } from "@/lib/pdf-bill";
+import { generateInvoice, setGymDetails } from "@/lib/pdf-bill";
 
 const getTodayString = () => {
   const d = new Date();
@@ -47,6 +47,7 @@ export default function NewMember() {
       const res = await fetch("/api/settings/list");
       const data = await res.json();
       setSettings(data);
+      setGymDetails(data);
     }
     load();
   }, []);

@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase-client";
 import { feeStatus, formatDate } from "@/lib/fees";
-import { generateInvoice } from "@/lib/pdf-bill";
+import { generateInvoice, setGymDetails } from "@/lib/pdf-bill";
 import { Icon } from "@/components/Icons";
 
 export default function MemberDetail({ member, payments, workouts, diets, messages, partner }: any) {
@@ -464,15 +464,7 @@ function PaymentsTab({ m, payments, partner }: any) {
       }).eq("id", m.id);
       
       if (sendWA && payment) {
-        const doc = generateInvoice(m, { ...payment, paid_on: paymentDate }, { trainerCharges: extraCharges.trainer, dietCharges: extraCharges.diet, admissionFee: extraCharges.admission });
-        const pdfBlob = doc.output("blob");
-        
-        // format expiring date nicely for WA message
-        const expiryDateObj = new Date(expiringDate);
-        const expiry = expiryDateObj.toLocaleDateString("en-IN");
-        const paymentMethodStr = method === "upi" ? "UPI/QR" : method === "card" ? "Card" : method === "bank" ? "Bank Transfer" : "Cash";
-
-        // Fetch msg_payment template from settings
+        // Fetch msg_payment template and gym details from settings first
         let gymName = "Lexus Fitness Group";
         let msgTemplate = "Hello {name},\n\nThank you for ₹{amount}! 💪\nMembership active until {expiry}.\n\n— Team {gym_name}";
         try {
@@ -480,7 +472,16 @@ function PaymentsTab({ m, payments, partner }: any) {
           const settingsData = await resSettings.json();
           if (settingsData.gym_name) gymName = settingsData.gym_name;
           if (settingsData.msg_payment) msgTemplate = settingsData.msg_payment;
+          setGymDetails(settingsData);
         } catch { /* use defaults */ }
+
+        const doc = generateInvoice(m, { ...payment, paid_on: paymentDate }, { trainerCharges: extraCharges.trainer, dietCharges: extraCharges.diet, admissionFee: extraCharges.admission });
+        const pdfBlob = doc.output("blob");
+        
+        // format expiring date nicely for WA message
+        const expiryDateObj = new Date(expiringDate);
+        const expiry = expiryDateObj.toLocaleDateString("en-IN");
+        const paymentMethodStr = method === "upi" ? "UPI/QR" : method === "card" ? "Card" : method === "bank" ? "Bank Transfer" : "Cash";
 
         const msg = msgTemplate
           .replace(/{name}/g, m.name)
@@ -520,7 +521,14 @@ function PaymentsTab({ m, payments, partner }: any) {
     setBusy(false);
   }
 
-  function previewInvoice() {
+  async function previewInvoice() {
+    try {
+      const resSettings = await fetch("/api/settings/list");
+      const settingsData = await resSettings.json();
+      setGymDetails(settingsData);
+    } catch (e) {
+      console.error("Preview settings fetch error", e);
+    }
     const doc = generateInvoice(m, { id: "preview", paid_on: paymentDate, amount: Number(amount) + extraCharges.trainer + extraCharges.diet + extraCharges.admission, method }, { trainerCharges: extraCharges.trainer, dietCharges: extraCharges.diet, admissionFee: extraCharges.admission });
     doc.save(`Invoice_${m.admission_no}_preview.pdf`);
   }

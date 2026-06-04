@@ -10,7 +10,14 @@ let gymDetails: Record<string, string> = {
 };
 
 export function setGymDetails(details: Record<string, string>) {
-  gymDetails = { ...gymDetails, ...details };
+  gymDetails = {
+    name: details.gym_name || details.name || gymDetails.name,
+    tagline: details.gym_tagline || details.tagline || gymDetails.tagline,
+    address: details.gym_address || details.address || gymDetails.address,
+    phone: details.gym_phone || details.phone || gymDetails.phone,
+    email: details.gym_email || details.email || gymDetails.email,
+    gst: details.gym_gst || details.gst || gymDetails.gst,
+  };
 }
 
 export function getGymDetails() {

@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase-client";
 import { Icon } from "@/components/Icons";
+import { setGymDetails } from "@/lib/pdf-bill";
 
 const SETTINGS_KEYS: Record<string, string> = {
   gym_name: "Gym Name", gym_tagline: "Tagline", gym_address: "Address",
@@ -73,6 +74,7 @@ export default function SettingsPage() {
     for (const [key, value] of Object.entries(settings)) {
       await sb.from("settings").upsert({ key, value, updated_at: new Date().toISOString() }, { onConflict: "key" });
     }
+    setGymDetails(settings);
     setSaving(false); setSaved(true);
     setTimeout(() => setSaved(false), 2500);
   }
