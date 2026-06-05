@@ -88,13 +88,14 @@ export default function SettingsPage() {
     try {
       const res = await fetch(`/api/members/search?q=${encodeURIComponent(q)}`);
       const data = await res.json();
+      console.log("Staff Search autocomplete response:", { query: q, status: res.status, data });
       if (Array.isArray(data)) {
         setSearchResults(data.filter((m: any) => !m.is_staff));
       } else {
         setSearchResults([]);
       }
     } catch (err) {
-      console.error(err);
+      console.error("Staff Search client error:", err);
       setSearchResults([]);
     }
     setSearching(false);

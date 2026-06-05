@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { createAdminClient } from "@/lib/supabase-server";
+import { createClient } from "@/lib/supabase-server";
 
 export const dynamic = "force-dynamic";
 
@@ -10,7 +10,7 @@ export async function GET(req: Request) {
 
   if (!q || q.length < 2) return NextResponse.json([]);
 
-  const sb = createAdminClient();
+  const sb = createClient();
   let query = sb
     .from("members")
     .select("id, name, admission_no, phone, is_staff")
@@ -20,7 +20,11 @@ export async function GET(req: Request) {
     query = query.neq("id", exclude);
   }
 
-  const { data } = await query.limit(8);
+  const { data, error } = await query.limit(8);
+  if (error) {
+    console.error("Search API Database Error:", error.message);
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
 
   return NextResponse.json(data ?? []);
 }
