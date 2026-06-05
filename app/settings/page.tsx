@@ -136,14 +136,14 @@ export default function SettingsPage() {
   useEffect(() => {
     async function load() {
       try {
-        const sb = createClient();
-        const { data } = await sb.from("settings").select("key, value");
-        if (data && data.length > 0) {
-          const obj: Record<string, string> = {};
-          data.forEach((s: any) => { obj[s.key] = s.value || ""; });
-          setSettings({ ...DEFAULT_SETTINGS, ...obj });
+        const res = await fetch("/api/settings/list");
+        const data = await res.json();
+        if (data && Object.keys(data).length > 0) {
+          setSettings({ ...DEFAULT_SETTINGS, ...data });
         }
-      } catch { /* use defaults */ }
+      } catch (err) {
+        console.error("Failed to load settings:", err);
+      }
       setLoading(false);
     }
     load();
@@ -152,12 +152,14 @@ export default function SettingsPage() {
   async function saveAll() {
     setSaving(true);
     try {
-      const sb = createClient();
-      for (const [key, value] of Object.entries(settings)) {
-        const { error } = await sb.from("settings").upsert({ key, value, updated_at: new Date().toISOString() }, { onConflict: "key" });
-        if (error) {
-          throw new Error(`Failed to save key "${key}": ${error.message}`);
-        }
+      const res = await fetch("/api/settings/list", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(settings)
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || "Failed to save settings");
       }
       setGymDetails(settings);
       setSaved(true);

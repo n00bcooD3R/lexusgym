@@ -11,6 +11,11 @@ export async function GET(req: Request) {
   if (!q || q.length < 2) return NextResponse.json([]);
 
   const sb = createClient();
+  const { data: { user } } = await sb.auth.getUser();
+  if (!user) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   let query = sb
     .from("members")
     .select("id, name, admission_no, phone, is_staff")
