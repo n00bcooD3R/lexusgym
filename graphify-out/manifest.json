@@ -20,8 +20,8 @@
     "semantic_hash": ""
   },
   "backend/api/index.py": {
-    "mtime": 1780900467.1520178,
-    "ast_hash": "830f52f38de492045ba3e26bb477d4c7",
+    "mtime": 1780902309.410955,
+    "ast_hash": "1d3ce1bd120720a41b216da7f60acb13",
     "semantic_hash": ""
   },
   "backend/api/pdf.py": {
@@ -295,8 +295,8 @@
     "semantic_hash": ""
   },
   "web/src/lib/supabase.ts": {
-    "mtime": 1780900921.7292109,
-    "ast_hash": "823d5183b62b5aad26c03a1326b04f83",
+    "mtime": 1780902305.3719761,
+    "ast_hash": "fa41a54bf8274939c4558c5a8795e7a5",
     "semantic_hash": ""
   },
   "web/src/main.tsx": {
@@ -370,8 +370,8 @@
     "semantic_hash": ""
   },
   "web/vite.config.ts": {
-    "mtime": 1780900184.3305936,
-    "ast_hash": "0df2bd574682ad27efb761430510ae6f",
+    "mtime": 1780902300.3642778,
+    "ast_hash": "7263013a40c4ef9025c1e0dc8bac1336",
     "semantic_hash": ""
   },
   "whatsapp-server/package.json": {
@@ -557,6 +557,16 @@
   "web/src/assets/vite.svg": {
     "mtime": 1780900013.6754327,
     "ast_hash": "9960a24288958394ac50e57ff638b036",
+    "semantic_hash": ""
+  },
+  "backend/api/requirements.txt": {
+    "mtime": 1780902317.625422,
+    "ast_hash": "3088b83bebbe12fc7a83283c9ec840a5",
+    "semantic_hash": ""
+  },
+  "requirements.txt": {
+    "mtime": 1780902313.5092666,
+    "ast_hash": "3088b83bebbe12fc7a83283c9ec840a5",
     "semantic_hash": ""
   }
 }

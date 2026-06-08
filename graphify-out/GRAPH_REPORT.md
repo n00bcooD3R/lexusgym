@@ -1,7 +1,7 @@
 # Graph Report - gymapp  (2026-06-08)
 
 ## Corpus Check
-- 92 files · ~96,362 words
+- 92 files · ~96,428 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
@@ -10,7 +10,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `b1daae09`
+- Built from commit: `8f276a24`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
