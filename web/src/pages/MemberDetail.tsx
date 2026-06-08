@@ -247,7 +247,7 @@ export default function MemberDetailPage() {
       {tab === "workouts" && <WorkoutsTab m={member} workouts={workouts} onReload={loadData} />}
       {tab === "diets" && <DietsTab m={member} diets={diets} onReload={loadData} />}
       {tab === "portal" && <PortalTab m={member} />}
-      {tab === "messages" && <MessagesTab messages={messages} m={member} onReload={loadData} />}
+      {tab === "messages" && <MessagesTab messages={messages} m={member} payments={payments} onReload={loadData} />}
     </div>
   );
 }
@@ -1093,7 +1093,7 @@ function PortalTab({ m }: { m: any }) {
   );
 }
 
-function MessagesTab({ messages, m, onReload }: { messages: any[]; m: any; onReload: () => void }) {
+function MessagesTab({ messages, m, payments, onReload }: { messages: any[]; m: any; payments: any[]; onReload: () => void }) {
   const [sending, setSending] = useState<string | null>(null);
 
   function getDaysLeft() {
@@ -1101,7 +1101,7 @@ function MessagesTab({ messages, m, onReload }: { messages: any[]; m: any; onRel
     return Math.max(0, Math.ceil((new Date(m.next_due_date).getTime() - Date.now()) / 86400000));
   }
 
-  async function sendPreset(type: "welcome" | "renewal" | "reminder" | "expired") {
+  async function sendPreset(type: "welcome" | "renewal" | "payment" | "reminder" | "expired") {
     setSending(type);
     try {
       let template = "";
@@ -1115,17 +1115,48 @@ function MessagesTab({ messages, m, onReload }: { messages: any[]; m: any; onRel
         template = settings.msg_welcome || "Hello {name}, 👋\n\nWelcome to {gym_name}! 💪\n\n— Team {gym_name}";
       } else if (type === "renewal") {
         template = settings.msg_renewal || "Hello {name},\n\nYour {gym_name} membership has been renewed! 💪🔥\n\n— Team {gym_name}";
+      } else if (type === "payment") {
+        template = settings.msg_payment || "Hello {name},\n\nThank you for ₹{amount}! 💪\nMembership active until {expiry}.\n\n— Team {gym_name}";
       } else if (type === "reminder") {
         template = settings.msg_reminder || "Hello {name},\n\nYour {gym_name} membership expires in {days} days. 💪\nPlease renew soon!\n\n— Team {gym_name}";
       } else if (type === "expired") {
         template = settings.msg_expired || "Hello {name},\n\nYour {gym_name} membership has expired. 😔\nPlease renew to continue.\n\n— Team {gym_name}";
       }
 
+      // Determine payment details to use
+      const sortedPayments = [...payments].sort((a, b) => new Date(a.paid_on).getTime() - new Date(b.paid_on).getTime());
+      let paymentAmount = m.fee_amount;
+      
+      if (type === "welcome") {
+        // First payment
+        if (sortedPayments.length > 0) {
+          paymentAmount = sortedPayments[0].amount;
+        }
+      } else if (type === "renewal" || type === "payment") {
+        // Last payment
+        if (sortedPayments.length > 0) {
+          paymentAmount = sortedPayments[sortedPayments.length - 1].amount;
+        }
+      }
+
       const daysLeft = getDaysLeft();
-      const body = template
+      const expiry = m.next_due_date ? new Date(m.next_due_date).toLocaleDateString("en-IN") : "N/A";
+      
+      let body = template
         .replace(/{name}/g, m.name)
         .replace(/{gym_name}/g, gymName)
         .replace(/{days}/g, String(daysLeft));
+
+      // Replace amount and expiry if they exist in the template
+      if (body.includes("{amount}") || body.includes("{expiry}")) {
+        body = body
+          .replace(/{amount}/g, String(paymentAmount))
+          .replace(/{expiry}/g, expiry);
+      } else if (type === "welcome" && paymentAmount > 0) {
+        body += `\n\nWe received ₹${paymentAmount}.`;
+      } else if ((type === "renewal" || type === "payment") && paymentAmount > 0) {
+        body += `\n\nWe received ₹${paymentAmount}. Membership active until ${expiry}.`;
+      }
 
       const res = await apiFetch("/api/wa/send", { 
         method: "POST", 
@@ -1169,6 +1200,15 @@ function MessagesTab({ messages, m, onReload }: { messages: any[]; m: any; onRel
             style={{ padding: "0.6rem 0.8rem", fontSize: "0.85rem" }}
           >
             {sending === "renewal" ? "Sending..." : "🔄 Renewal Msg"}
+          </button>
+          <button 
+            type="button"
+            className="btn btn-cyan" 
+            onClick={() => sendPreset("payment")} 
+            disabled={sending !== null}
+            style={{ padding: "0.6rem 0.8rem", fontSize: "0.85rem" }}
+          >
+            {sending === "payment" ? "Sending..." : "💳 Payment Conf"}
           </button>
           <button 
             type="button"
