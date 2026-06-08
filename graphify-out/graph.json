@@ -64,6 +64,16 @@
       "norm_label": "get_current_user()"
     },
     {
+      "label": "str",
+      "file_type": "code",
+      "source_file": "backend/api/auth.py",
+      "source_location": "L4",
+      "_origin": "ast",
+      "id": "backend_api_auth_py_str",
+      "community": 0,
+      "norm_label": "str"
+    },
+    {
       "label": "FastAPI dependency to validate user JWT session token.     Raises 401 Unauthoriz",
       "file_type": "rationale",
       "source_file": "backend/api/auth.py",
@@ -160,7 +170,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "api_pdf",
-      "community": 0,
+      "community": 56,
       "norm_label": "pdf.py"
     },
     {
@@ -170,7 +180,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "api_pdf_invoicepdf",
-      "community": 0,
+      "community": 56,
       "norm_label": "invoicepdf"
     },
     {
@@ -180,7 +190,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "fpdf",
-      "community": 0,
+      "community": 56,
       "norm_label": "fpdf"
     },
     {
@@ -190,7 +200,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "api_pdf_invoicepdf_header",
-      "community": 0,
+      "community": 56,
       "norm_label": ".header()"
     },
     {
@@ -200,7 +210,7 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "api_pdf_invoicepdf_footer",
-      "community": 0,
+      "community": 56,
       "norm_label": ".footer()"
     },
     {
@@ -210,7 +220,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "api_pdf_generate_invoice_pdf",
-      "community": 0,
+      "community": 56,
       "norm_label": "generate_invoice_pdf()"
     },
     {
@@ -220,7 +230,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "api_pdf_rationale_13",
-      "community": 0,
+      "community": 56,
       "norm_label": "generates a premium invoice receipt pdf using fpdf2.     matches coordinate offs"
     },
     {
@@ -240,7 +250,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "routes_cron",
-      "community": 0,
+      "community": 56,
       "norm_label": "cron.py"
     },
     {
@@ -250,7 +260,7 @@
       "source_location": "L30",
       "_origin": "ast",
       "id": "routes_cron_run_cron_reminders",
-      "community": 0,
+      "community": 56,
       "norm_label": "run_cron_reminders()"
     },
     {
@@ -310,7 +320,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "routes_payments",
-      "community": 0,
+      "community": 56,
       "norm_label": "payments.py"
     },
     {
@@ -320,7 +330,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "routes_payments_webhookpayload",
-      "community": 0,
+      "community": 56,
       "norm_label": "webhookpayload"
     },
     {
@@ -330,7 +340,7 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "routes_payments_payment_webhook",
-      "community": 0,
+      "community": 56,
       "norm_label": "payment_webhook()"
     },
     {
@@ -389,7 +399,7 @@
       "source_file": "backend/api/routes/pt.py",
       "source_location": "L63",
       "_origin": "ast",
-      "id": "response",
+      "id": "backend_api_routes_pt_py_response",
       "community": 0,
       "norm_label": "response"
     },
@@ -477,17 +487,27 @@
       "label": "list_settings()",
       "file_type": "code",
       "source_file": "backend/api/routes/settings.py",
-      "source_location": "L23",
+      "source_location": "L24",
       "_origin": "ast",
       "id": "routes_settings_list_settings",
       "community": 0,
       "norm_label": "list_settings()"
     },
     {
+      "label": "Response",
+      "file_type": "code",
+      "source_file": "backend/api/routes/settings.py",
+      "source_location": "L24",
+      "_origin": "ast",
+      "id": "backend_api_routes_settings_py_response",
+      "community": 0,
+      "norm_label": "response"
+    },
+    {
       "label": "save_settings()",
       "file_type": "code",
       "source_file": "backend/api/routes/settings.py",
-      "source_location": "L37",
+      "source_location": "L51",
       "_origin": "ast",
       "id": "routes_settings_save_settings",
       "community": 0,
@@ -497,7 +517,7 @@
       "label": "seed_settings()",
       "file_type": "code",
       "source_file": "backend/api/routes/settings.py",
-      "source_location": "L50",
+      "source_location": "L64",
       "_origin": "ast",
       "id": "routes_settings_seed_settings",
       "community": 0,
@@ -522,6 +542,16 @@
       "id": "routes_statistics_get_stats_summary",
       "community": 0,
       "norm_label": "get_stats_summary()"
+    },
+    {
+      "label": "str",
+      "file_type": "code",
+      "source_file": "backend/api/routes/statistics.py",
+      "source_location": "L11",
+      "_origin": "ast",
+      "id": "backend_api_routes_statistics_py_str",
+      "community": 0,
+      "norm_label": "str"
     },
     {
       "label": "Computes aggregated KPIs, 6-month historical trends, plan distributions,     and",
@@ -570,7 +600,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "api_whatsapp",
-      "community": 0,
+      "community": 56,
       "norm_label": "whatsapp.py"
     },
     {
@@ -580,7 +610,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "api_whatsapp_send_whatsapp",
-      "community": 0,
+      "community": 56,
       "norm_label": "send_whatsapp()"
     },
     {
@@ -590,7 +620,7 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "api_whatsapp_send_via_meta",
-      "community": 0,
+      "community": 56,
       "norm_label": "send_via_meta()"
     },
     {
@@ -600,7 +630,7 @@
       "source_location": "L72",
       "_origin": "ast",
       "id": "api_whatsapp_send_via_local",
-      "community": 0,
+      "community": 56,
       "norm_label": "send_via_local()"
     },
     {
@@ -610,7 +640,7 @@
       "source_location": "L103",
       "_origin": "ast",
       "id": "api_whatsapp_send_via_evolution",
-      "community": 0,
+      "community": 56,
       "norm_label": "send_via_evolution()"
     },
     {
@@ -620,7 +650,7 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "api_whatsapp_rationale_7",
-      "community": 0,
+      "community": 56,
       "norm_label": "unified whatsapp sender. selects provider based on wa_provider env variable."
     },
     {
@@ -4892,6 +4922,24 @@
       "id": "web_readme_expanding_the_eslint_configuration",
       "community": 31,
       "norm_label": "expanding the eslint configuration"
+    },
+    {
+      "label": "Response",
+      "file_type": "code",
+      "source_file": "backend/api/routes/pt.py",
+      "source_location": "L63",
+      "community": 0,
+      "norm_label": "response",
+      "id": "response"
+    },
+    {
+      "label": "str",
+      "file_type": "code",
+      "source_file": "backend/api/auth.py",
+      "source_location": "L4",
+      "community": 0,
+      "norm_label": "str",
+      "id": "str"
     }
   ],
   "links": [
@@ -5001,6 +5049,28 @@
       "weight": 1.0,
       "source": "api_auth_get_current_user",
       "target": "api_database_get_db_client"
+    },
+    {
+      "relation": "references",
+      "context": "parameter_type",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/api/auth.py",
+      "source_location": "L4",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "api_auth_get_current_user",
+      "target": "backend_api_auth_py_str"
+    },
+    {
+      "relation": "references",
+      "context": "parameter_type",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/api/auth.py",
+      "source_location": "L4",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "api_auth_get_current_user",
+      "target": "str"
     },
     {
       "relation": "rationale_for",
@@ -5662,8 +5732,19 @@
       "source_file": "backend/api/routes/pt.py",
       "source_location": "L22",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_pt_rationale_22",
-      "target": "routes_pt_create_pt_credentials",
+      "target": "routes_pt_create_pt_credentials"
+    },
+    {
+      "relation": "references",
+      "context": "parameter_type",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/api/routes/pt.py",
+      "source_location": "L63",
+      "weight": 1.0,
+      "source": "routes_pt_pt_login",
+      "target": "backend_api_routes_pt_py_response",
       "confidence_score": 1.0
     },
     {
@@ -5683,8 +5764,19 @@
       "source_file": "backend/api/routes/pt.py",
       "source_location": "L64",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_pt_rationale_64",
-      "target": "routes_pt_pt_login",
+      "target": "routes_pt_pt_login"
+    },
+    {
+      "relation": "references",
+      "context": "parameter_type",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/api/routes/pt.py",
+      "source_location": "L106",
+      "weight": 1.0,
+      "source": "routes_pt_pt_logout",
+      "target": "backend_api_routes_pt_py_response",
       "confidence_score": 1.0
     },
     {
@@ -5704,9 +5796,9 @@
       "source_file": "backend/api/routes/pt.py",
       "source_location": "L107",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_pt_rationale_107",
-      "target": "routes_pt_pt_logout",
-      "confidence_score": 1.0
+      "target": "routes_pt_pt_logout"
     },
     {
       "relation": "references",
@@ -5725,9 +5817,9 @@
       "source_file": "backend/api/routes/pt.py",
       "source_location": "L122",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_pt_rationale_122",
-      "target": "routes_pt_get_portal_data",
-      "confidence_score": 1.0
+      "target": "routes_pt_get_portal_data"
     },
     {
       "relation": "contains",
@@ -5760,6 +5852,17 @@
       "target": "routes_settings_seed_settings"
     },
     {
+      "relation": "references",
+      "context": "parameter_type",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/api/routes/settings.py",
+      "source_location": "L24",
+      "weight": 1.0,
+      "source": "routes_settings_list_settings",
+      "target": "backend_api_routes_settings_py_response",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "backend/api/routes/statistics.py",
@@ -5768,6 +5871,17 @@
       "confidence_score": 1.0,
       "source": "routes_statistics",
       "target": "routes_statistics_get_stats_summary"
+    },
+    {
+      "relation": "references",
+      "context": "generic_arg",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/api/routes/statistics.py",
+      "source_location": "L11",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "routes_statistics_get_stats_summary",
+      "target": "backend_api_routes_statistics_py_str"
     },
     {
       "relation": "rationale_for",
@@ -10523,5 +10637,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "379676868b1be155c554e161b92e0f343d7e93e0"
+  "built_at_commit": "87dd2782168299b1fab32a52619e88034e0c94ca"
 }

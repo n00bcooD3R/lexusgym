@@ -132,9 +132,14 @@ export default function SettingsPage() {
     async function load() {
       try {
         const res = await apiFetch("/api/settings/list");
+        if (!res.ok) {
+          throw new Error(`Server returned status ${res.status}`);
+        }
         const data = await res.json();
         if (data && Object.keys(data).length > 0) {
-          setSettings({ ...DEFAULT_SETTINGS, ...data });
+          const cleanData = { ...data };
+          delete cleanData.detail;
+          setSettings({ ...DEFAULT_SETTINGS, ...cleanData });
         }
       } catch (err) {
         console.error("Failed to load settings:", err);

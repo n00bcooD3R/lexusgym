@@ -49,11 +49,11 @@ const NAV_LINKS = [
 ];
 
 function ThemeToggle() {
-  const [dark, setDark] = useState(true);
+  const [dark, setDark] = useState(false);
 
   useEffect(() => {
     const saved = localStorage.getItem("gym-theme");
-    const isDark = saved ? saved === "dark" : true;
+    const isDark = saved ? saved === "dark" : false;
     setDark(isDark);
     document.documentElement.setAttribute("data-theme", isDark ? "dark" : "light");
   }, []);

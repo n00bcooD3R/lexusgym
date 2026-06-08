@@ -143,29 +143,48 @@ def get_stats_summary(
             else:
                 method_breakdown["Online/Other"] += 1
                 
-        # 6-Month Historical Trends
-        trend_months = []
-        temp_date = filter_end
-        for _ in range(6):
-            trend_months.append((temp_date.year, temp_date.month))
-            temp_date = temp_date.replace(day=1) - timedelta(days=1)
-        trend_months.reverse()
+        # Dynamic trend intervals based on duration
+        days_duration = (filter_end - filter_start).days + 1
+        use_daily = (month is not None) or (days_duration <= 31)
+        
+        intervals = []
+        if use_daily:
+            # Generate every day in the range
+            curr = filter_start
+            while curr <= filter_end:
+                label = curr.strftime("%d %b")
+                intervals.append((curr, curr, label))
+                curr += timedelta(days=1)
+        else:
+            # Generate months spanning the range
+            curr = filter_start.replace(day=1)
+            while curr <= filter_end:
+                yr = curr.year
+                mn = curr.month
+                label = curr.strftime("%b %Y")
+                
+                t_start = max(filter_start, curr)
+                if mn == 12:
+                    month_end = datetime(yr + 1, 1, 1).date() - timedelta(days=1)
+                else:
+                    month_end = datetime(yr, mn + 1, 1).date() - timedelta(days=1)
+                t_end = min(filter_end, month_end)
+                
+                intervals.append((t_start, t_end, label))
+                
+                if mn == 12:
+                    curr = datetime(yr + 1, 1, 1).date()
+                else:
+                    curr = datetime(yr, mn + 1, 1).date()
         
         revenue_trend = []
         admission_trend = []
         renewal_trend = []
         trend_labels = []
         
-        for yr, mn in trend_months:
-            label = datetime(yr, mn, 1).strftime("%b %Y")
+        for t_start, t_end, label in intervals:
             trend_labels.append(label)
             
-            t_start = datetime(yr, mn, 1).date()
-            if mn == 12:
-                t_end = datetime(yr + 1, 1, 1).date() - timedelta(days=1)
-            else:
-                t_end = datetime(yr, mn + 1, 1).date() - timedelta(days=1)
-                
             m_rev = 0.0
             m_admissions = 0
             m_renewals = 0
@@ -186,8 +205,12 @@ def get_stats_summary(
                     if m_info and m_info.get("join_date"):
                         try:
                             j_date = datetime.strptime(m_info["join_date"].split("T")[0], "%Y-%m-%d").date()
-                            if t_start <= j_date <= t_end:
-                                is_new = True
+                            if use_daily:
+                                if j_date == p_date:
+                                    is_new = True
+                            else:
+                                if t_start <= j_date <= t_end:
+                                    is_new = True
                         except Exception:
                             pass
                     if is_new:

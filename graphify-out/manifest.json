@@ -10,8 +10,8 @@
     "semantic_hash": ""
   },
   "backend/api/auth.py": {
-    "mtime": 1780902956.6141143,
-    "ast_hash": "cc0c434ca05e38cdd52a62215efd5607",
+    "mtime": 1780918916.846808,
+    "ast_hash": "26fe02f953f171a149fae9729eb6aa40",
     "semantic_hash": ""
   },
   "backend/api/database.py": {
@@ -55,13 +55,13 @@
     "semantic_hash": ""
   },
   "backend/api/routes/settings.py": {
-    "mtime": 1780899894.476753,
-    "ast_hash": "f09eef4f8ac2a79b2e571499c2b8f104",
+    "mtime": 1780921773.4020603,
+    "ast_hash": "b491a3949d7b739b91dc864ae743f5ce",
     "semantic_hash": ""
   },
   "backend/api/routes/statistics.py": {
-    "mtime": 1780899980.9105434,
-    "ast_hash": "fcda753f0cc33676957d10d3c5c9717f",
+    "mtime": 1780919236.101141,
+    "ast_hash": "3d4d45edd01e991355453226dea26ba5",
     "semantic_hash": ""
   },
   "backend/api/routes/wa.py": {
@@ -270,8 +270,8 @@
     "semantic_hash": ""
   },
   "web/src/App.tsx": {
-    "mtime": 1780901401.327939,
-    "ast_hash": "b4f29eef2e4f7c2ce47f19793fe92183",
+    "mtime": 1780912137.9877765,
+    "ast_hash": "2cf59324b4f4f0ffe0ea8844a3a38167",
     "semantic_hash": ""
   },
   "web/src/components/Icons.tsx": {
@@ -280,8 +280,8 @@
     "semantic_hash": ""
   },
   "web/src/components/SettingsLoader.tsx": {
-    "mtime": 1780901394.1114736,
-    "ast_hash": "6b6ee56b4f7f3ef0c0fb45b2126552b4",
+    "mtime": 1780921780.22385,
+    "ast_hash": "ff200993a8aeb080d422fad26a399036",
     "semantic_hash": ""
   },
   "web/src/lib/fees.ts": {
@@ -340,13 +340,13 @@
     "semantic_hash": ""
   },
   "web/src/pages/Settings.tsx": {
-    "mtime": 1780900926.1496222,
-    "ast_hash": "428dcc5eeb4329908f57f656857ae7b9",
+    "mtime": 1780921791.037406,
+    "ast_hash": "c359c13d6076f5fe0510f463a064fb88",
     "semantic_hash": ""
   },
   "web/src/pages/Statistics.tsx": {
-    "mtime": 1780900932.5098586,
-    "ast_hash": "d57a1cbf09406147080a41ac6d9edc0f",
+    "mtime": 1780919294.461543,
+    "ast_hash": "8aae4089865e41ad2f11f1c2f8aa5133",
     "semantic_hash": ""
   },
   "web/tailwind.config.js": {
@@ -475,8 +475,8 @@
     "semantic_hash": ""
   },
   "web/index.html": {
-    "mtime": 1780900028.714691,
-    "ast_hash": "c6b1f4abf65354674c35bfeba85f8ea4",
+    "mtime": 1780912133.2162101,
+    "ast_hash": "e7c64af157280a7b82da53fab7ac3687",
     "semantic_hash": ""
   },
   "backend/api/logo.png": {

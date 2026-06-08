@@ -1,16 +1,16 @@
 # Graph Report - gymapp  (2026-06-08)
 
 ## Corpus Check
-- 92 files · ~96,529 words
+- 92 files · ~96,971 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 489 nodes · 548 edges · 56 communities (41 shown, 15 thin omitted)
+- 494 nodes · 554 edges · 57 communities (42 shown, 15 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `37967686`
+- Built from commit: `87dd2782`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -59,6 +59,7 @@
 - [[_COMMUNITY_Community 45|Community 45]]
 - [[_COMMUNITY_Community 46|Community 46]]
 - [[_COMMUNITY_Community 47|Community 47]]
+- [[_COMMUNITY_Community 56|Community 56]]
 
 ## God Nodes (most connected - your core abstractions)
 1. `compilerOptions` - 17 edges
@@ -75,23 +76,23 @@
 ## Surprising Connections (you probably didn't know these)
 - `search_members()` --calls--> `get_db_client()`  [EXTRACTED]
   backend/api/routes/members.py → backend/api/database.py
-- `list_settings()` --calls--> `get_admin_client()`  [EXTRACTED]
-  backend/api/routes/settings.py → backend/api/database.py
+- `run_cron_reminders()` --calls--> `get_admin_client()`  [EXTRACTED]
+  backend/api/routes/cron.py → backend/api/database.py
+- `payment_webhook()` --calls--> `get_admin_client()`  [EXTRACTED]
+  backend/api/routes/payments.py → backend/api/database.py
 - `save_settings()` --calls--> `get_admin_client()`  [EXTRACTED]
   backend/api/routes/settings.py → backend/api/database.py
 - `seed_settings()` --calls--> `get_admin_client()`  [EXTRACTED]
   backend/api/routes/settings.py → backend/api/database.py
-- `MemberRow()` --calls--> `formatDate()`  [EXTRACTED]
-  web/src/pages/Dashboard.tsx → web/src/lib/fees.ts
 
 ## Import Cycles
 - None detected.
 
-## Communities (56 total, 15 thin omitted)
+## Communities (57 total, 15 thin omitted)
 
 ### Community 0 - "Community 0"
-Cohesion: 0.06
-Nodes (42): get_current_user(), FastAPI dependency to validate user JWT session token.     Raises 401 Unauthoriz, get_admin_client(), get_db_client(), Returns a client-side Supabase client.     If an Authorization header is provide, Returns an admin Supabase client using the service role key, bypassing RLS., generate_invoice_pdf(), InvoicePDF (+34 more)
+Cohesion: 0.07
+Nodes (35): get_current_user(), FastAPI dependency to validate user JWT session token.     Raises 401 Unauthoriz, get_admin_client(), get_db_client(), Returns a client-side Supabase client.     If an Authorization header is provide, Returns an admin Supabase client using the service role key, bypassing RLS., str, Request (+27 more)
 
 ### Community 1 - "Community 1"
 Cohesion: 0.06
@@ -205,18 +206,24 @@ Nodes (3): builds, crons, routes
 Cohesion: 0.50
 Nodes (3): Expanding the ESLint configuration, React Compiler, React + TypeScript + Vite
 
+### Community 56 - "Community 56"
+Cohesion: 0.17
+Nodes (12): generate_invoice_pdf(), InvoicePDF, Generates a premium invoice receipt PDF using fpdf2.     Matches coordinate offs, Unified WhatsApp sender. Selects provider based on WA_PROVIDER env variable., send_via_evolution(), send_via_local(), send_via_meta(), send_whatsapp() (+4 more)
+
 ## Knowledge Gaps
-- **247 isolated node(s):** `PreToolUse`, `Request`, `Request`, `expo@claude-plugins-official`, `recommendations` (+242 more)
+- **251 isolated node(s):** `PreToolUse`, `str`, `Request`, `Response`, `str` (+246 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **15 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **What connects `PreToolUse`, `FastAPI dependency to validate user JWT session token.     Raises 401 Unauthoriz`, `Returns a client-side Supabase client.     If an Authorization header is provide` to the rest of the system?**
-  _257 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **Why does `get_admin_client()` connect `Community 0` to `Community 56`?**
+  _High betweenness centrality (0.042) - this node is a cross-community bridge._
+- **What connects `PreToolUse`, `str`, `FastAPI dependency to validate user JWT session token.     Raises 401 Unauthoriz` to the rest of the system?**
+  _261 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Community 0` be split into smaller, more focused modules?**
-  _Cohesion score 0.06038961038961039 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.07308970099667775 - nodes in this community are weakly interconnected._
 - **Should `Community 1` be split into smaller, more focused modules?**
   _Cohesion score 0.05714285714285714 - nodes in this community are weakly interconnected._
 - **Should `Community 2` be split into smaller, more focused modules?**
@@ -225,5 +232,3 @@ _Questions this graph is uniquely positioned to answer:_
   _Cohesion score 0.10752688172043011 - nodes in this community are weakly interconnected._
 - **Should `Community 4` be split into smaller, more focused modules?**
   _Cohesion score 0.07692307692307693 - nodes in this community are weakly interconnected._
-- **Should `Community 5` be split into smaller, more focused modules?**
-  _Cohesion score 0.08 - nodes in this community are weakly interconnected._

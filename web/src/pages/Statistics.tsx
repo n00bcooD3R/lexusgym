@@ -90,6 +90,21 @@ export default function StatisticsPage() {
     const d = new Date(parseInt(y), parseInt(m) - 1, 1);
     return d.toLocaleDateString("en-IN", { month: "short" });
   }
+  
+  const chartTitleSuffix = useMemo(() => {
+    if (filterMode === "month") {
+      return formatMonthName(selectedMonth);
+    }
+    const labels = stats?.trends?.labels || [];
+    if (labels.length <= 31) {
+      const startStr = startDate ? new Date(startDate).toLocaleDateString("en-IN", { day: 'numeric', month: 'short' }) : "";
+      const endStr = endDate ? new Date(endDate).toLocaleDateString("en-IN", { day: 'numeric', month: 'short' }) : "";
+      return `Daily: ${startStr} - ${endStr}`;
+    }
+    const startStr = startDate ? new Date(startDate).toLocaleDateString("en-IN", { month: 'short', year: 'numeric' }) : "";
+    const endStr = endDate ? new Date(endDate).toLocaleDateString("en-IN", { month: 'short', year: 'numeric' }) : "";
+    return `Monthly: ${startStr} - ${endStr}`;
+  }, [filterMode, selectedMonth, startDate, endDate, stats]);
 
   // Hover stats for interactive charts
   const [hoveredPoint, setHoveredPoint] = useState<null | {
@@ -145,8 +160,8 @@ export default function StatisticsPage() {
     const renw = stats.trends.renewals || [];
     const maxVal = Math.max(...adms, ...renw, 5);
     const slotWidth = (barChartWidth - 2 * barPadding) / (labels.length || 1);
-    const barWidth = 14;
-    const spaceBetween = 4;
+    const spaceBetween = Math.max(1, Math.min(4, slotWidth * 0.15));
+    const barWidth = Math.max(1.5, Math.min(14, (slotWidth * 0.85 - spaceBetween) / 2));
 
     return labels.map((l: string, i: number) => {
       const slotCenter = barPadding + i * slotWidth + slotWidth / 2;
@@ -775,7 +790,7 @@ export default function StatisticsPage() {
         {/* Custom SVG Line Chart - Revenue Trend */}
         <div className="glass" style={{ padding: "1.25rem", position: "relative" }}>
           <h3 style={{ fontSize: "1rem", fontWeight: 700, marginBottom: "0.85rem" }}>
-            📊 Revenue Growth Trend (Last 6 Months)
+            📊 Revenue Growth Trend ({chartTitleSuffix})
           </h3>
 
           <div style={{ position: "relative", width: "100%", overflowX: "auto" }}>
@@ -843,18 +858,22 @@ export default function StatisticsPage() {
               ))}
 
               {/* X Axis Labels */}
-              {lineChartPoints.map((pt: any, idx: number) => (
-                <text
-                  key={idx}
-                  x={pt.x}
-                  y={lineChartHeight - 10}
-                  textAnchor="middle"
-                  fill="var(--text-muted)"
-                  style={{ fontSize: "10px", fontWeight: 500 }}
-                >
-                  {pt.label}
-                </text>
-              ))}
+              {lineChartPoints.map((pt: any, idx: number) => {
+                const showLabel = lineChartPoints.length <= 10 || idx % Math.ceil(lineChartPoints.length / 6) === 0;
+                if (!showLabel) return null;
+                return (
+                  <text
+                    key={idx}
+                    x={pt.x}
+                    y={lineChartHeight - 10}
+                    textAnchor="middle"
+                    fill="var(--text-muted)"
+                    style={{ fontSize: "10px", fontWeight: 500 }}
+                  >
+                    {pt.label}
+                  </text>
+                );
+              })}
             </svg>
 
             {/* Line Tooltip */}
@@ -894,7 +913,7 @@ export default function StatisticsPage() {
         {/* Dual Bar Chart - New vs Renewals */}
         <div className="glass" style={{ padding: "1.25rem", position: "relative" }}>
           <h3 style={{ fontSize: "1rem", fontWeight: 700, marginBottom: "0.85rem" }}>
-            📈 Admissions vs. Renewals Trend
+            📈 Admissions vs. Renewals ({chartTitleSuffix})
           </h3>
 
           <div style={{ position: "relative", width: "100%", overflowX: "auto" }}>
@@ -973,18 +992,22 @@ export default function StatisticsPage() {
               ))}
 
               {/* X Axis Labels */}
-              {barChartLayout.map((b: any, idx: number) => (
-                <text
-                  key={idx}
-                  x={b.slotCenter}
-                  y={barChartHeight - 12}
-                  textAnchor="middle"
-                  fill="var(--text-muted)"
-                  style={{ fontSize: "10px", fontWeight: 500 }}
-                >
-                  {b.month}
-                </text>
-              ))}
+              {barChartLayout.map((b: any, idx: number) => {
+                const showLabel = barChartLayout.length <= 10 || idx % Math.ceil(barChartLayout.length / 6) === 0;
+                if (!showLabel) return null;
+                return (
+                  <text
+                    key={idx}
+                    x={b.slotCenter}
+                    y={barChartHeight - 12}
+                    textAnchor="middle"
+                    fill="var(--text-muted)"
+                    style={{ fontSize: "10px", fontWeight: 500 }}
+                  >
+                    {b.month}
+                  </text>
+                );
+              })}
             </svg>
 
             {/* Bar Tooltip */}

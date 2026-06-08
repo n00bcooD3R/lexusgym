@@ -9,7 +9,6 @@ export default function SettingsLoader({ session }: { session: any }) {
     
     async function loadSettings() {
       try {
-        await apiFetch("/api/settings/seed");
         const settingsRes = await apiFetch("/api/settings/list");
         const settings = await settingsRes.json();
         if (settings.gym_name) {

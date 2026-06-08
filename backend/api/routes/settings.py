@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Response
 from typing import Dict
 from api.database import get_admin_client
 from api.auth import get_current_user
@@ -12,24 +12,38 @@ DEFAULT_SETTINGS = [
     { "key": "gym_phone", "value": "+91 9876543210" },
     { "key": "gym_email", "value": "info@lexusfitness.com" },
     { "key": "gym_gst", "value": "27AAABCU9603R1ZM" },
-    { "key": "msg_welcome", "value": "Hello {name},\n\nWelcome to {gym_name}! 💪🔥\nWe are excited to have you as a part of the {gym_name} family.\n\nYour membership has been successfully activated, and your fitness journey officially starts today.\n\n— Team {gym_name}" },
-    { "key": "msg_renewal", "value": "Hello {name},\n\nYour {gym_name} membership has been successfully renewed! 💪🔥\n\nThank you for continuing your fitness journey with us.\n\n— Team {gym_name}" },
-    { "key": "msg_reminder", "value": "Hello {name},\n\nThis is a friendly reminder that your {gym_name} membership will expire in {days} days. 💪\n\nTo continue enjoying uninterrupted access to the gym, please renew your membership before the expiry date.\n\n— Team {gym_name}" },
-    { "key": "msg_expired", "value": "Hello {name},\n\nYour {gym_name} membership has expired. 😔\n\nPlease renew your membership at the earliest to continue your fitness journey.\n\n— Team {gym_name}" },
-    { "key": "msg_payment", "value": "Hello {name},\n\nThank you for your payment of ₹{amount}! 💪\n\nYour payment has been successfully received. Your membership is now active until {expiry}.\n\nPlease find the attached invoice for your records.\n\n— Team {gym_name}" }
+    { "key": "wa_bridge_url", "value": "http://140.245.215.154:3001" },
+    { "key": "msg_welcome", "value": "Hello {name}, 👋\n\nWelcome to {gym_name}! 💪🔥\nWe are excited to have you as a part of the {gym_name} family.\n\nYour membership has been successfully activated, and your fitness journey officially starts today. Whether your goal is muscle building, fat loss, strength improvement, endurance, or overall fitness, our team is here to support and guide you every step of the way.\n\nAt {gym_name}, we believe that consistency, discipline, and dedication create real transformation. With our professional training environment, modern equipment, and motivating atmosphere, you now have everything you need to become the strongest version of yourself.\n\nRemember:\n✅ Every workout brings progress\n✅ Every drop of sweat is an investment in yourself\n✅ Small daily efforts create big results over time\n\nWe encourage you to stay committed to your training schedule, maintain proper nutrition, and never give up on your goals. Results take time, but with patience and consistency, success is guaranteed.\n\nIf you need any assistance regarding workouts, diet guidance, membership support, or gym facilities, feel free to contact our team anytime. We are always happy to help.\n\nThank you once again for trusting {gym_name} with your fitness journey.\n\nLet’s train hard, stay focused, and achieve greatness together! 🔥🏋️\n\n— Team {gym_name}" },
+    { "key": "msg_renewal", "value": "Hello {name},\n\nYour {gym_name} membership has been renewed! 💪🔥\n\n— Team {gym_name}" },
+    { "key": "msg_reminder", "value": "Hello {name},\n\nYour {gym_name} membership expires in {days} days. 💪\nPlease renew soon!\n\n— Team {gym_name}" },
+    { "key": "msg_expired", "value": "Hello {name},\n\nYour {gym_name} membership has expired. 😔\nPlease renew to continue.\n\n— Team {gym_name}" },
+    { "key": "msg_payment", "value": "Hello {name},\n\nThank you for ₹{amount}! 💪\nMembership active until {expiry}.\n\n— Team {gym_name}" }
 ]
 
 @router.get("/list", dependencies=[Depends(get_current_user)])
-def list_settings():
+def list_settings(response: Response):
+    # Disable caching for the settings list response
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "0"
+    
     try:
         sb = get_admin_client()
         res = sb.from_("settings").select("key, value").execute()
+        existing = {s["key"]: s["value"] or "" for s in res.data or []}
         
-        # Format list as key-value dictionary
-        obj = {}
-        for s in res.data or []:
-            obj[s["key"]] = s["value"] or ""
-        return obj
+        # Check and seed any missing default settings
+        missing = []
+        for setting in DEFAULT_SETTINGS:
+            if setting["key"] not in existing:
+                missing.append(setting)
+                existing[setting["key"]] = setting["value"]
+                
+        if missing:
+            for m in missing:
+                sb.from_("settings").insert(m).execute()
+                
+        return existing
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
