@@ -3227,7 +3227,7 @@
       "label": "EditFormView()",
       "file_type": "code",
       "source_file": "web/src/pages/MemberDetail.tsx",
-      "source_location": "L1122",
+      "source_location": "L1220",
       "_origin": "ast",
       "id": "pages_memberdetail_editformview",
       "community": 13,
@@ -3237,7 +3237,7 @@
       "label": "L()",
       "file_type": "code",
       "source_file": "web/src/pages/MemberDetail.tsx",
-      "source_location": "L1274",
+      "source_location": "L1372",
       "_origin": "ast",
       "id": "pages_memberdetail_l",
       "community": 13,
@@ -10637,5 +10637,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "1b5128a093bb089e0760e269ac2d7982783b967d"
+  "built_at_commit": "a7b073d740d6ffc5176c856cb767e35896aacc70"
 }

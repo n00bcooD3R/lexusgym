@@ -247,7 +247,7 @@ export default function MemberDetailPage() {
       {tab === "workouts" && <WorkoutsTab m={member} workouts={workouts} onReload={loadData} />}
       {tab === "diets" && <DietsTab m={member} diets={diets} onReload={loadData} />}
       {tab === "portal" && <PortalTab m={member} />}
-      {tab === "messages" && <MessagesTab messages={messages} />}
+      {tab === "messages" && <MessagesTab messages={messages} m={member} onReload={loadData} />}
     </div>
   );
 }
@@ -1093,24 +1093,122 @@ function PortalTab({ m }: { m: any }) {
   );
 }
 
-function MessagesTab({ messages }: { messages: any[] }) {
+function MessagesTab({ messages, m, onReload }: { messages: any[]; m: any; onReload: () => void }) {
+  const [sending, setSending] = useState<string | null>(null);
+
+  function getDaysLeft() {
+    if (!m.next_due_date) return 30;
+    return Math.max(0, Math.ceil((new Date(m.next_due_date).getTime() - Date.now()) / 86400000));
+  }
+
+  async function sendPreset(type: "welcome" | "renewal" | "reminder" | "expired") {
+    setSending(type);
+    try {
+      let template = "";
+      let gymName = "Lexus Fitness Group";
+      
+      const resSettings = await apiFetch("/api/settings/list");
+      const settings = await resSettings.json();
+      if (settings.gym_name) gymName = settings.gym_name;
+      
+      if (type === "welcome") {
+        template = settings.msg_welcome || "Hello {name}, 👋\n\nWelcome to {gym_name}! 💪\n\n— Team {gym_name}";
+      } else if (type === "renewal") {
+        template = settings.msg_renewal || "Hello {name},\n\nYour {gym_name} membership has been renewed! 💪🔥\n\n— Team {gym_name}";
+      } else if (type === "reminder") {
+        template = settings.msg_reminder || "Hello {name},\n\nYour {gym_name} membership expires in {days} days. 💪\nPlease renew soon!\n\n— Team {gym_name}";
+      } else if (type === "expired") {
+        template = settings.msg_expired || "Hello {name},\n\nYour {gym_name} membership has expired. 😔\nPlease renew to continue.\n\n— Team {gym_name}";
+      }
+
+      const daysLeft = getDaysLeft();
+      const body = template
+        .replace(/{name}/g, m.name)
+        .replace(/{gym_name}/g, gymName)
+        .replace(/{days}/g, String(daysLeft));
+
+      const res = await apiFetch("/api/wa/send", { 
+        method: "POST", 
+        headers: { "Content-Type": "application/json" }, 
+        body: JSON.stringify({ memberId: m.id, body }) 
+      });
+      const j = await res.json();
+      if (j.simulated) {
+        alert(`📱 WhatsApp DEMO\n\nTo: ${m.phone}\n${body.substring(0, 150)}...`);
+      } else {
+        alert(j.ok ? "✓ WhatsApp sent!" : "Failed: " + (j.error || ""));
+      }
+      onReload();
+    } catch (err: any) {
+      alert("Error: " + (err.message || "Unknown error"));
+    } finally {
+      setSending(null);
+    }
+  }
+
   return (
-    <div className="card" style={{ padding: 0, overflow: "hidden" }}>
-      <div className="section-header" style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-        <span>💬 Recent WhatsApp ({messages.length})</span>
+    <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+      {/* Send Preset Messages Box */}
+      <div className="glass" style={{ padding: "1.5rem" }}>
+        <h3 style={{ fontWeight: 700, marginBottom: "0.85rem", fontSize: "1rem" }}>Send Preset Messages</h3>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))", gap: "0.75rem" }}>
+          <button 
+            type="button"
+            className="btn btn-cyan" 
+            onClick={() => sendPreset("welcome")} 
+            disabled={sending !== null}
+            style={{ padding: "0.6rem 0.8rem", fontSize: "0.85rem" }}
+          >
+            {sending === "welcome" ? "Sending..." : "👋 Welcome Msg"}
+          </button>
+          <button 
+            type="button"
+            className="btn btn-primary" 
+            onClick={() => sendPreset("renewal")} 
+            disabled={sending !== null}
+            style={{ padding: "0.6rem 0.8rem", fontSize: "0.85rem" }}
+          >
+            {sending === "renewal" ? "Sending..." : "🔄 Renewal Msg"}
+          </button>
+          <button 
+            type="button"
+            className="btn btn-cyan" 
+            onClick={() => sendPreset("reminder")} 
+            disabled={sending !== null}
+            style={{ padding: "0.6rem 0.8rem", fontSize: "0.85rem" }}
+          >
+            {sending === "reminder" ? "Sending..." : "⏳ Expiry Reminder"}
+          </button>
+          <button 
+            type="button"
+            className="btn btn-danger" 
+            onClick={() => sendPreset("expired")} 
+            disabled={sending !== null}
+            style={{ padding: "0.6rem 0.8rem", fontSize: "0.85rem" }}
+          >
+            {sending === "expired" ? "Sending..." : "🔴 Expired Msg"}
+          </button>
+        </div>
       </div>
-      <div className="divide-glass">
-        {messages.length === 0 && <div style={{ padding: "2rem", textAlign: "center", color: "var(--text-muted)" }}>No messages sent yet.</div>}
-        {messages.map((msg: any) => (
-          <div key={msg.id} style={{ padding: "0.75rem 1rem", fontSize: "0.875rem" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.75rem", color: "var(--text-muted)", marginBottom: "0.35rem" }}>
-              <span>{new Date(msg.sent_at).toLocaleString()}</span>
-              <span style={{ color: msg.status === "sent" ? "var(--success)" : "var(--danger)" }}>{msg.status}</span>
+
+      {/* History Card */}
+      <div className="card" style={{ padding: 0, overflow: "hidden" }}>
+        <div className="section-header" style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <span>💬 Recent WhatsApp ({messages.length})</span>
+        </div>
+        <div className="divide-glass">
+          {messages.length === 0 && <div style={{ padding: "2rem", textAlign: "center", color: "var(--text-muted)" }}>No messages sent yet.</div>}
+          {messages.map((msg: any) => (
+            <div key={msg.id} style={{ padding: "0.75rem 1rem", fontSize: "0.875rem" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.75rem", color: "var(--text-muted)", marginBottom: "0.35rem" }}>
+                <span>{new Date(msg.sent_at).toLocaleString()}</span>
+                <span style={{ color: msg.status === "sent" ? "var(--success)" : "var(--danger)" }}>{msg.status}</span>
+              </div>
+              <div style={{ whiteSpace: "pre-wrap", color: "var(--text)" }}>{msg.body}</div>
+              {msg.error && <div style={{ fontSize: "0.75rem", color: "var(--danger)", marginTop: "0.25rem" }}>{msg.error}</div>}
             </div>
-            <div style={{ whiteSpace: "pre-wrap", color: "var(--text)" }}>{msg.body}</div>
-            {msg.error && <div style={{ fontSize: "0.75rem", color: "var(--danger)", marginTop: "0.25rem" }}>{msg.error}</div>}
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   );
