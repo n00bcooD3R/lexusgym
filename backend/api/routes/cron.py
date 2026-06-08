@@ -29,8 +29,11 @@ For renewal assistance, feel free to contact our team anytime.
 @router.get("/reminders")
 def run_cron_reminders(authorization: str = Header(None)):
     cron_secret = os.getenv("CRON_SECRET")
+    # Always require a secret — if CRON_SECRET is not set, deny all access
+    if not cron_secret:
+        raise HTTPException(status_code=503, detail="Cron secret not configured on server")
     token = authorization.replace("Bearer ", "").strip() if authorization else ""
-    if cron_secret and token != cron_secret:
+    if token != cron_secret:
         raise HTTPException(status_code=401, detail="Unauthorized")
 
     sb = get_admin_client()

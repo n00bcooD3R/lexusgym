@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, Response, Request
 from pydantic import BaseModel
 from typing import Optional
+import os
 import bcrypt
 from api.database import get_admin_client
 from api.auth import get_current_user
@@ -84,17 +85,18 @@ def pt_login(payload: LoginPayload, response: Response):
             
         token = row["token"]
         
-        # Set cookie in response (valid for 30 days)
+        # Set cookie in response (valid for 30 days, HTTPS-only)
         response.set_cookie(
             key="client_session",
             value=token,
             httponly=True,
+            secure=True,
             samesite="lax",
             max_age=60 * 60 * 24 * 30,
             path="/"
         )
         
-        return {"ok": True, "token": token}
+        return {"ok": True}
     except HTTPException:
         raise
     except Exception as e:

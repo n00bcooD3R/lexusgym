@@ -1,6 +1,7 @@
-from fastapi import APIRouter, HTTPException, Request
+from fastapi import APIRouter, HTTPException, Request, Header
 from pydantic import BaseModel
 from typing import Optional
+import os
 from api.database import get_admin_client
 from api.pdf import generate_invoice_pdf
 from api.whatsapp import send_whatsapp
@@ -17,8 +18,14 @@ class WebhookPayload(BaseModel):
     method: Optional[str] = "online"
 
 @router.post("/webhook")
-async def payment_webhook(payload: WebhookPayload):
+async def payment_webhook(payload: WebhookPayload, x_webhook_secret: Optional[str] = Header(None)):
+    # Verify webhook secret — prevents forged payment events
+    webhook_secret = os.getenv("WEBHOOK_SECRET") or os.getenv("CRON_SECRET")
+    if webhook_secret:
+        if not x_webhook_secret or x_webhook_secret != webhook_secret:
+            raise HTTPException(status_code=401, detail="Invalid or missing webhook secret")
     sb = get_admin_client()
+
     try:
         if not payload.phone and not payload.member_id:
             raise HTTPException(status_code=400, detail="phone or member_id required")

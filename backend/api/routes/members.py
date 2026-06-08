@@ -17,11 +17,16 @@ def search_members(
     user = Depends(get_current_user)
 ):
     try:
+        # Sanitize input — strip special chars that could be injected into filters
+        safe_q = q.replace("%", "").replace(",", "").replace(".", "").strip()
+        if len(safe_q) < 2:
+            raise HTTPException(status_code=400, detail="Query too short after sanitization")
+        
         sb = get_db_client(authorization)
         query = sb.from_("members").select("id, name, admission_no, phone, is_staff")
         
         # Build Case Insensitive ILIKE match across Name, Phone, and Admission No
-        search_filter = f"name.ilike.%{q}%,phone.ilike.%{q}%,admission_no.ilike.%{q}%"
+        search_filter = f"name.ilike.%{safe_q}%,phone.ilike.%{safe_q}%,admission_no.ilike.%{safe_q}%"
         query = query.or_(search_filter)
         
         if exclude and exclude.strip():

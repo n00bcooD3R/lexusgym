@@ -13,7 +13,10 @@ def get_current_user(authorization: str = Header(None)):
         sb = get_db_client(authorization)
         res = sb.auth.get_user()
         if not res or not res.user:
-            raise HTTPException(status_code=401, detail="Unauthorized session")
+            raise HTTPException(status_code=401, detail="Unauthorized")
         return res.user
-    except Exception as e:
-        raise HTTPException(status_code=401, detail=f"Unauthorized: {str(e)}")
+    except HTTPException:
+        raise
+    except Exception:
+        # Do NOT leak internal error details to the client
+        raise HTTPException(status_code=401, detail="Unauthorized")
