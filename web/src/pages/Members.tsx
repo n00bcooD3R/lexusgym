@@ -1,0 +1,159 @@
+import { useState, useEffect, useMemo } from "react";
+import { Link } from "react-router-dom";
+import { supabase } from "../lib/supabase";
+import { feeStatus, formatDate } from "../lib/fees";
+import { Icon } from "../components/Icons";
+
+type Tab = "name" | "admission" | "phone";
+
+export default function MembersPage() {
+  const [members, setMembers] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [tab, setTab] = useState<Tab>("name");
+  const [q, setQ] = useState("");
+  const [sortNewest, setSortNewest] = useState(false);
+
+  async function loadMembers() {
+    try {
+      const { data } = await supabase
+        .from("members")
+        .select("id, admission_no, name, phone, photo_url, next_due_date, fee_amount, is_pt_client, active, created_at, is_staff")
+        .order("name");
+      setMembers(data || []);
+    } catch (err) {
+      console.error("Failed to load members:", err);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    loadMembers();
+  }, []);
+
+  const filtered = useMemo(() => {
+    let list = [...members];
+    if (sortNewest) {
+      // Sort by created_at descending (last added to first)
+      list.sort((a, b) => new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime());
+    }
+
+    const needle = q.trim().toLowerCase();
+    if (!needle) return list;
+    return list.filter((m) => {
+      if (tab === "name") return m.name.toLowerCase().includes(needle);
+      if (tab === "admission") return m.admission_no.toLowerCase().includes(needle);
+      if (tab === "phone") return (m.phone || "").toLowerCase().includes(needle);
+      return true;
+    });
+  }, [members, tab, q, sortNewest]);
+
+  const placeholder = tab === "name" ? "Search by name…"
+    : tab === "admission" ? "Search by admission no…"
+    : "Search by phone…";
+
+  if (loading) {
+    return (
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "60vh", flexDirection: "column", gap: "1rem", color: "var(--text-muted)" }}>
+        <span className="spinner" style={{ width: "2rem", height: "2rem", borderWidth: "3px", borderTopColor: "var(--accent)" }} />
+        Loading members list…
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+      {/* Header */}
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "0.75rem" }}>
+        <h1 style={{ fontSize: "1.5rem", fontWeight: 800, background: "linear-gradient(135deg,#a78bfa,#67e8f9)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", margin: 0 }}>
+          Members ({members.length})
+        </h1>
+        <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
+          <button 
+            onClick={() => setSortNewest(prev => !prev)} 
+            className={`btn ${sortNewest ? "btn-cyan" : "btn-ghost"}`}
+            style={{ fontSize: "0.95rem", padding: "0.55rem 1rem", minHeight: "38px" }}
+          >
+            <Icon name="calendar" size={16} /> New Admissions
+          </button>
+          <Link to="/members/new" className="btn btn-primary" id="new-member-btn" style={{ fontSize: "0.95rem", padding: "0.55rem 1rem", minHeight: "38px" }}>
+            <Icon name="add" size={16} /> New Member
+          </Link>
+        </div>
+      </div>
+
+      {/* Search Tabs */}
+      <div style={{ display: "flex", gap: "0.25rem", borderBottom: "1px solid var(--border)", overflowX: "auto" }}>
+        {(["name", "admission", "phone"] as Tab[]).map(t => (
+          <button key={t} onClick={() => setTab(t)} className={`tab ${tab === t ? "tab-active" : "tab-idle"}`} id={`tab-${t}`}>
+            <Icon name="user" size={16} /> {t === "name" ? "Name" : t === "admission" ? "Admission" : "Phone"}
+          </button>
+        ))}
+      </div>
+
+      {/* Search Input */}
+      <div style={{ position: "relative" }}>
+        <svg style={{ position: "absolute", left: "0.85rem", top: "50%", transform: "translateY(-50%)", color: "var(--text-muted)", width: "1.3rem", height: "1.3rem" }} viewBox="0 0 24 24" fill="currentColor">
+          <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+        </svg>
+        <input
+          id="member-search"
+          className="input"
+          style={{ paddingLeft: "2.5rem" }}
+          autoFocus
+          placeholder={placeholder}
+          value={q}
+          onChange={(e) => setQ(e.target.value)}
+        />
+      </div>
+
+      {/* Member List */}
+      <div className="card" style={{ padding: 0, overflow: "hidden" }}>
+        {filtered.length === 0 && (
+          <div style={{ padding: "3rem", textAlign: "center", color: "var(--text-muted)" }}>
+            <div style={{ fontSize: "3rem", marginBottom: "0.5rem" }}>🔭</div>
+            No members found.
+          </div>
+        )}
+        <div className="divide-glass">
+          {filtered.map((m) => {
+            const s = feeStatus(m.next_due_date, undefined, m.is_staff);
+            const nameColor = s === "staff" ? "#a78bfa" : s === "overdue" ? "#fb7185" : s === "due-soon" ? "#fbbf24" : "var(--text)";
+            return (
+              <Link key={m.id} to={`/members/${m.id}`} id={`member-row-${m.id}`}
+                style={{ display: "flex", alignItems: "center", gap: "0.75rem", padding: "0.75rem 1rem", textDecoration: "none", color: "var(--text)", transition: "background 0.2s" }}
+                onMouseEnter={e => (e.currentTarget.style.background = "var(--surface-hover)")}
+                onMouseLeave={e => (e.currentTarget.style.background = "transparent")}>
+                <Avatar src={m.photo_url} name={m.name} />
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontWeight: 600, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", color: nameColor }}>
+                    {m.name}
+                    {m.is_staff && <span className="badge" style={{ marginLeft: "0.4rem", background: "rgba(139,92,246,0.15)", color: "#a78bfa", border: "1px solid rgba(139,92,246,0.3)", fontSize: "0.7rem", padding: "0.1rem 0.35rem" }}>Staff</span>}
+                  </div>
+                  <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", display: "flex", alignItems: "center", gap: "0.4rem" }}>
+                    #{m.admission_no} · {m.phone}
+                    {m.is_pt_client && <span className="badge badge-pt">PT</span>}
+                  </div>
+                </div>
+                <div style={{ textAlign: "right", fontSize: "0.75rem" }} className="sm-show">
+                  <div style={{ color: nameColor }}>
+                    {s === "staff" ? "Staff" : m.next_due_date ? formatDate(m.next_due_date) : "—"}
+                  </div>
+                  <div style={{ color: "var(--text-muted)" }}>
+                    {s === "staff" ? "Unlimited" : `₹${m.fee_amount}`}
+                  </div>
+                </div>
+                <Icon name="user" size={16} className="text-muted" />
+              </Link>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Avatar({ src, name }: { src: string | null; name: string }) {
+  if (src) return <img src={src} alt={name} className="avatar" style={{ width: "2.25rem", height: "2.25rem" }} />;
+  return <div className="avatar-initials">{name.charAt(0).toUpperCase()}</div>;
+}

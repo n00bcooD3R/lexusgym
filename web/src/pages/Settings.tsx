@@ -1,0 +1,378 @@
+import { useState, useEffect } from "react";
+import { supabase, apiFetch } from "../lib/supabase";
+import { Icon } from "../components/Icons";
+import { setGymDetails } from "../lib/pdf-bill";
+
+const SETTINGS_KEYS: Record<string, string> = {
+  gym_name: "Gym Name", gym_tagline: "Tagline", gym_address: "Address",
+  gym_phone: "Phone", gym_email: "Email", gym_gst: "GST Number",
+  wa_bridge_url: "WhatsApp Bridge URL",
+  msg_welcome: "Welcome Message", msg_renewal: "Renewal Message",
+  msg_reminder: "Reminder Message (Before Expiry)",
+  msg_expired: "Expired Message", msg_payment: "Payment Confirmation Message"
+};
+
+const PLACEHOLDERS: Record<string, string> = {
+  msg_welcome: "{name} · {gym_name}",
+  msg_renewal: "{name} · {gym_name}",
+  msg_reminder: "{name} · {days} · {gym_name}",
+  msg_expired: "{name} · {gym_name}",
+  msg_payment: "{name} · {amount} · {expiry} · {gym_name}"
+};
+
+const DEFAULT_SETTINGS: Record<string, string> = {
+  gym_name: "Lexus Fitness Group",
+  gym_tagline: "Fitness Center & Personal Training",
+  gym_address: "123 Fitness Street, City - 123456",
+  gym_phone: "+91 9876543210",
+  gym_email: "info@lexusfitness.com",
+  gym_gst: "27AAABCU9603R1ZM",
+  wa_bridge_url: "http://140.245.215.154:3001",
+  msg_welcome: "Hello {name}, 👋\n\nWelcome to {gym_name}! 💪🔥\nWe are excited to have you as a part of the {gym_name} family.\n\nYour membership has been successfully activated, and your fitness journey officially starts today. Whether your goal is muscle building, fat loss, strength improvement, endurance, or overall fitness, our team is here to support and guide you every step of the way.\n\nAt {gym_name}, we believe that consistency, discipline, and dedication create real transformation. With our professional training environment, modern equipment, and motivating atmosphere, you now have everything you need to become the strongest version of yourself.\n\nRemember:\n✅ Every workout brings progress\n✅ Every drop of sweat is an investment in yourself\n✅ Small daily efforts create big results over time\n\nWe encourage you to stay committed to your training schedule, maintain proper nutrition, and never give up on your goals. Results take time, but with patience and consistency, success is guaranteed.\n\nIf you need any assistance regarding workouts, diet guidance, membership support, or gym facilities, feel free to contact our team anytime. We are always happy to help.\n\nThank you once again for trusting {gym_name} with your fitness journey.\n\nLet’s train hard, stay focused, and achieve greatness together! 🔥🏋️\n\n— Team {gym_name}",
+  msg_renewal: "Hello {name},\n\nYour {gym_name} membership has been renewed! 💪🔥\n\n— Team {gym_name}",
+  msg_reminder: "Hello {name},\n\nYour {gym_name} membership expires in {days} days. 💪\nPlease renew soon!\n\n— Team {gym_name}",
+  msg_expired: "Hello {name},\n\nYour {gym_name} membership has expired. 😔\nPlease renew to continue.\n\n— Team {gym_name}",
+  msg_payment: "Hello {name},\n\nThank you for ₹{amount}! 💪\nMembership active until {expiry}.\n\n— Team {gym_name}"
+};
+
+const GYM_KEYS = ["gym_name", "gym_tagline", "gym_address", "gym_phone", "gym_email", "gym_gst", "wa_bridge_url"];
+const MSG_KEYS = ["msg_welcome", "msg_renewal", "msg_reminder", "msg_expired", "msg_payment"];
+
+export default function SettingsPage() {
+  const [settings, setSettings] = useState<Record<string, string>>(DEFAULT_SETTINGS);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+  const [tab, setTab] = useState<"gym" | "messages" | "qr" | "staff">("gym");
+
+  const TABS = [
+    { id: "gym", label: "Gym Details", icon: "settings" },
+    { id: "messages", label: "Messages", icon: "mail" },
+    { id: "qr", label: "WhatsApp QR", icon: "eye" },
+    { id: "staff", label: "Staff List", icon: "user" },
+  ];
+
+  // Staff list state
+  const [staff, setStaff] = useState<any[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [searching, setSearching] = useState(false);
+
+  // Load staff function
+  async function loadStaff() {
+    try {
+      const { data } = await supabase.from("members").select("id, name, phone, admission_no, is_staff").eq("is_staff", true).order("name");
+      setStaff(data || []);
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  // Load staff on tab switch to staff
+  useEffect(() => {
+    if (tab === "staff") {
+      loadStaff();
+    }
+  }, [tab]);
+
+  // Search members to add to staff
+  async function searchMember(q: string) {
+    setSearchQuery(q);
+    if (q.length < 1) {
+      setSearchResults([]);
+      return;
+    }
+    setSearching(true);
+    try {
+      const res = await apiFetch(`/api/members/search?q=${encodeURIComponent(q)}`);
+      const data = await res.json();
+      if (Array.isArray(data)) {
+        setSearchResults(data.filter((m: any) => !m.is_staff));
+      } else {
+        setSearchResults([]);
+      }
+    } catch (err) {
+      console.error("Staff Search client error:", err);
+      setSearchResults([]);
+    }
+    setSearching(false);
+  }
+
+  // Add staff
+  async function addStaff(m: any) {
+    try {
+      const { error } = await supabase.from("members").update({ is_staff: true }).eq("id", m.id);
+      if (error) {
+        alert("Error adding staff: " + error.message);
+      } else {
+        setSearchQuery("");
+        setSearchResults([]);
+        loadStaff();
+      }
+    } catch (err: any) {
+      alert(err.message);
+    }
+  }
+
+  // Remove staff
+  async function removeStaff(id: string) {
+    try {
+      const { error } = await supabase.from("members").update({ is_staff: false }).eq("id", id);
+      if (error) {
+        alert("Error removing staff: " + error.message);
+      } else {
+        loadStaff();
+      }
+    } catch (err: any) {
+      alert(err.message);
+    }
+  }
+
+  useEffect(() => {
+    async function load() {
+      try {
+        const res = await apiFetch("/api/settings/list");
+        const data = await res.json();
+        if (data && Object.keys(data).length > 0) {
+          setSettings({ ...DEFAULT_SETTINGS, ...data });
+        }
+      } catch (err) {
+        console.error("Failed to load settings:", err);
+      }
+      setLoading(false);
+    }
+    load();
+  }, []);
+
+  async function saveAll() {
+    setSaving(true);
+    try {
+      const res = await apiFetch("/api/settings/list", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(settings)
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || "Failed to save settings");
+      }
+      setGymDetails(settings);
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2500);
+    } catch (err: any) {
+      alert(err.message || "An error occurred while saving settings.");
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  const upd = (k: string, v: string) => setSettings(s => ({ ...s, [k]: v }));
+
+  if (loading) return (
+    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "60vh", flexDirection: "column", gap: "1rem", color: "var(--text-muted)" }}>
+      <span className="spinner" style={{ width: "2rem", height: "2rem", borderWidth: "3px", borderTopColor: "var(--accent)" }} />
+      Loading settings…
+    </div>
+  );
+
+  return (
+    <div style={{ maxWidth: "48rem", margin: "0 auto", display: "flex", flexDirection: "column", gap: "1.25rem" }}>
+      {/* Header */}
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "0.75rem" }}>
+        <h1 style={{ fontSize: "1.3rem", fontWeight: 800, background: "linear-gradient(135deg,#a78bfa,#67e8f9)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", margin: 0 }}>
+          Settings
+        </h1>
+        <button id="save-settings-btn" onClick={saveAll} className={`btn ${saved ? "btn-success" : "btn-primary"}`} disabled={saving} style={{ fontSize: "0.95rem", padding: "0.6rem 1.2rem" }}>
+          {saving ? <><span className="spinner" /> Saving…</> : saved ? <><Icon name="check" size={18} /> Saved!</> : <><Icon name="download" size={18} /> Save All</>}
+        </button>
+      </div>
+
+      {/* Tabs */}
+      <div style={{ display: "flex", gap: "0.25rem", borderBottom: "1px solid var(--border)", overflowX: "auto" }}>
+        {TABS.map(t => (
+          <button key={t.id} onClick={() => setTab(t.id as any)} className={`tab ${tab === t.id ? "tab-active" : "tab-idle"}`} style={{ fontSize: "1rem", padding: "0.6rem 1rem" }}>
+            <Icon name={t.icon as any} size={18} /> {t.label}
+          </button>
+        ))}
+      </div>
+
+      {/* Tab Content */}
+      {tab === "gym" && (
+        <div className="glass" style={{ padding: "1.25rem" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))", gap: "0.85rem" }}>
+            {GYM_KEYS.map(key => (
+              <label key={key} style={{ display: "block" }}>
+                <span style={{ fontSize: "0.75rem", color: "var(--text-muted)", display: "block", marginBottom: "0.3rem", fontWeight: 500 }}>
+                  {SETTINGS_KEYS[key]}
+                </span>
+                <input
+                  id={`setting-${key}`}
+                  className="input"
+                  style={{ fontSize: "0.95rem", padding: "0.55rem 0.75rem", minHeight: "40px" }}
+                  value={settings[key] || ""}
+                  onChange={e => upd(key, e.target.value)}
+                />
+              </label>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {tab === "messages" && (
+        <div className="glass" style={{ padding: "1.25rem" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+            {MSG_KEYS.map(key => (
+              <div key={key}>
+                <label style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.35rem" }}>
+                  <span style={{ fontSize: "0.85rem", fontWeight: 600, color: "var(--text)" }}>{SETTINGS_KEYS[key]}</span>
+                  {PLACEHOLDERS[key] && (
+                    <span style={{ fontSize: "0.7rem", color: "var(--accent2)", background: "rgba(6,182,212,0.1)", border: "1px solid rgba(6,182,212,0.2)", borderRadius: "0.375rem", padding: "0.1rem 0.4rem" }}>
+                      {PLACEHOLDERS[key]}
+                    </span>
+                  )}
+                </label>
+                <textarea
+                  id={`setting-${key}`}
+                  className="input"
+                  rows={5}
+                  style={{ fontFamily: "monospace", fontSize: "0.85rem", resize: "vertical" }}
+                  value={settings[key] || ""}
+                  onChange={e => upd(key, e.target.value)}
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {tab === "qr" && (
+        <div className="glass" style={{ padding: "1.5rem", textAlign: "center" }}>
+          <h3 style={{ fontSize: "1.1rem", fontWeight: 700, marginBottom: "1rem" }}>WhatsApp QR Code</h3>
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "1rem" }}>
+            <img
+              src="/whatsapp-qr.png"
+              style={{ width: "100%", maxWidth: "320px", height: "auto", border: "none", borderRadius: "0.75rem", background: "#fff", padding: "0.5rem", boxShadow: "0 4px 12px rgba(0,0,0,0.1)" }}
+              alt="WhatsApp Connection QR"
+            />
+            <p style={{ fontSize: "0.85rem", color: "var(--text-muted)", maxWidth: "320px" }}>
+              Scan this QR with your phone (Linked Devices &rarr; Link a Device) to connect to the WhatsApp Bridge.
+            </p>
+          </div>
+        </div>
+      )}
+
+      {tab === "staff" && (
+        <div className="glass" style={{ padding: "1.25rem", display: "flex", flexDirection: "column", gap: "1rem" }}>
+          <div>
+            <h3 style={{ fontSize: "1.1rem", fontWeight: 700, marginBottom: "0.5rem" }}>Manage Gym Staff</h3>
+            <p style={{ fontSize: "0.85rem", color: "var(--text-muted)", marginBottom: "1rem" }}>
+              Staff members are gym workers who have unlimited access and do not require fee tracking. They are hidden from the overdue and due-soon lists.
+            </p>
+          </div>
+
+          {/* Add Staff Search */}
+          <div style={{ position: "relative" }}>
+            <span style={{ fontSize: "0.75rem", color: "var(--text-muted)", display: "block", marginBottom: "0.3rem", fontWeight: 500 }}>
+              Search Member to Add as Staff
+            </span>
+            <input
+              type="text"
+              className="input"
+              placeholder="Type member name..."
+              value={searchQuery}
+              onChange={e => searchMember(e.target.value)}
+              style={{ fontSize: "0.95rem" }}
+            />
+            {searching && (
+              <span className="spinner" style={{ position: "absolute", right: "0.75rem", bottom: "0.6rem", width: "1.2rem", height: "1.2rem" }} />
+            )}
+            
+            {/* Search Results Dropdown */}
+            {searchResults.length > 0 && (
+              <div style={{
+                position: "absolute",
+                top: "100%",
+                left: 0,
+                right: 0,
+                background: "var(--bg2)",
+                border: "1px solid var(--border)",
+                borderRadius: "0.5rem",
+                boxShadow: "0 4px 12px rgba(0,0,0,0.3)",
+                zIndex: 10,
+                maxHeight: "180px",
+                overflowY: "auto",
+                marginTop: "0.25rem"
+              }}>
+                {searchResults.map((m: any) => (
+                  <div
+                    key={m.id}
+                    onClick={() => addStaff(m)}
+                    style={{
+                      padding: "0.6rem 0.85rem",
+                      cursor: "pointer",
+                      fontSize: "0.9rem",
+                      borderBottom: "1px solid var(--border)",
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      transition: "background 0.15s"
+                    }}
+                    onMouseEnter={e => (e.currentTarget.style.background = "var(--surface-hover)")}
+                    onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
+                  >
+                    <span>{m.name} <span style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>({m.phone})</span></span>
+                    <span style={{ fontSize: "0.75rem", color: "var(--accent)" }}>Add to Staff +</span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Current Staff List */}
+          <div style={{ marginTop: "0.5rem" }}>
+            <span style={{ fontSize: "0.78rem", color: "var(--text-muted)", display: "block", marginBottom: "0.5rem", fontWeight: 600 }}>
+              Current Staff Members ({staff.length})
+            </span>
+            <div style={{ border: "1px solid var(--border)", borderRadius: "0.5rem", overflow: "hidden" }}>
+              {staff.length === 0 ? (
+                <div style={{ padding: "1.5rem", textAlign: "center", color: "var(--text-muted)", fontSize: "0.85rem" }}>
+                  No staff members added yet.
+                </div>
+              ) : (
+                <div style={{ display: "flex", flexDirection: "column" }}>
+                  {staff.map((s: any, idx: number) => (
+                    <div
+                      key={s.id}
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        padding: "0.6rem 0.85rem",
+                        fontSize: "0.9rem",
+                        borderBottom: idx < staff.length - 1 ? "1px solid var(--border)" : "none",
+                        background: "var(--surface)"
+                      }}
+                    >
+                      <div>
+                        <div style={{ fontWeight: 600 }}>{s.name}</div>
+                        <div style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>#{s.admission_no} · {s.phone}</div>
+                      </div>
+                      <button
+                        onClick={() => removeStaff(s.id)}
+                        className="btn btn-danger"
+                        style={{ padding: "0.3rem 0.6rem", fontSize: "0.75rem", minHeight: "auto", width: "auto" }}
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      </div>
+  );
+}

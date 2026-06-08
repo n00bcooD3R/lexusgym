@@ -1,21 +1,18 @@
 $ErrorActionPreference = 'Stop'
 $projectDir = "C:\Users\aroma\Desktop\gmy-project\v1\gymapp"
-$logFile = "$projectDir\dev-server.log"
 
-Write-Host "Starting Next.js dev server..."
-$env:NODE_ENV = "development"
+Write-Host "🚀 Starting Lexus Gym Multi-Platform Dev Stack..." -ForegroundColor Cyan
 
-try {
-    $process = Start-Process -FilePath "node" -ArgumentList ".next\server\start.js" -WorkingDirectory $projectDir -NoNewWindow -PassThru -RedirectStandardOutput $logFile -RedirectStandardError "$projectDir\dev-server-error.log"
-    Write-Host "Started with PID: $($process.Id)"
-} catch {
-    Write-Host "Trying alternative method..."
-    $job = Start-Job -ScriptBlock {
-        param($dir, $log)
-        Set-Location $dir
-        npm run dev 2>&1 | Out-File -FilePath $log -Append
-    } -ArgumentList $projectDir, $logFile
-    
-    Write-Host "Background job started: $($job.Id)"
-    Get-Job | Receive-Job -Keep
-}
+# 1. Start FastAPI Backend (Port 8000)
+Write-Host "-> Launching FastAPI Backend on http://localhost:8000..." -ForegroundColor Yellow
+Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd '$projectDir\backend'; ..\.venv\Scripts\python -m uvicorn api.index:app --reload --port 8000"
+
+# 2. Start Vite Web Frontend (Port 5173 / Proxy to Backend)
+Write-Host "-> Launching Vite React Frontend..." -ForegroundColor Yellow
+Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd '$projectDir\web'; npm run dev"
+
+# 3. Start Expo React Native App
+Write-Host "-> Launching Expo Mobile App..." -ForegroundColor Yellow
+Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd '$projectDir\mobile'; npm start"
+
+Write-Host "✅ All dev environments launched in separate windows!" -ForegroundColor Green
