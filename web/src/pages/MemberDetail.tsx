@@ -425,6 +425,7 @@ function PaymentsTab({ m, payments, partner, onReload }: { m: any; payments: any
   const [notes, setNotes] = useState("");
   const [busy, setBusy] = useState(false);
   const [sendWA, setSendWA] = useState(true);
+  const [cardio, setCardio] = useState(false);
   const [syncPartner, setSyncPartner] = useState(true);
   const [extraCharges, setExtraCharges] = useState({ trainer: 0, diet: 0, admission: 0 });
   const [paymentDate, setPaymentDate] = useState(new Date().toISOString().slice(0, 10));
@@ -522,12 +523,13 @@ function PaymentsTab({ m, payments, partner, onReload }: { m: any; payments: any
     setBusy(true);
     try {
       const total = Number(amount) + extraCharges.trainer + extraCharges.diet + extraCharges.admission;
+      const finalNotes = notes ? (cardio ? `${notes} + Cardio` : notes) : (cardio ? "Cardio" : "");
       
       const { data: payment, error } = await supabase.from("payments").insert({ 
         member_id: m.id, 
         amount: total, 
         method, 
-        notes, 
+        notes: finalNotes, 
         paid_on: paymentDate 
       }).select().single();
       
@@ -580,7 +582,7 @@ function PaymentsTab({ m, payments, partner, onReload }: { m: any; payments: any
           member_id: m.couple_partner_id,
           amount: partnerFee,
           method,
-          notes: `[Couple Pack] Synced from ${m.name}'s payment`,
+          notes: `[Couple Pack] Synced from ${m.name}'s payment` + (cardio ? " + Cardio" : ""),
           paid_on: paymentDate,
         });
         await supabase.from("members").update({
@@ -590,6 +592,8 @@ function PaymentsTab({ m, payments, partner, onReload }: { m: any; payments: any
       }
 
       alert("Payment recorded successfully!");
+      setCardio(false);
+      setNotes("");
       onReload();
     } catch (err: any) {
       alert("Error: " + (err.message || "Unknown error"));
@@ -605,7 +609,8 @@ function PaymentsTab({ m, payments, partner, onReload }: { m: any; payments: any
     } catch (e) {
       console.error("Preview settings fetch error", e);
     }
-    const doc = generateInvoice(m, { id: "preview", paid_on: paymentDate, amount: Number(amount) + extraCharges.trainer + extraCharges.diet + extraCharges.admission, method }, { trainerCharges: extraCharges.trainer, dietCharges: extraCharges.diet, admissionFee: extraCharges.admission });
+    const finalNotes = notes ? (cardio ? `${notes} + Cardio` : notes) : (cardio ? "Cardio" : "");
+    const doc = generateInvoice(m, { id: "preview", paid_on: paymentDate, amount: Number(amount) + extraCharges.trainer + extraCharges.diet + extraCharges.admission, method, notes: finalNotes }, { trainerCharges: extraCharges.trainer, dietCharges: extraCharges.diet, admissionFee: extraCharges.admission });
     doc.save(`Invoice_${m.admission_no}_preview.pdf`);
   }
 
@@ -750,6 +755,10 @@ function PaymentsTab({ m, payments, partner, onReload }: { m: any; payments: any
           <input id="pay-admission" className="input" type="number" placeholder="Admission" value={extraCharges.admission || ""} onChange={e => setExtraCharges(x => ({ ...x, admission: Number(e.target.value) || 0 }))} style={{ fontSize: "0.9rem" }} />
         </div>
         <label style={{ display: "flex", alignItems: "center", gap: "0.5rem", fontSize: "0.9rem", marginTop: "0.7rem", cursor: "pointer" }}>
+          <input id="pay-has-cardio" type="checkbox" checked={cardio} onChange={e => setCardio(e.target.checked)} />
+          🏃 Cardio Included
+        </label>
+        <label style={{ display: "flex", alignItems: "center", gap: "0.5rem", fontSize: "0.9rem", marginTop: "0.4rem", cursor: "pointer" }}>
           <input id="pay-send-wa" type="checkbox" checked={sendWA} onChange={e => setSendWA(e.target.checked)} />
           Send WhatsApp
         </label>
@@ -781,7 +790,10 @@ function PaymentsTab({ m, payments, partner, onReload }: { m: any; payments: any
             <div key={p.id} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0.7rem 1rem", fontSize: "1rem" }}>
               <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
                 <input type="date" className="input" style={{ width: "auto", fontSize: "0.9rem", padding: "0.3rem 0.5rem", minHeight: "auto" }} value={p.paid_on || ""} onChange={e => updateDate(p.id, e.target.value)} />
-                <span style={{ color: "var(--text-muted)" }}>{p.method}</span>
+                <span style={{ color: "var(--text-muted)", display: "inline-flex", alignItems: "center", gap: "0.4rem", flexWrap: "wrap" }}>
+                  <span style={{ textTransform: "capitalize" }}>{p.method}</span>
+                  {p.notes && <span style={{ fontSize: "0.85rem", color: "var(--text-muted)", fontStyle: "italic", opacity: 0.9 }}>— {p.notes}</span>}
+                </span>
               </div>
               <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
                 <span style={{ fontWeight: 700, color: "var(--success)" }}>₹{p.amount}</span>

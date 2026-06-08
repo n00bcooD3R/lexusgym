@@ -27,6 +27,7 @@ export default function NewMember() {
   const [photo, setPhoto] = useState<File | null>(null);
   const [admError, setAdmError] = useState("");
   const [sendWelcome, setSendWelcome] = useState(true);
+  const [cardio, setCardio] = useState(false);
   const [settings, setSettings] = useState<Record<string, string>>({});
   const [selectedPlan, setSelectedPlan] = useState<string>("flex");
   // Couple pack state
@@ -168,7 +169,7 @@ export default function NewMember() {
         member_id: data.id,
         amount: totalPayment,
         method: "cash",
-        notes: "Initial Membership + Admission",
+        notes: "Initial Membership + Admission" + (cardio ? " + Cardio" : ""),
         paid_on: joinDateStr
       }).select().single();
       paymentData = payRec;
@@ -443,6 +444,10 @@ export default function NewMember() {
           <label style={{ display: "flex", alignItems: "center", gap: "0.6rem", fontSize: "0.875rem", color: "var(--text)", cursor: "pointer" }}>
             <input id="new-is-pt" type="checkbox" checked={form.is_pt_client} onChange={e => upd("is_pt_client", e.target.checked)} />
             <span>💪 Personal Training client</span>
+          </label>
+          <label style={{ display: "flex", alignItems: "center", gap: "0.6rem", fontSize: "0.875rem", color: "var(--text)", cursor: "pointer" }}>
+            <input id="new-has-cardio" type="checkbox" checked={cardio} onChange={e => setCardio(e.target.checked)} />
+            <span>🏃 Cardio Included</span>
           </label>
           <label style={{ display: "flex", alignItems: "center", gap: "0.6rem", fontSize: "0.875rem", color: "var(--text)", cursor: "pointer" }}>
             <input id="new-send-welcome" type="checkbox" checked={sendWelcome} onChange={e => setSendWelcome(e.target.checked)} />

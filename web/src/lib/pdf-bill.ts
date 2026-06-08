@@ -175,6 +175,9 @@ export function generateInvoice(member: any, payment: any, extra?: { trainerChar
   if (trainer > 0) items.push({ desc: "Personal Training (PT) Charges", amt: trainer });
   if (diet > 0) items.push({ desc: "Diet Plan Charges", amt: diet });
   if (admission > 0) items.push({ desc: "Admission & Registration Fee", amt: admission });
+  if (payment.notes && /cardio/i.test(payment.notes)) {
+    items.push({ desc: "Cardio (Extra)", amt: 0 });
+  }
 
   let currentY = 141;
   doc.setFont("helvetica", "normal");

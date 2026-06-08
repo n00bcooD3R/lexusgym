@@ -154,6 +154,8 @@ def generate_invoice_pdf(member: dict, payment: dict, settings: dict, extra: dic
         items.append({"desc": "Diet Plan Charges", "amt": diet})
     if admission > 0:
         items.append({"desc": "Admission & Registration Fee", "amt": admission})
+    if payment.get("notes") and "cardio" in str(payment.get("notes")).lower():
+        items.append({"desc": "Cardio (Extra)", "amt": 0.0})
         
     current_y = 150
     pdf.set_font("Helvetica", "", 13.5)
