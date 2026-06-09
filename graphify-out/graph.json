@@ -157,7 +157,7 @@
       "label": "health()",
       "file_type": "code",
       "source_file": "backend/api/index.py",
-      "source_location": "L47",
+      "source_location": "L48",
       "_origin": "ast",
       "id": "api_index_health",
       "community": 39,
@@ -242,6 +242,66 @@
       "id": "routes_init",
       "community": 50,
       "norm_label": "__init__.py"
+    },
+    {
+      "label": "adms.py",
+      "file_type": "code",
+      "source_file": "backend/api/routes/adms.py",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "routes_adms",
+      "community": 0,
+      "norm_label": "adms.py"
+    },
+    {
+      "label": "adms_handshake()",
+      "file_type": "code",
+      "source_file": "backend/api/routes/adms.py",
+      "source_location": "L15",
+      "_origin": "ast",
+      "id": "routes_adms_adms_handshake",
+      "community": 0,
+      "norm_label": "adms_handshake()"
+    },
+    {
+      "label": "adms_receive_data()",
+      "file_type": "code",
+      "source_file": "backend/api/routes/adms.py",
+      "source_location": "L36",
+      "_origin": "ast",
+      "id": "routes_adms_adms_receive_data",
+      "community": 0,
+      "norm_label": "adms_receive_data()"
+    },
+    {
+      "label": "Request",
+      "file_type": "code",
+      "source_file": "backend/api/routes/adms.py",
+      "source_location": "L36",
+      "_origin": "ast",
+      "id": "backend_api_routes_adms_py_request",
+      "community": 0,
+      "norm_label": "request"
+    },
+    {
+      "label": "adms_get_commands()",
+      "file_type": "code",
+      "source_file": "backend/api/routes/adms.py",
+      "source_location": "L113",
+      "_origin": "ast",
+      "id": "routes_adms_adms_get_commands",
+      "community": 0,
+      "norm_label": "adms_get_commands()"
+    },
+    {
+      "label": "adms_device_cmd_response()",
+      "file_type": "code",
+      "source_file": "backend/api/routes/adms.py",
+      "source_location": "L120",
+      "_origin": "ast",
+      "id": "routes_adms_adms_device_cmd_response",
+      "community": 0,
+      "norm_label": "adms_device_cmd_response()"
     },
     {
       "label": "cron.py",
@@ -2440,7 +2500,7 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "web_package_devdependencies",
-      "community": 58,
+      "community": 1,
       "norm_label": "devdependencies"
     },
     {
@@ -2450,7 +2510,7 @@
       "source_location": "L23",
       "_origin": "ast",
       "id": "web_package_devdependencies_eslint_js",
-      "community": 58,
+      "community": 1,
       "norm_label": "@eslint/js"
     },
     {
@@ -2460,7 +2520,7 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "web_package_devdependencies_types_node",
-      "community": 58,
+      "community": 1,
       "norm_label": "@types/node"
     },
     {
@@ -2470,7 +2530,7 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "web_package_devdependencies_types_react",
-      "community": 58,
+      "community": 1,
       "norm_label": "@types/react"
     },
     {
@@ -2480,7 +2540,7 @@
       "source_location": "L26",
       "_origin": "ast",
       "id": "web_package_devdependencies_types_react_dom",
-      "community": 58,
+      "community": 1,
       "norm_label": "@types/react-dom"
     },
     {
@@ -2490,7 +2550,7 @@
       "source_location": "L27",
       "_origin": "ast",
       "id": "web_package_devdependencies_vitejs_plugin_react",
-      "community": 58,
+      "community": 1,
       "norm_label": "@vitejs/plugin-react"
     },
     {
@@ -2500,7 +2560,7 @@
       "source_location": "L28",
       "_origin": "ast",
       "id": "web_package_devdependencies_autoprefixer",
-      "community": 58,
+      "community": 1,
       "norm_label": "autoprefixer"
     },
     {
@@ -2510,7 +2570,7 @@
       "source_location": "L29",
       "_origin": "ast",
       "id": "web_package_devdependencies_eslint",
-      "community": 58,
+      "community": 1,
       "norm_label": "eslint"
     },
     {
@@ -2520,7 +2580,7 @@
       "source_location": "L30",
       "_origin": "ast",
       "id": "web_package_devdependencies_eslint_plugin_react_hooks",
-      "community": 58,
+      "community": 1,
       "norm_label": "eslint-plugin-react-hooks"
     },
     {
@@ -2530,7 +2590,7 @@
       "source_location": "L31",
       "_origin": "ast",
       "id": "web_package_devdependencies_eslint_plugin_react_refresh",
-      "community": 58,
+      "community": 1,
       "norm_label": "eslint-plugin-react-refresh"
     },
     {
@@ -2540,7 +2600,7 @@
       "source_location": "L32",
       "_origin": "ast",
       "id": "web_package_devdependencies_globals",
-      "community": 58,
+      "community": 1,
       "norm_label": "globals"
     },
     {
@@ -2550,7 +2610,7 @@
       "source_location": "L33",
       "_origin": "ast",
       "id": "web_package_devdependencies_postcss",
-      "community": 58,
+      "community": 1,
       "norm_label": "postcss"
     },
     {
@@ -2560,7 +2620,7 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "web_package_devdependencies_tailwindcss",
-      "community": 58,
+      "community": 1,
       "norm_label": "tailwindcss"
     },
     {
@@ -2570,7 +2630,7 @@
       "source_location": "L35",
       "_origin": "ast",
       "id": "web_package_devdependencies_typescript",
-      "community": 58,
+      "community": 1,
       "norm_label": "typescript"
     },
     {
@@ -2580,7 +2640,7 @@
       "source_location": "L36",
       "_origin": "ast",
       "id": "web_package_devdependencies_typescript_eslint",
-      "community": 58,
+      "community": 1,
       "norm_label": "typescript-eslint"
     },
     {
@@ -2590,7 +2650,7 @@
       "source_location": "L37",
       "_origin": "ast",
       "id": "web_package_devdependencies_vite",
-      "community": 58,
+      "community": 1,
       "norm_label": "vite"
     },
     {
@@ -5206,6 +5266,17 @@
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
+      "source_file": "backend/api/routes/adms.py",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "routes_adms",
+      "target": "api_database",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
       "source_file": "backend/api/routes/cron.py",
       "source_location": "L3",
       "weight": 1.0,
@@ -5352,6 +5423,17 @@
       "weight": 1.0,
       "confidence_score": 1.0,
       "source": "api_database_rationale_33",
+      "target": "api_database_get_admin_client"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/api/routes/adms.py",
+      "source_location": "L50",
+      "weight": 1.0,
+      "source": "routes_adms_adms_receive_data",
       "target": "api_database_get_admin_client"
     },
     {
@@ -5577,6 +5659,57 @@
       "weight": 1.0,
       "source": "routes_payments_payment_webhook",
       "target": "api_pdf_generate_invoice_pdf"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/api/routes/adms.py",
+      "source_location": "L120",
+      "weight": 1.0,
+      "source": "routes_adms",
+      "target": "routes_adms_adms_device_cmd_response",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/api/routes/adms.py",
+      "source_location": "L113",
+      "weight": 1.0,
+      "source": "routes_adms",
+      "target": "routes_adms_adms_get_commands",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/api/routes/adms.py",
+      "source_location": "L15",
+      "weight": 1.0,
+      "source": "routes_adms",
+      "target": "routes_adms_adms_handshake",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/api/routes/adms.py",
+      "source_location": "L36",
+      "weight": 1.0,
+      "source": "routes_adms",
+      "target": "routes_adms_adms_receive_data",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "context": "parameter_type",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/api/routes/adms.py",
+      "source_location": "L36",
+      "weight": 1.0,
+      "source": "routes_adms_adms_receive_data",
+      "target": "backend_api_routes_adms_py_request",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -7571,9 +7704,9 @@
       "source_file": "scripts/sync_members_to_essl.py",
       "source_location": "L76",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "scripts_sync_members_to_essl",
-      "target": "scripts_sync_members_to_essl_analyze_and_sync",
-      "confidence_score": 1.0
+      "target": "scripts_sync_members_to_essl_analyze_and_sync"
     },
     {
       "relation": "contains",
@@ -7581,9 +7714,9 @@
       "source_file": "scripts/sync_members_to_essl.py",
       "source_location": "L48",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "scripts_sync_members_to_essl",
-      "target": "scripts_sync_members_to_essl_fetch_supabase_members",
-      "confidence_score": 1.0
+      "target": "scripts_sync_members_to_essl_fetch_supabase_members"
     },
     {
       "relation": "calls",
@@ -7592,9 +7725,9 @@
       "source_file": "scripts/sync_members_to_essl.py",
       "source_location": "L78",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "scripts_sync_members_to_essl_analyze_and_sync",
-      "target": "scripts_sync_members_to_essl_fetch_supabase_members",
-      "confidence_score": 1.0
+      "target": "scripts_sync_members_to_essl_fetch_supabase_members"
     },
     {
       "relation": "contains",
@@ -10872,5 +11005,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "4c3df25c0bab8d093ed4a671c3912bf3723b67cb"
+  "built_at_commit": "e93c9e1d0de7016696f7dfcfe2fbd72a31511682"
 }

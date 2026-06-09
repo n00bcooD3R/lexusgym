@@ -20,8 +20,8 @@
     "semantic_hash": ""
   },
   "backend/api/index.py": {
-    "mtime": 1780902309.410955,
-    "ast_hash": "1d3ce1bd120720a41b216da7f60acb13",
+    "mtime": 1781005654.6876104,
+    "ast_hash": "838b21564ad54d65da0fa91e77391951",
     "semantic_hash": ""
   },
   "backend/api/pdf.py": {
@@ -582,6 +582,11 @@
   "scripts/sync_members_to_essl.py": {
     "mtime": 1781000343.3808713,
     "ast_hash": "21f096b54a74b910aed99de988efa971",
+    "semantic_hash": ""
+  },
+  "backend/api/routes/adms.py": {
+    "mtime": 1781005649.801832,
+    "ast_hash": "baab9edb2135e332e5c63dca9112a813",
     "semantic_hash": ""
   }
 }

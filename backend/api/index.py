@@ -14,7 +14,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from mangum import Mangum
 
 # Import routes
-from api.routes import settings, members, wa, payments, statistics, cron, pt
+from api.routes import settings, members, wa, payments, statistics, cron, pt, adms
 
 app = FastAPI(
     title="Lexus Gym API Backend",
@@ -41,6 +41,7 @@ app.include_router(payments.router)
 app.include_router(statistics.router)
 app.include_router(cron.router)
 app.include_router(pt.router)
+app.include_router(adms.router)
 
 
 @app.get("/api/health")
