@@ -29,14 +29,30 @@ if not SUPABASE_URL or not SUPABASE_KEY:
 # SQLite DB path to keep track of the last synced log ID locally
 SYNC_DB_PATH = "essl_sync_progress.db"
 
-# Local eSSL Database Connection String (adjust server instance/DB name if different)
-# eTimeTrackLite / SmartOffice defaults to SQL Server Express localdb (localhost\SQLEXPRESS)
-ESSL_CONNECTION_STRING = (
-    "Driver={SQL Server};"
-    "Server=LOCALHOST\\SQLEXPRESS;"
-    "Database=eTimeTrackLite1;"
-    "Trusted_Connection=yes;"
-)
+# ─── ESSL DATABASE CONNECTION STRING CONFIGURATION ───
+# Can be configured inside your `.env.local` file for remote servers
+db_server = os.getenv("ESSL_DB_SERVER") or "LOCALHOST\\SQLEXPRESS"
+db_name = os.getenv("ESSL_DB_NAME") or "eTimeTrackLite1"
+db_user = os.getenv("ESSL_DB_USER")
+db_pass = os.getenv("ESSL_DB_PASS")
+
+if db_user and db_pass:
+    # SQL Server Authentication (recommended for remote systems on LAN)
+    ESSL_CONNECTION_STRING = (
+        f"Driver={{SQL Server}};"
+        f"Server={db_server};"
+        f"Database={db_name};"
+        f"UID={db_user};"
+        f"PWD={db_pass};"
+    )
+else:
+    # Windows Authentication (default for localhost)
+    ESSL_CONNECTION_STRING = (
+        f"Driver={{SQL Server}};"
+        f"Server={db_server};"
+        f"Database={db_name};"
+        f"Trusted_Connection=yes;"
+    )
 
 def init_local_tracker():
     conn = sqlite3.connect(SYNC_DB_PATH)
@@ -68,8 +84,9 @@ def start_sync():
     init_local_tracker()
     print("==========================================================")
     print("🚀 eSSL Biometric Sync Agent started successfully.")
-    print(f"Cloud DB: {SUPABASE_URL}")
-    print("Monitoring local SQL Server for biometric punch logs...")
+    print(f"Cloud DB:  {SUPABASE_URL}")
+    print(f"eSSL DB:   {db_server} (Database: {db_name})")
+    print("Monitoring database for biometric punch logs...")
     print("==========================================================")
 
     headers = {
