@@ -578,5 +578,10 @@
     "mtime": 1780996114.3659754,
     "ast_hash": "513d6784e01e6e4dcd63bf45035ce168",
     "semantic_hash": ""
+  },
+  "scripts/sync_members_to_essl.py": {
+    "mtime": 1781000343.3808713,
+    "ast_hash": "21f096b54a74b910aed99de988efa971",
+    "semantic_hash": ""
   }
 }

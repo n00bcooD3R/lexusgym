@@ -170,7 +170,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "api_pdf",
-      "community": 0,
+      "community": 57,
       "norm_label": "pdf.py"
     },
     {
@@ -180,7 +180,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "api_pdf_invoicepdf",
-      "community": 0,
+      "community": 57,
       "norm_label": "invoicepdf"
     },
     {
@@ -190,7 +190,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "fpdf",
-      "community": 0,
+      "community": 57,
       "norm_label": "fpdf"
     },
     {
@@ -200,7 +200,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "api_pdf_invoicepdf_header",
-      "community": 0,
+      "community": 57,
       "norm_label": ".header()"
     },
     {
@@ -210,7 +210,7 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "api_pdf_invoicepdf_footer",
-      "community": 0,
+      "community": 57,
       "norm_label": ".footer()"
     },
     {
@@ -220,7 +220,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "api_pdf_generate_invoice_pdf",
-      "community": 0,
+      "community": 57,
       "norm_label": "generate_invoice_pdf()"
     },
     {
@@ -230,7 +230,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "api_pdf_rationale_13",
-      "community": 0,
+      "community": 57,
       "norm_label": "generates a premium invoice receipt pdf using fpdf2.     matches coordinate offs"
     },
     {
@@ -250,7 +250,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "routes_cron",
-      "community": 0,
+      "community": 57,
       "norm_label": "cron.py"
     },
     {
@@ -260,7 +260,7 @@
       "source_location": "L30",
       "_origin": "ast",
       "id": "routes_cron_run_cron_reminders",
-      "community": 0,
+      "community": 57,
       "norm_label": "run_cron_reminders()"
     },
     {
@@ -320,7 +320,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "routes_payments",
-      "community": 0,
+      "community": 57,
       "norm_label": "payments.py"
     },
     {
@@ -330,7 +330,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "routes_payments_webhookpayload",
-      "community": 0,
+      "community": 57,
       "norm_label": "webhookpayload"
     },
     {
@@ -340,7 +340,7 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "routes_payments_payment_webhook",
-      "community": 0,
+      "community": 57,
       "norm_label": "payment_webhook()"
     },
     {
@@ -600,7 +600,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "api_whatsapp",
-      "community": 0,
+      "community": 57,
       "norm_label": "whatsapp.py"
     },
     {
@@ -610,7 +610,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "api_whatsapp_send_whatsapp",
-      "community": 0,
+      "community": 57,
       "norm_label": "send_whatsapp()"
     },
     {
@@ -620,7 +620,7 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "api_whatsapp_send_via_meta",
-      "community": 0,
+      "community": 57,
       "norm_label": "send_via_meta()"
     },
     {
@@ -630,7 +630,7 @@
       "source_location": "L72",
       "_origin": "ast",
       "id": "api_whatsapp_send_via_local",
-      "community": 0,
+      "community": 57,
       "norm_label": "send_via_local()"
     },
     {
@@ -640,7 +640,7 @@
       "source_location": "L103",
       "_origin": "ast",
       "id": "api_whatsapp_send_via_evolution",
-      "community": 0,
+      "community": 57,
       "norm_label": "send_via_evolution()"
     },
     {
@@ -650,7 +650,7 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "api_whatsapp_rationale_7",
-      "community": 0,
+      "community": 57,
       "norm_label": "unified whatsapp sender. selects provider based on wa_provider env variable."
     },
     {
@@ -1974,6 +1974,36 @@
       "norm_label": "start_sync()"
     },
     {
+      "label": "sync_members_to_essl.py",
+      "file_type": "code",
+      "source_file": "scripts/sync_members_to_essl.py",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "scripts_sync_members_to_essl",
+      "community": 59,
+      "norm_label": "sync_members_to_essl.py"
+    },
+    {
+      "label": "fetch_supabase_members()",
+      "file_type": "code",
+      "source_file": "scripts/sync_members_to_essl.py",
+      "source_location": "L48",
+      "_origin": "ast",
+      "id": "scripts_sync_members_to_essl_fetch_supabase_members",
+      "community": 59,
+      "norm_label": "fetch_supabase_members()"
+    },
+    {
+      "label": "analyze_and_sync()",
+      "file_type": "code",
+      "source_file": "scripts/sync_members_to_essl.py",
+      "source_location": "L76",
+      "_origin": "ast",
+      "id": "scripts_sync_members_to_essl_analyze_and_sync",
+      "community": 59,
+      "norm_label": "analyze_and_sync()"
+    },
+    {
       "label": "start-dev.ps1",
       "file_type": "code",
       "source_file": "start-dev.ps1",
@@ -2410,7 +2440,7 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "web_package_devdependencies",
-      "community": 1,
+      "community": 58,
       "norm_label": "devdependencies"
     },
     {
@@ -2420,7 +2450,7 @@
       "source_location": "L23",
       "_origin": "ast",
       "id": "web_package_devdependencies_eslint_js",
-      "community": 1,
+      "community": 58,
       "norm_label": "@eslint/js"
     },
     {
@@ -2430,7 +2460,7 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "web_package_devdependencies_types_node",
-      "community": 1,
+      "community": 58,
       "norm_label": "@types/node"
     },
     {
@@ -2440,7 +2470,7 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "web_package_devdependencies_types_react",
-      "community": 1,
+      "community": 58,
       "norm_label": "@types/react"
     },
     {
@@ -2450,7 +2480,7 @@
       "source_location": "L26",
       "_origin": "ast",
       "id": "web_package_devdependencies_types_react_dom",
-      "community": 1,
+      "community": 58,
       "norm_label": "@types/react-dom"
     },
     {
@@ -2460,7 +2490,7 @@
       "source_location": "L27",
       "_origin": "ast",
       "id": "web_package_devdependencies_vitejs_plugin_react",
-      "community": 1,
+      "community": 58,
       "norm_label": "@vitejs/plugin-react"
     },
     {
@@ -2470,7 +2500,7 @@
       "source_location": "L28",
       "_origin": "ast",
       "id": "web_package_devdependencies_autoprefixer",
-      "community": 1,
+      "community": 58,
       "norm_label": "autoprefixer"
     },
     {
@@ -2480,7 +2510,7 @@
       "source_location": "L29",
       "_origin": "ast",
       "id": "web_package_devdependencies_eslint",
-      "community": 1,
+      "community": 58,
       "norm_label": "eslint"
     },
     {
@@ -2490,7 +2520,7 @@
       "source_location": "L30",
       "_origin": "ast",
       "id": "web_package_devdependencies_eslint_plugin_react_hooks",
-      "community": 1,
+      "community": 58,
       "norm_label": "eslint-plugin-react-hooks"
     },
     {
@@ -2500,7 +2530,7 @@
       "source_location": "L31",
       "_origin": "ast",
       "id": "web_package_devdependencies_eslint_plugin_react_refresh",
-      "community": 1,
+      "community": 58,
       "norm_label": "eslint-plugin-react-refresh"
     },
     {
@@ -2510,7 +2540,7 @@
       "source_location": "L32",
       "_origin": "ast",
       "id": "web_package_devdependencies_globals",
-      "community": 1,
+      "community": 58,
       "norm_label": "globals"
     },
     {
@@ -2520,7 +2550,7 @@
       "source_location": "L33",
       "_origin": "ast",
       "id": "web_package_devdependencies_postcss",
-      "community": 1,
+      "community": 58,
       "norm_label": "postcss"
     },
     {
@@ -2530,7 +2560,7 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "web_package_devdependencies_tailwindcss",
-      "community": 1,
+      "community": 58,
       "norm_label": "tailwindcss"
     },
     {
@@ -2540,7 +2570,7 @@
       "source_location": "L35",
       "_origin": "ast",
       "id": "web_package_devdependencies_typescript",
-      "community": 1,
+      "community": 58,
       "norm_label": "typescript"
     },
     {
@@ -2550,7 +2580,7 @@
       "source_location": "L36",
       "_origin": "ast",
       "id": "web_package_devdependencies_typescript_eslint",
-      "community": 1,
+      "community": 58,
       "norm_label": "typescript-eslint"
     },
     {
@@ -2560,7 +2590,7 @@
       "source_location": "L37",
       "_origin": "ast",
       "id": "web_package_devdependencies_vite",
-      "community": 1,
+      "community": 58,
       "norm_label": "vite"
     },
     {
@@ -7468,9 +7498,9 @@
       "source_file": "scripts/essl_sync_agent.py",
       "source_location": "L68",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "scripts_essl_sync_agent",
-      "target": "scripts_essl_sync_agent_get_last_synced_id",
-      "confidence_score": 1.0
+      "target": "scripts_essl_sync_agent_get_last_synced_id"
     },
     {
       "relation": "contains",
@@ -7478,9 +7508,9 @@
       "source_file": "scripts/essl_sync_agent.py",
       "source_location": "L57",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "scripts_essl_sync_agent",
-      "target": "scripts_essl_sync_agent_init_local_tracker",
-      "confidence_score": 1.0
+      "target": "scripts_essl_sync_agent_init_local_tracker"
     },
     {
       "relation": "contains",
@@ -7488,9 +7518,9 @@
       "source_file": "scripts/essl_sync_agent.py",
       "source_location": "L83",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "scripts_essl_sync_agent",
-      "target": "scripts_essl_sync_agent_start_sync",
-      "confidence_score": 1.0
+      "target": "scripts_essl_sync_agent_start_sync"
     },
     {
       "relation": "contains",
@@ -7498,9 +7528,9 @@
       "source_file": "scripts/essl_sync_agent.py",
       "source_location": "L76",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "scripts_essl_sync_agent",
-      "target": "scripts_essl_sync_agent_update_last_synced_id",
-      "confidence_score": 1.0
+      "target": "scripts_essl_sync_agent_update_last_synced_id"
     },
     {
       "relation": "calls",
@@ -7509,9 +7539,9 @@
       "source_file": "scripts/essl_sync_agent.py",
       "source_location": "L84",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "scripts_essl_sync_agent_start_sync",
-      "target": "scripts_essl_sync_agent_init_local_tracker",
-      "confidence_score": 1.0
+      "target": "scripts_essl_sync_agent_init_local_tracker"
     },
     {
       "relation": "calls",
@@ -7520,9 +7550,9 @@
       "source_file": "scripts/essl_sync_agent.py",
       "source_location": "L101",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "scripts_essl_sync_agent_start_sync",
-      "target": "scripts_essl_sync_agent_get_last_synced_id",
-      "confidence_score": 1.0
+      "target": "scripts_essl_sync_agent_get_last_synced_id"
     },
     {
       "relation": "calls",
@@ -7531,8 +7561,39 @@
       "source_file": "scripts/essl_sync_agent.py",
       "source_location": "L157",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "scripts_essl_sync_agent_start_sync",
-      "target": "scripts_essl_sync_agent_update_last_synced_id",
+      "target": "scripts_essl_sync_agent_update_last_synced_id"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/sync_members_to_essl.py",
+      "source_location": "L76",
+      "weight": 1.0,
+      "source": "scripts_sync_members_to_essl",
+      "target": "scripts_sync_members_to_essl_analyze_and_sync",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/sync_members_to_essl.py",
+      "source_location": "L48",
+      "weight": 1.0,
+      "source": "scripts_sync_members_to_essl",
+      "target": "scripts_sync_members_to_essl_fetch_supabase_members",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/sync_members_to_essl.py",
+      "source_location": "L78",
+      "weight": 1.0,
+      "source": "scripts_sync_members_to_essl_analyze_and_sync",
+      "target": "scripts_sync_members_to_essl_fetch_supabase_members",
       "confidence_score": 1.0
     },
     {
@@ -10811,5 +10872,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "ff2cde2622d5d42b96c5dc003b6f53c0a7db9a5c"
+  "built_at_commit": "4c3df25c0bab8d093ed4a671c3912bf3723b67cb"
 }
