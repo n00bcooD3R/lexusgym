@@ -1,16 +1,16 @@
 # Graph Report - gymapp  (2026-06-09)
 
 ## Corpus Check
-- 92 files · ~97,841 words
+- 92 files · ~98,222 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 494 nodes · 554 edges · 57 communities (42 shown, 15 thin omitted)
+- 496 nodes · 557 edges · 58 communities (43 shown, 15 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `774eef71`
+- Built from commit: `7e5a7d39`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -60,6 +60,7 @@
 - [[_COMMUNITY_Community 46|Community 46]]
 - [[_COMMUNITY_Community 47|Community 47]]
 - [[_COMMUNITY_Community 56|Community 56]]
+- [[_COMMUNITY_Community 57|Community 57]]
 
 ## God Nodes (most connected - your core abstractions)
 1. `compilerOptions` - 17 edges
@@ -74,6 +75,8 @@
 10. `formatDate()` - 7 edges
 
 ## Surprising Connections (you probably didn't know these)
+- `MemberDetailPage()` --calls--> `formatDate()`  [EXTRACTED]
+  web/src/pages/MemberDetail.tsx → web/src/lib/fees.ts
 - `search_members()` --calls--> `get_db_client()`  [EXTRACTED]
   backend/api/routes/members.py → backend/api/database.py
 - `run_cron_reminders()` --calls--> `get_admin_client()`  [EXTRACTED]
@@ -82,21 +85,19 @@
   backend/api/routes/payments.py → backend/api/database.py
 - `save_settings()` --calls--> `get_admin_client()`  [EXTRACTED]
   backend/api/routes/settings.py → backend/api/database.py
-- `seed_settings()` --calls--> `get_admin_client()`  [EXTRACTED]
-  backend/api/routes/settings.py → backend/api/database.py
 
 ## Import Cycles
 - None detected.
 
-## Communities (57 total, 15 thin omitted)
+## Communities (58 total, 15 thin omitted)
 
 ### Community 0 - "Community 0"
 Cohesion: 0.07
 Nodes (35): get_current_user(), FastAPI dependency to validate user JWT session token.     Raises 401 Unauthoriz, get_admin_client(), get_db_client(), Returns a client-side Supabase client.     If an Authorization header is provide, Returns an admin Supabase client using the service role key, bypassing RLS., str, Request (+27 more)
 
 ### Community 1 - "Community 1"
-Cohesion: 0.06
-Nodes (34): dependencies, date-fns, framer-motion, jspdf, lucide-react, react, react-dom, react-router-dom (+26 more)
+Cohesion: 0.11
+Nodes (18): dependencies, date-fns, framer-motion, jspdf, lucide-react, react, react-dom, react-router-dom (+10 more)
 
 ### Community 2 - "Community 2"
 Cohesion: 0.06
@@ -123,8 +124,8 @@ Cohesion: 0.11
 Nodes (17): compilerOptions, allowImportingTsExtensions, erasableSyntaxOnly, lib, module, moduleDetection, moduleResolution, noEmit (+9 more)
 
 ### Community 8 - "Community 8"
-Cohesion: 0.17
-Nodes (7): buildReminderMsg(), feeStatus, formatDate(), M, MemberRow(), MemberDetailPage(), Tab
+Cohesion: 0.19
+Nodes (6): buildReminderMsg(), feeStatus, formatDate(), M, MemberRow(), Tab
 
 ### Community 9 - "Community 9"
 Cohesion: 0.14
@@ -155,8 +156,8 @@ Cohesion: 0.20
 Nodes (9): dependencies, express, qrcode-terminal, whatsapp-web.js, name, private, scripts, start (+1 more)
 
 ### Community 17 - "Community 17"
-Cohesion: 0.29
-Nodes (5): apiFetch(), getTodayString(), NewMember(), PLANS, supabase
+Cohesion: 0.38
+Nodes (4): addDays(), getTodayString(), NewMember(), PLANS
 
 ### Community 18 - "Community 18"
 Cohesion: 0.25
@@ -167,8 +168,8 @@ Cohesion: 0.29
 Nodes (6): compilerOptions, paths, strict, extends, include, @/*
 
 ### Community 20 - "Community 20"
-Cohesion: 0.29
-Nodes (5): DEFAULT_SETTINGS, GYM_KEYS, MSG_KEYS, PLACEHOLDERS, SETTINGS_KEYS
+Cohesion: 0.20
+Nodes (7): apiFetch(), DEFAULT_SETTINGS, GYM_KEYS, MSG_KEYS, PLACEHOLDERS, SETTINGS_KEYS, supabase
 
 ### Community 23 - "Community 23"
 Cohesion: 0.33
@@ -210,6 +211,10 @@ Nodes (3): Expanding the ESLint configuration, React Compiler, React + TypeScrip
 Cohesion: 0.17
 Nodes (12): generate_invoice_pdf(), InvoicePDF, Generates a premium invoice receipt PDF using fpdf2.     Matches coordinate offs, Unified WhatsApp sender. Selects provider based on WA_PROVIDER env variable., send_via_evolution(), send_via_local(), send_via_meta(), send_whatsapp() (+4 more)
 
+### Community 57 - "Community 57"
+Cohesion: 0.12
+Nodes (16): devDependencies, autoprefixer, eslint, @eslint/js, eslint-plugin-react-hooks, eslint-plugin-react-refresh, globals, postcss (+8 more)
+
 ## Knowledge Gaps
 - **251 isolated node(s):** `PreToolUse`, `str`, `Request`, `Response`, `str` (+246 more)
   These have ≤1 connection - possible missing edges or undocumented components.
@@ -225,7 +230,7 @@ _Questions this graph is uniquely positioned to answer:_
 - **Should `Community 0` be split into smaller, more focused modules?**
   _Cohesion score 0.07308970099667775 - nodes in this community are weakly interconnected._
 - **Should `Community 1` be split into smaller, more focused modules?**
-  _Cohesion score 0.05714285714285714 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.10526315789473684 - nodes in this community are weakly interconnected._
 - **Should `Community 2` be split into smaller, more focused modules?**
   _Cohesion score 0.06060606060606061 - nodes in this community are weakly interconnected._
 - **Should `Community 3` be split into smaller, more focused modules?**

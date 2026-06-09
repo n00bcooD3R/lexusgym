@@ -2360,7 +2360,7 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "web_package_devdependencies",
-      "community": 1,
+      "community": 57,
       "norm_label": "devdependencies"
     },
     {
@@ -2370,7 +2370,7 @@
       "source_location": "L23",
       "_origin": "ast",
       "id": "web_package_devdependencies_eslint_js",
-      "community": 1,
+      "community": 57,
       "norm_label": "@eslint/js"
     },
     {
@@ -2380,7 +2380,7 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "web_package_devdependencies_types_node",
-      "community": 1,
+      "community": 57,
       "norm_label": "@types/node"
     },
     {
@@ -2390,7 +2390,7 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "web_package_devdependencies_types_react",
-      "community": 1,
+      "community": 57,
       "norm_label": "@types/react"
     },
     {
@@ -2400,7 +2400,7 @@
       "source_location": "L26",
       "_origin": "ast",
       "id": "web_package_devdependencies_types_react_dom",
-      "community": 1,
+      "community": 57,
       "norm_label": "@types/react-dom"
     },
     {
@@ -2410,7 +2410,7 @@
       "source_location": "L27",
       "_origin": "ast",
       "id": "web_package_devdependencies_vitejs_plugin_react",
-      "community": 1,
+      "community": 57,
       "norm_label": "@vitejs/plugin-react"
     },
     {
@@ -2420,7 +2420,7 @@
       "source_location": "L28",
       "_origin": "ast",
       "id": "web_package_devdependencies_autoprefixer",
-      "community": 1,
+      "community": 57,
       "norm_label": "autoprefixer"
     },
     {
@@ -2430,7 +2430,7 @@
       "source_location": "L29",
       "_origin": "ast",
       "id": "web_package_devdependencies_eslint",
-      "community": 1,
+      "community": 57,
       "norm_label": "eslint"
     },
     {
@@ -2440,7 +2440,7 @@
       "source_location": "L30",
       "_origin": "ast",
       "id": "web_package_devdependencies_eslint_plugin_react_hooks",
-      "community": 1,
+      "community": 57,
       "norm_label": "eslint-plugin-react-hooks"
     },
     {
@@ -2450,7 +2450,7 @@
       "source_location": "L31",
       "_origin": "ast",
       "id": "web_package_devdependencies_eslint_plugin_react_refresh",
-      "community": 1,
+      "community": 57,
       "norm_label": "eslint-plugin-react-refresh"
     },
     {
@@ -2460,7 +2460,7 @@
       "source_location": "L32",
       "_origin": "ast",
       "id": "web_package_devdependencies_globals",
-      "community": 1,
+      "community": 57,
       "norm_label": "globals"
     },
     {
@@ -2470,7 +2470,7 @@
       "source_location": "L33",
       "_origin": "ast",
       "id": "web_package_devdependencies_postcss",
-      "community": 1,
+      "community": 57,
       "norm_label": "postcss"
     },
     {
@@ -2480,7 +2480,7 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "web_package_devdependencies_tailwindcss",
-      "community": 1,
+      "community": 57,
       "norm_label": "tailwindcss"
     },
     {
@@ -2490,7 +2490,7 @@
       "source_location": "L35",
       "_origin": "ast",
       "id": "web_package_devdependencies_typescript",
-      "community": 1,
+      "community": 57,
       "norm_label": "typescript"
     },
     {
@@ -2500,7 +2500,7 @@
       "source_location": "L36",
       "_origin": "ast",
       "id": "web_package_devdependencies_typescript_eslint",
-      "community": 1,
+      "community": 57,
       "norm_label": "typescript-eslint"
     },
     {
@@ -2510,7 +2510,7 @@
       "source_location": "L37",
       "_origin": "ast",
       "id": "web_package_devdependencies_vite",
-      "community": 1,
+      "community": 57,
       "norm_label": "vite"
     },
     {
@@ -2770,7 +2770,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "web_src_lib_supabase_ts_lib_supabase",
-      "community": 17,
+      "community": 20,
       "norm_label": "supabase.ts"
     },
     {
@@ -2780,7 +2780,7 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "web_src_lib_supabase_ts_lib_supabase_supabase",
-      "community": 17,
+      "community": 20,
       "norm_label": "supabase"
     },
     {
@@ -2790,7 +2790,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_supabase_apifetch",
-      "community": 17,
+      "community": 20,
       "norm_label": "apifetch()"
     },
     {
@@ -2834,10 +2834,30 @@
       "norm_label": "gettodaystring()"
     },
     {
-      "label": "NewMember()",
+      "label": "addDays()",
       "file_type": "code",
       "source_file": "web/src/pages/AddMember.tsx",
       "source_location": "L23",
+      "_origin": "ast",
+      "id": "pages_addmember_adddays",
+      "community": 17,
+      "norm_label": "adddays()"
+    },
+    {
+      "label": "diffDays()",
+      "file_type": "code",
+      "source_file": "web/src/pages/AddMember.tsx",
+      "source_location": "L34",
+      "_origin": "ast",
+      "id": "pages_addmember_diffdays",
+      "community": 17,
+      "norm_label": "diffdays()"
+    },
+    {
+      "label": "NewMember()",
+      "file_type": "code",
+      "source_file": "web/src/pages/AddMember.tsx",
+      "source_location": "L44",
       "_origin": "ast",
       "id": "pages_addmember_newmember",
       "community": 17,
@@ -2847,7 +2867,7 @@
       "label": "Field()",
       "file_type": "code",
       "source_file": "web/src/pages/AddMember.tsx",
-      "source_location": "L485",
+      "source_location": "L535",
       "_origin": "ast",
       "id": "pages_addmember_field",
       "community": 17,
@@ -3160,7 +3180,7 @@
       "source_location": "L27",
       "_origin": "ast",
       "id": "pages_memberdetail_memberdetailpage",
-      "community": 8,
+      "community": 13,
       "norm_label": "memberdetailpage()"
     },
     {
@@ -8774,6 +8794,26 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "web/src/pages/AddMember.tsx",
+      "source_location": "L23",
+      "weight": 1.0,
+      "source": "pages_addmember",
+      "target": "pages_addmember_adddays",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "web/src/pages/AddMember.tsx",
+      "source_location": "L34",
+      "weight": 1.0,
+      "source": "pages_addmember",
+      "target": "pages_addmember_diffdays",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "web/src/pages/AddMember.tsx",
       "source_location": "L470",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -8820,6 +8860,17 @@
       "confidence_score": 1.0,
       "source": "pages_addmember_newmember",
       "target": "pages_addmember_gettodaystring"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "web/src/pages/AddMember.tsx",
+      "source_location": "L64",
+      "weight": 1.0,
+      "source": "pages_addmember_newmember",
+      "target": "pages_addmember_adddays",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -10637,5 +10688,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "774eef71e8bbcfd7407db349d68b6da8b6353e2b"
+  "built_at_commit": "7e5a7d39dafa04fda3e072f681fe21851fe8b4c7"
 }

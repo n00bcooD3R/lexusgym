@@ -20,6 +20,27 @@ const getTodayString = () => {
   return `${year}-${month}-${day}`;
 };
 
+const addDays = (dateStr: string, days: number) => {
+  if (!dateStr) return "";
+  const [year, month, day] = dateStr.split("-").map(Number);
+  const d = new Date(year, month - 1, day);
+  d.setDate(d.getDate() + days);
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const dd = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${dd}`;
+};
+
+const diffDays = (dateStr1: string, dateStr2: string) => {
+  if (!dateStr1 || !dateStr2) return 0;
+  const [y1, m1, d1] = dateStr1.split("-").map(Number);
+  const [y2, m2, d2] = dateStr2.split("-").map(Number);
+  const date1 = new Date(y1, m1 - 1, d1);
+  const date2 = new Date(y2, m2 - 1, d2);
+  const diffTime = date2.getTime() - date1.getTime();
+  return Math.round(diffTime / (1000 * 60 * 60 * 24));
+};
+
 export default function NewMember() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -39,7 +60,8 @@ export default function NewMember() {
     admission_no: "", name: "", phone: "+91", address: "",
     dob: "", age: "", gender: "M", weight: "", height: "",
     fee_amount: "1000", fee_cycle_days: "30", admission_fee: "",
-    is_pt_client: false, notes: "", join_date: getTodayString()
+    is_pt_client: false, notes: "", join_date: getTodayString(),
+    next_due_date: addDays(getTodayString(), 30)
   });
 
   useEffect(() => {
@@ -78,9 +100,32 @@ export default function NewMember() {
       setForm(prev => ({ ...prev, dob: v, age: calcAge(v) }));
       return;
     }
+    if (k === "join_date") {
+      setForm(prev => {
+        const nextDue = addDays(v, Number(prev.fee_cycle_days || 30));
+        return { ...prev, join_date: v, next_due_date: nextDue };
+      });
+      return;
+    }
+    if (k === "fee_cycle_days") {
+      const numericDays = typeof v === "string" ? v.replace(/\D/g, "") : String(v);
+      setForm(prev => {
+        const nextDue = addDays(prev.join_date, Number(numericDays || 30));
+        return { ...prev, fee_cycle_days: numericDays, next_due_date: nextDue };
+      });
+      return;
+    }
+    if (k === "next_due_date") {
+      setForm(prev => {
+        const diff = diffDays(prev.join_date, v);
+        const cycleDays = diff > 0 ? String(diff) : prev.fee_cycle_days;
+        return { ...prev, next_due_date: v, fee_cycle_days: cycleDays };
+      });
+      return;
+    }
     if (typeof v === "string") {
       if (k === "phone") v = v.replace(/[^\d+]/g, "");
-      else if (["admission_no", "age", "fee_amount", "admission_fee", "fee_cycle_days"].includes(k)) v = v.replace(/\D/g, "");
+      else if (["admission_no", "age", "fee_amount", "admission_fee"].includes(k)) v = v.replace(/\D/g, "");
       else if (["weight", "height"].includes(k)) v = v.replace(/[^\d.]/g, "");
     }
     setForm(prev => ({ ...prev, [k]: v }));
@@ -90,10 +135,18 @@ export default function NewMember() {
     setSelectedPlan(planId);
     if (planId === "couple") {
       // couple pack: clear preset values so user fills manually
-      setForm(prev => ({ ...prev, fee_cycle_days: "30", fee_amount: "" }));
+      setForm(prev => {
+        const nextDue = addDays(prev.join_date, 30);
+        return { ...prev, fee_cycle_days: "30", fee_amount: "", next_due_date: nextDue };
+      });
     } else {
       const p = PLANS.find(x => x.id === planId);
-      if (p) setForm(prev => ({ ...prev, fee_cycle_days: String(p.days), fee_amount: String(p.fee) }));
+      if (p) {
+        setForm(prev => {
+          const nextDue = addDays(prev.join_date, p.days);
+          return { ...prev, fee_cycle_days: String(p.days), fee_amount: String(p.fee), next_due_date: nextDue };
+        });
+      }
     }
   }
 
@@ -128,13 +181,7 @@ export default function NewMember() {
     }
 
     const joinDateStr = form.join_date || getTodayString();
-    const parts = joinDateStr.split("-");
-    const due = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
-    due.setDate(due.getDate() + Number(form.fee_cycle_days || 30));
-    const dueYear = due.getFullYear();
-    const dueMonth = String(due.getMonth() + 1).padStart(2, '0');
-    const dueDay = String(due.getDate()).padStart(2, '0');
-    const dueDateStr = `${dueYear}-${dueMonth}-${dueDay}`;
+    const dueDateStr = form.next_due_date || addDays(joinDateStr, 30);
 
     const isCouple = selectedPlan === "couple";
     const payload: any = {
@@ -248,6 +295,9 @@ export default function NewMember() {
           </Field>
           <Field label="Joining Date *">
             <input required id="new-join-date" type="date" className="input" value={form.join_date} onChange={e => upd("join_date", e.target.value)} />
+          </Field>
+          <Field label="Cycle End Date *">
+            <input required id="new-due-date" type="date" className="input" value={form.next_due_date} onChange={e => upd("next_due_date", e.target.value)} />
           </Field>
           <Field label="Date of Birth">
             <input id="new-dob" type="date" className="input" value={form.dob} onChange={e => upd("dob", e.target.value)} />
