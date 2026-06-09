@@ -39,6 +39,11 @@ def run_cron_reminders(authorization: str = Header(None)):
     sb = get_admin_client()
     today = datetime.now().date()
     
+    # Fetch settings for custom templates
+    res_settings = sb.from_("settings").select("key, value").execute()
+    settings = {s["key"]: (s["value"] or "") for s in res_settings.data or []}
+    gym_name = settings.get("gym_name", "Lexus Fitness Group")
+    
     # Query all active members
     res = sb.from_("members") \
         .select("id, name, phone, fee_amount, next_due_date, active, is_staff") \
@@ -67,10 +72,18 @@ def run_cron_reminders(authorization: str = Header(None)):
         
         # Send alerts for due date <= 4 days (today, in 1-4 days, or overdue)
         if diff_days <= 4:
+            formatted_due = due_date.strftime("%d/%m/%Y")
             if diff_days < 0:
-                body = EXPIRED_MSG.format(name=m["name"])
+                template = settings.get("msg_expired") or EXPIRED_MSG
             else:
-                body = REMINDER_MSG.format(name=m["name"], days=diff_days)
+                template = settings.get("msg_reminder") or REMINDER_MSG
+                
+            body = template
+            body = body.replace("{name}", m["name"])
+            body = body.replace("{gym_name}", gym_name)
+            body = body.replace("{days}", str(diff_days))
+            body = body.replace("{amount}", str(m.get("fee_amount") or 0))
+            body = body.replace("{expiry}", formatted_due)
                 
             r = send_whatsapp(m["phone"], body)
             

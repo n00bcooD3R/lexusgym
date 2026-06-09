@@ -50,20 +50,34 @@ async def send_wa_message(
             fee = member["fee_amount"] or 0
             due = member["next_due_date"]
             
-            formatted_due = due
+            formatted_due = due or "N/A"
             overdue = False
+            days_left = 0
             if due:
                 try:
                     dt = datetime.strptime(due, "%Y-%m-%d")
-                    formatted_due = dt.strftime("%d %b %Y")
-                    overdue = dt.date() < datetime.now().date()
+                    formatted_due = dt.strftime("%d/%m/%Y")
+                    days_left = (dt.date() - datetime.now().date()).days
+                    overdue = days_left < 0
                 except Exception:
                     pass
             
+            # Fetch settings for custom templates
+            res_settings = sb.from_("settings").select("key, value").execute()
+            settings = {s["key"]: (s["value"] or "") for s in res_settings.data or []}
+            gym_name = settings.get("gym_name", "Lexus Fitness Group")
+            
             if overdue:
-                text = f"Hi {name}, your gym fee of ₹{fee} was due on {formatted_due}. Please clear it at the earliest. - Gym"
+                template = settings.get("msg_expired") or "Hello {name},\n\nYour {gym_name} membership has expired. 😔\nPlease renew to continue.\n\n— Team {gym_name}"
             else:
-                text = f"Hi {name}, friendly reminder — your gym fee of ₹{fee} is due on {formatted_due}. - Gym"
+                template = settings.get("msg_reminder") or "Hello {name},\n\nYour {gym_name} membership expires in {days} days. 💪\nPlease renew soon!\n\n— Team {gym_name}"
+            
+            text = template
+            text = text.replace("{name}", name)
+            text = text.replace("{gym_name}", gym_name)
+            text = text.replace("{days}", str(days_left))
+            text = text.replace("{amount}", str(fee))
+            text = text.replace("{expiry}", formatted_due)
 
         # Send via WhatsApp utility
         result = send_whatsapp(phone, text, document_bytes)

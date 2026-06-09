@@ -5,7 +5,7 @@ import os
 from api.database import get_admin_client
 from api.pdf import generate_invoice_pdf
 from api.whatsapp import send_whatsapp
-from datetime import datetime
+from datetime import datetime, timedelta
 
 router = APIRouter(prefix="/api/payment", tags=["payments"])
 
@@ -69,7 +69,25 @@ async def payment_webhook(payload: WebhookPayload, x_webhook_secret: Optional[st
             
             # Send WhatsApp confirmation with PDF attached
             amount_display = float(payload.amount) / 100.0
-            msg_body = f"Hi {member['name']}, your payment of \u20b9{amount_display:.2f} has been received. Thank you for renewing your membership! - {settings.get('gym_name', 'Lexus Fitness Group')}"
+            
+            gym_name = settings.get("gym_name", "Lexus Fitness Group")
+            template = settings.get("msg_payment") or "Hello {name},\n\nThank you for ₹{amount}! 💪\nMembership active until {expiry}.\n\n— Team {gym_name}"
+            
+            cycle_days = member.get("fee_cycle_days") or 30
+            try:
+                paid_on_dt = datetime.strptime(today_str, "%Y-%m-%d")
+                new_due_dt = paid_on_dt + timedelta(days=int(cycle_days))
+                formatted_due = new_due_dt.strftime("%d/%m/%Y")
+            except Exception:
+                formatted_due = "N/A"
+                
+            formatted_amount = str(int(amount_display)) if amount_display.is_integer() else f"{amount_display:.2f}"
+            
+            msg_body = template
+            msg_body = msg_body.replace("{name}", member["name"])
+            msg_body = msg_body.replace("{gym_name}", gym_name)
+            msg_body = msg_body.replace("{amount}", formatted_amount)
+            msg_body = msg_body.replace("{expiry}", formatted_due)
             
             send_whatsapp(member["phone"], msg_body, pdf_bytes)
             
