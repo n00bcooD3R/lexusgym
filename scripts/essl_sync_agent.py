@@ -104,9 +104,9 @@ def start_sync():
             local_conn = pyodbc.connect(ESSL_CONNECTION_STRING)
             cursor = local_conn.cursor()
             
-            # Select new logs sorted chronologically using standard ZKTeco/eSSL column names (DeviceLogId, UserId)
+            # Select new logs sorted chronologically using DeviceLogId and EmployeeCode
             cursor.execute(
-                "SELECT DeviceLogId, UserId, LogDate, DeviceId FROM DeviceLogs WHERE DeviceLogId > ? ORDER BY DeviceLogId ASC",
+                "SELECT DeviceLogId, EmployeeCode, LogDate, DeviceId FROM DeviceLogs WHERE DeviceLogId > ? ORDER BY DeviceLogId ASC",
                 last_id
             )
             logs = cursor.fetchall()

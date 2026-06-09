@@ -570,8 +570,8 @@
     "semantic_hash": ""
   },
   "scripts/essl_sync_agent.py": {
-    "mtime": 1780999248.4382646,
-    "ast_hash": "31ed06e118bea6368b804baeeb5417fa",
+    "mtime": 1780999697.6849504,
+    "ast_hash": "562e3684cfdee6f6312b3c650c2930e4",
     "semantic_hash": ""
   },
   "supabase/attendance_migration.sql": {
