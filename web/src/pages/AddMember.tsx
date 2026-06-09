@@ -184,12 +184,16 @@ export default function NewMember() {
     const dueDateStr = form.next_due_date || addDays(joinDateStr, 30);
 
     const isCouple = selectedPlan === "couple";
+    const baseFee = Number(form.fee_amount || 0);
+    const cardioFee = cardio ? 200 : 0;
+    const finalFee = baseFee + cardioFee;
+
     const payload: any = {
       admission_no: form.admission_no, name: form.name, phone: form.phone,
       address: form.address, dob: form.dob || null,
       age: form.age ? Number(form.age) : null, gender: form.gender,
       weight: form.weight ? Number(form.weight) : null, height: form.height ? Number(form.height) : null,
-      fee_amount: Number(form.fee_amount || 0), fee_cycle_days: Number(form.fee_cycle_days || 30),
+      fee_amount: finalFee, fee_cycle_days: Number(form.fee_cycle_days || 30),
       is_pt_client: form.is_pt_client, notes: form.notes, photo_url,
       join_date: joinDateStr,
       last_payment_date: joinDateStr,
@@ -206,7 +210,7 @@ export default function NewMember() {
     }
 
     // Create initial payment record
-    const feeAmt = Number(form.fee_amount || 0);
+    const feeAmt = finalFee;
     const admFee = Number(form.admission_fee || 0);
     const totalPayment = feeAmt + admFee;
     let paymentData: any = null;

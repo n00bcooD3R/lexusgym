@@ -528,7 +528,7 @@ function PaymentsTab({ m, payments, partner, onReload }: { m: any; payments: any
     }
     setBusy(true);
     try {
-      const total = Number(amount) + extraCharges.trainer + extraCharges.diet + extraCharges.admission;
+      const total = Number(amount) + extraCharges.trainer + extraCharges.diet + extraCharges.admission + (cardio ? 200 : 0);
       const finalNotes = notes ? (cardio ? `${notes} + Cardio` : notes) : (cardio ? "Cardio" : "");
       
       const { data: payment, error } = await supabase.from("payments").insert({ 
@@ -616,7 +616,7 @@ function PaymentsTab({ m, payments, partner, onReload }: { m: any; payments: any
       console.error("Preview settings fetch error", e);
     }
     const finalNotes = notes ? (cardio ? `${notes} + Cardio` : notes) : (cardio ? "Cardio" : "");
-    const doc = generateInvoice(m, { id: "preview", paid_on: paymentDate, amount: Number(amount) + extraCharges.trainer + extraCharges.diet + extraCharges.admission, method, notes: finalNotes }, { trainerCharges: extraCharges.trainer, dietCharges: extraCharges.diet, admissionFee: extraCharges.admission });
+    const doc = generateInvoice(m, { id: "preview", paid_on: paymentDate, amount: Number(amount) + extraCharges.trainer + extraCharges.diet + extraCharges.admission + (cardio ? 200 : 0), method, notes: finalNotes }, { trainerCharges: extraCharges.trainer, dietCharges: extraCharges.diet, admissionFee: extraCharges.admission });
     doc.save(`Invoice_${m.admission_no}_preview.pdf`);
   }
 

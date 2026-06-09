@@ -25,8 +25,8 @@
     "semantic_hash": ""
   },
   "backend/api/pdf.py": {
-    "mtime": 1780942565.9514866,
-    "ast_hash": "58595ea596c5ac804569a58320a223c8",
+    "mtime": 1780989468.7396295,
+    "ast_hash": "0404fb34d131bb110dd27a1d7d1f4f63",
     "semantic_hash": ""
   },
   "backend/api/routes/__init__.py": {
@@ -290,8 +290,8 @@
     "semantic_hash": ""
   },
   "web/src/lib/pdf-bill.ts": {
-    "mtime": 1780942558.0331602,
-    "ast_hash": "8b3c90a5a5c13daeb027926c3f8707f2",
+    "mtime": 1780989459.2012048,
+    "ast_hash": "94a4dd95f97b6bb468a8fafd82e61d3f",
     "semantic_hash": ""
   },
   "web/src/lib/supabase.ts": {
@@ -305,8 +305,8 @@
     "semantic_hash": ""
   },
   "web/src/pages/AddMember.tsx": {
-    "mtime": 1780988619.2778559,
-    "ast_hash": "f7427d532a526c2446cc6569f5c9fbfc",
+    "mtime": 1780989489.2170484,
+    "ast_hash": "f9398eafe248cc86159d0bb739bdf375",
     "semantic_hash": ""
   },
   "web/src/pages/ClientView.tsx": {
@@ -325,8 +325,8 @@
     "semantic_hash": ""
   },
   "web/src/pages/MemberDetail.tsx": {
-    "mtime": 1780986326.1197898,
-    "ast_hash": "152b0b450bf42da018e6d62edbac5e1a",
+    "mtime": 1780989495.3217509,
+    "ast_hash": "8145e47dc3201bde839895add4dc5213",
     "semantic_hash": ""
   },
   "web/src/pages/Members.tsx": {

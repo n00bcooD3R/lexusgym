@@ -44,8 +44,10 @@ export function generateInvoice(member: any, payment: any, extra?: { trainerChar
   const trainer = Number(extra?.trainerCharges) || 0;
   const diet = Number(extra?.dietCharges) || 0;
   const admission = Number(extra?.admissionFee) || 0;
-  const total = Number(payment.amount) || (Number(member.fee_amount) + trainer + diet + admission) || 0;
-  const baseMembershipFee = total - trainer - diet - admission;
+  const hasCardio = payment.notes && /cardio/i.test(payment.notes);
+  const cardioFee = hasCardio ? 200 : 0;
+  const total = Number(payment.amount) || (Number(member.fee_amount) + trainer + diet + admission + cardioFee) || 0;
+  const baseMembershipFee = total - trainer - diet - admission - cardioFee;
 
   // Primary branding color: Indigo (RGB: 99, 102, 241)
   const primaryRGB = [99, 102, 241];
@@ -175,8 +177,8 @@ export function generateInvoice(member: any, payment: any, extra?: { trainerChar
   if (trainer > 0) items.push({ desc: "Personal Training (PT) Charges", amt: trainer });
   if (diet > 0) items.push({ desc: "Diet Plan Charges", amt: diet });
   if (admission > 0) items.push({ desc: "Admission & Registration Fee", amt: admission });
-  if (payment.notes && /cardio/i.test(payment.notes)) {
-    items.push({ desc: "Cardio (Extra)", amt: 0 });
+  if (hasCardio) {
+    items.push({ desc: "Cardio (Extra)", amt: 200 });
   }
 
   let currentY = 141;

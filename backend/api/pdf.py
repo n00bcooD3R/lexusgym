@@ -143,7 +143,9 @@ def generate_invoice_pdf(member: dict, payment: dict, settings: dict, extra: dic
     diet = float(extra_data.get("dietCharges", 0))
     admission = float(extra_data.get("admissionFee", 0))
     total = float(payment.get("amount", 0.0))
-    base_fee = total - trainer - diet - admission
+    has_cardio = payment.get("notes") and "cardio" in str(payment.get("notes")).lower()
+    cardio_val = 200.0 if has_cardio else 0.0
+    base_fee = total - trainer - diet - admission - cardio_val
     
     items = [
         {"desc": f"Gym Membership - {member.get('fee_cycle_days', 30)} Days", "amt": base_fee}
@@ -154,8 +156,8 @@ def generate_invoice_pdf(member: dict, payment: dict, settings: dict, extra: dic
         items.append({"desc": "Diet Plan Charges", "amt": diet})
     if admission > 0:
         items.append({"desc": "Admission & Registration Fee", "amt": admission})
-    if payment.get("notes") and "cardio" in str(payment.get("notes")).lower():
-        items.append({"desc": "Cardio (Extra)", "amt": 0.0})
+    if has_cardio:
+        items.append({"desc": "Cardio (Extra)", "amt": 200.0})
         
     current_y = 150
     pdf.set_font("Helvetica", "", 13.5)
