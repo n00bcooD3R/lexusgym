@@ -1,0 +1,180 @@
+import os
+import time
+import sqlite3
+import httpx
+from datetime import datetime
+from dotenv import load_dotenv
+
+# Try importing pyzk. If it's not installed, we guide the user.
+try:
+    from zk import ZK, const
+except ImportError:
+    print("❌ Error: 'pyzk' library is not installed.")
+    print("Please install it by running: pip install pyzk")
+    exit(1)
+
+# ─── AUTO-LOAD PROJECT ENVIRONMENT VARIABLES ───
+env_loaded = False
+for path in [".env.local", "../.env.local", "../../.env.local", os.path.join(os.path.dirname(__file__), "../.env.local")]:
+    if os.path.exists(path):
+        load_dotenv(path)
+        env_loaded = True
+        break
+if not env_loaded:
+    load_dotenv()
+
+SUPABASE_URL = os.getenv("NEXT_PUBLIC_SUPABASE_URL") or os.getenv("SUPABASE_URL")
+SUPABASE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY") or os.getenv("SUPABASE_SERVICE_KEY")
+
+if not SUPABASE_URL or not SUPABASE_KEY:
+    print("❌ Error: Could not read SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY from env.")
+    exit(1)
+
+# ─── BIOMETRIC DEVICE CONFIGURATION ───
+DEVICE_IP = os.getenv("ZK_DEVICE_IP") or "192.168.1.201"
+DEVICE_PORT = int(os.getenv("ZK_DEVICE_PORT") or 4370)
+
+# SQLite DB path to keep track of the last synced log timestamp locally
+SYNC_DB_PATH = "zk_direct_sync_progress.db"
+
+def init_local_tracker():
+    conn = sqlite3.connect(SYNC_DB_PATH)
+    cursor = conn.cursor()
+    # Store the timestamp of the last successfully synced check-in (in ISO format)
+    cursor.execute("CREATE TABLE IF NOT EXISTS sync (last_timestamp TEXT)")
+    cursor.execute("SELECT last_timestamp FROM sync")
+    row = cursor.fetchone()
+    if not row:
+        # Initialize with epoch or a dummy old date
+        cursor.execute("INSERT INTO sync VALUES ('1970-01-01T00:00:00')")
+        conn.commit()
+    conn.close()
+
+def get_last_synced_timestamp():
+    conn = sqlite3.connect(SYNC_DB_PATH)
+    cursor = conn.cursor()
+    cursor.execute("SELECT last_timestamp FROM sync")
+    row = cursor.fetchone()
+    conn.close()
+    return datetime.fromisoformat(row[0]) if row else datetime.min
+
+def update_last_synced_timestamp(dt_object):
+    conn = sqlite3.connect(SYNC_DB_PATH)
+    cursor = conn.cursor()
+    cursor.execute("UPDATE sync SET last_timestamp = ?", (dt_object.isoformat(),))
+    conn.commit()
+    conn.close()
+
+def start_sync():
+    init_local_tracker()
+    
+    print("==========================================================")
+    print("🚀 Direct ZK Biometric Sync Agent started.")
+    print(f"Cloud DB:    {SUPABASE_URL}")
+    print(f"Device IP:   {DEVICE_IP}:{DEVICE_PORT}")
+    print("Connecting directly to machine without BioServer DB...")
+    print("==========================================================")
+
+    headers = {
+        "apikey": SUPABASE_KEY,
+        "Authorization": f"Bearer {SUPABASE_KEY}",
+        "Content-Type": "application/json",
+        "Prefer": "return=representation"
+    }
+
+    # Initialize ZK connection client
+    zk = ZK(DEVICE_IP, port=DEVICE_PORT, timeout=5, force_udp=False)
+
+    while True:
+        zk_conn = None
+        try:
+            last_timestamp = get_last_synced_timestamp()
+            
+            # Connect directly to biometric machine via TCP socket
+            print(f"[{datetime.now().strftime('%H:%M:%S')}] Connecting to device...")
+            zk_conn = zk.connect()
+            
+            # Disable device display/inputs temporarily to prevent conflicts during log read
+            zk_conn.disable_device()
+            
+            # Fetch all attendance records from device memory
+            print("  Fetching attendance logs...")
+            attendance = zk_conn.get_attendance()
+            
+            # Filter logs that are newer than our last synced log
+            new_logs = [log for log in attendance if log.timestamp > last_timestamp]
+            # Sort chronologically by timestamp
+            new_logs.sort(key=lambda x: x.timestamp)
+
+            if new_logs:
+                print(f"  Found {len(new_logs)} new punches since {last_timestamp.isoformat()}. Syncing...")
+                
+                # Re-enable device while we process API calls to ensure it is not locked for users
+                zk_conn.enable_device()
+                
+                max_processed_timestamp = last_timestamp
+
+                for record in new_logs:
+                    # ZK record parameters:
+                    # record.user_id: string representing employee code (e.g. "12")
+                    # record.timestamp: python datetime object (e.g. 2026-06-09 16:30:00)
+                    
+                    formatted_time = record.timestamp.isoformat()
+                    # Pad employee code to match Supabase schema (e.g., "12" -> "0012")
+                    admission_no = str(record.user_id).zfill(4)
+
+                    with httpx.Client() as client:
+                        # 1. Fetch matching member ID from Supabase
+                        member_res = client.get(
+                            f"{SUPABASE_URL}/rest/v1/members?admission_no=eq.{admission_no}&select=id",
+                            headers=headers
+                        )
+                        
+                        if member_res.status_code == 200 and member_res.json():
+                            member_id = member_res.json()[0]["id"]
+                            
+                            # 2. Insert record into Supabase attendance table
+                            attendance_payload = {
+                                "member_id": member_id,
+                                "punch_time": formatted_time,
+                                "device_name": f"Direct Device {DEVICE_IP}"
+                            }
+                            
+                            insert_res = client.post(
+                                f"{SUPABASE_URL}/rest/v1/attendance",
+                                json=attendance_payload,
+                                headers=headers
+                            )
+                            
+                            if insert_res.status_code in (200, 201):
+                                print(f"    ✅ Synced: Member #{admission_no} checked in at {formatted_time}")
+                                # Keep track of the furthest timestamp successfully synced
+                                max_processed_timestamp = max(max_processed_timestamp, record.timestamp)
+                                update_last_synced_timestamp(max_processed_timestamp)
+                            else:
+                                print(f"    ❌ Sync error for Member #{admission_no}: {insert_res.text}")
+                                break # Stop batch to prevent syncing out of order if API goes down
+                        else:
+                            print(f"    ⚠️ Warning: Biometric Code '{admission_no}' doesn't match any gym member. Skipping.")
+                            # We still update timestamp to avoid repeatedly checking invalid cards/users
+                            max_processed_timestamp = max(max_processed_timestamp, record.timestamp)
+                            update_last_synced_timestamp(max_processed_timestamp)
+            else:
+                print("  No new punches found.")
+                zk_conn.enable_device()
+
+        except Exception as e:
+            print("🚨 Connection or Sync Error:", e)
+        
+        finally:
+            if zk_conn:
+                try:
+                    zk_conn.disconnect()
+                except Exception:
+                    pass
+
+        # Poll every 15 seconds
+        time.sleep(15)
+
+if __name__ == "__main__":
+    start_sync()
