@@ -104,9 +104,9 @@ def start_sync():
             local_conn = pyodbc.connect(ESSL_CONNECTION_STRING)
             cursor = local_conn.cursor()
             
-            # Select new logs sorted chronologically
+            # Select new logs sorted chronologically using standard ZKTeco/eSSL column names (DeviceLogId, UserId)
             cursor.execute(
-                "SELECT LogId, MemberId, LogDate, DeviceId FROM DeviceLogs WHERE LogId > ? ORDER BY LogId ASC",
+                "SELECT DeviceLogId, UserId, LogDate, DeviceId FROM DeviceLogs WHERE DeviceLogId > ? ORDER BY DeviceLogId ASC",
                 last_id
             )
             logs = cursor.fetchall()
@@ -120,7 +120,6 @@ def start_sync():
                     formatted_time = log_date.isoformat()
 
                     # Format the user ID to match your member admission numbers (e.g. padded like '0012')
-                    # If your app registers them as integers, change str(employee_code).zfill(4) to str(employee_code)
                     admission_no = str(employee_code).zfill(4)
                     
                     # 1. Fetch the matching member UUID from the cloud database
@@ -157,7 +156,24 @@ def start_sync():
                     update_last_synced_id(log_id)
             
         except pyodbc.Error as pe:
-            print("🚨 Local DB Connection Error (is eSSL server MSSQL service running?):", pe)
+            print("🚨 Local DB Connection Error or Query Error:", pe)
+            if "207" in str(pe) or "Column" in str(pe) or "column" in str(pe):
+                print("\n🔍 [Auto-Diagnosis] Column mismatch detected. Printing database schema structures:")
+                try:
+                    diag_conn = pyodbc.connect(ESSL_CONNECTION_STRING)
+                    diag_cursor = diag_conn.cursor()
+                    diag_cursor.execute("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE='BASE TABLE'")
+                    tables = [r[0] for r in diag_cursor.fetchall()]
+                    print("  Available tables in DB:", tables)
+                    
+                    target_table = "DeviceLogs" if "DeviceLogs" in tables else (tables[0] if tables else None)
+                    if target_table:
+                        diag_cursor.execute(f"SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME='{target_table}'")
+                        cols = [r[0] for r in diag_cursor.fetchall()]
+                        print(f"  Columns in '{target_table}':", cols)
+                    diag_conn.close()
+                except Exception as diag_err:
+                    print("  Could not execute diagnostics:", diag_err)
         except Exception as e:
             print("🚨 Sync Error:", e)
             
