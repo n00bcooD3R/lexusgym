@@ -220,7 +220,7 @@ export default function NewMember() {
         member_id: data.id,
         amount: totalPayment,
         method: "cash",
-        notes: "Initial Membership + Admission" + (cardio ? " + Cardio" : ""),
+        notes: "Initial Membership" + (admFee > 0 ? " + Admission" : "") + (cardio ? " + Cardio" : ""),
         paid_on: joinDateStr
       }).select().single();
       paymentData = payRec;

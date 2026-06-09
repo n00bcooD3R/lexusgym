@@ -139,10 +139,10 @@ def generate_invoice_pdf(member: dict, payment: dict, settings: dict, extra: dic
     
     # Billing Calculations
     extra_data = extra or {}
-    trainer = float(extra_data.get("trainerCharges", 0))
-    diet = float(extra_data.get("dietCharges", 0))
-    admission = float(extra_data.get("admissionFee", 0))
-    total = float(payment.get("amount", 0.0))
+    trainer = float(extra_data.get("trainerCharges") or 0)
+    diet = float(extra_data.get("dietCharges") or 0)
+    admission = float(extra_data.get("admissionFee") or 0)
+    total = float(payment.get("amount") or 0.0)
     has_cardio = payment.get("notes") and "cardio" in str(payment.get("notes")).lower()
     cardio_val = 200.0 if has_cardio else 0.0
     base_fee = total - trainer - diet - admission - cardio_val
