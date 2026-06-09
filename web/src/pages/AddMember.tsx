@@ -178,10 +178,20 @@ export default function NewMember() {
     // Send WhatsApp in background
     if (sendWelcome && form.phone) {
       const gymName = settings.gym_name || "Lexus Fitness Group";
-      let msg = (settings.msg_welcome || "Hello {name}, 👋\n\nWelcome to {gym_name}! 💪🔥\nWe are excited to have you as a part of the {gym_name} family.\n\nYour membership has been successfully activated, and your fitness journey officially starts today.\n\n— Team {gym_name}")
-        .replace(/{name}/g, form.name).replace(/{gym_name}/g, gymName);
+      let msg = settings.msg_welcome || "Hello {name}, 👋\n\nWelcome to {gym_name}! 💪🔥\nWe are excited to have you as a part of the {gym_name} family.\n\nYour membership has been successfully activated, and your fitness journey officially starts today.\n\n— Team {gym_name}";
       
-      if (totalPayment > 0) {
+      const expiryDateObj = new Date(dueDateStr);
+      const expiry = expiryDateObj.toLocaleDateString("en-IN");
+
+      msg = msg
+        .replace(/{name}/g, form.name)
+        .replace(/{gym_name}/g, gymName);
+
+      if (msg.includes("{amount}") || msg.includes("{expiry}")) {
+        msg = msg
+          .replace(/{amount}/g, String(totalPayment))
+          .replace(/{expiry}/g, expiry);
+      } else if (totalPayment > 0) {
         msg += `\n\nWe received ₹${totalPayment}. Check the attached invoice!`;
       }
 
