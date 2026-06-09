@@ -33,6 +33,9 @@ if not SUPABASE_URL or not SUPABASE_KEY:
 # ─── BIOMETRIC DEVICE CONFIGURATION ───
 DEVICE_IP = os.getenv("ZK_DEVICE_IP") or "192.168.1.201"
 DEVICE_PORT = int(os.getenv("ZK_DEVICE_PORT") or 4370)
+FORCE_UDP = os.getenv("ZK_FORCE_UDP", "False").lower() in ("true", "1", "yes")
+COMM_KEY = os.getenv("ZK_COMM_KEY")
+COMM_KEY = int(COMM_KEY) if COMM_KEY and COMM_KEY.isdigit() else 0
 
 # SQLite DB path to keep track of the last synced log timestamp locally
 SYNC_DB_PATH = "zk_direct_sync_progress.db"
@@ -83,7 +86,7 @@ def start_sync():
     }
 
     # Initialize ZK connection client
-    zk = ZK(DEVICE_IP, port=DEVICE_PORT, timeout=5, force_udp=False)
+    zk = ZK(DEVICE_IP, port=DEVICE_PORT, timeout=5, password=COMM_KEY, force_udp=FORCE_UDP)
 
     while True:
         zk_conn = None
