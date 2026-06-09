@@ -212,26 +212,32 @@ export default function MemberDetailPage() {
           {!member.is_staff && <button id="send-reminder-btn" onClick={sendReminder} className="btn btn-cyan"><Icon name="send" size={18} /> Reminder</button>}
           <button onClick={() => setIsEditing(true)} className="btn btn-ghost" id="edit-member-btn"><Icon name="edit" size={18} /> Edit</button>
           <button id="delete-member-btn" onClick={() => setShowDelete(true)} className="btn btn-danger" style={{ fontSize: "0.85rem", padding: "0.4rem" }}><Icon name="trash" size={18} /> Delete</button>
-          {showDelete && (
-            <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 9999 }}>
-              <div style={{ background: "white", padding: "2rem", borderRadius: "1rem", maxWidth: "400px", textAlign: "center" }}>
-                <h3 style={{ marginBottom: "1rem", fontSize: "1.25rem", fontWeight: 700, color: "#1e293b" }}>Delete Member?</h3>
-                <p style={{ marginBottom: "1.5rem", color: "#64748b" }}>This will permanently delete {member.name} and all their records.</p>
-                <div style={{ display: "flex", gap: "1rem", justifyContent: "center" }}>
-                  <button className="btn btn-ghost" style={{ color: "#64748b" }} onClick={() => setShowDelete(false)} disabled={deleting}>Cancel</button>
-                  <button className="btn btn-danger" onClick={async () => {
-                    setDeleting(true);
-                    const res = await apiFetch("/api/members/delete", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: member.id }) });
-                    const j = await res.json();
-                    if (!j.ok) { alert("Delete failed: " + j.error); setDeleting(false); return; }
-                    navigate("/members");
-                  }} disabled={deleting}>{deleting ? "Deleting..." : "Delete"}</button>
-                </div>
-              </div>
-            </div>
-          )}
         </div>
       </div>
+
+      {showDelete && (
+        <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.6)", backdropFilter: "blur(8px)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 9999 }}>
+          <div className="glass" style={{ padding: "2.5rem 2rem", borderRadius: "1.25rem", maxWidth: "440px", width: "90%", textAlign: "center", boxShadow: "0 20px 50px rgba(0, 0, 0, 0.4)", border: "1px solid var(--border)", animation: "fadeSlideIn 0.25s cubic-bezier(0.34,1.56,0.64,1) both" }}>
+            <div style={{ width: "3.5rem", height: "3.5rem", borderRadius: "50%", background: "rgba(244,63,94,0.15)", color: "var(--danger)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.75rem", margin: "0 auto 1.25rem" }}>
+              ⚠️
+            </div>
+            <h3 style={{ marginBottom: "0.75rem", fontSize: "1.4rem", fontWeight: 800, color: "var(--text)" }}>Delete Member?</h3>
+            <p style={{ marginBottom: "1.75rem", color: "var(--text-muted)", fontSize: "1rem", lineHeight: "1.5" }}>
+              This will permanently delete <strong style={{ color: "var(--text)" }}>{member.name}</strong> and all associated billing, payment, and training records. This action cannot be undone.
+            </p>
+            <div style={{ display: "flex", gap: "1rem", justifyContent: "center" }}>
+              <button className="btn btn-ghost" style={{ flex: 1, minHeight: "44px" }} onClick={() => setShowDelete(false)} disabled={deleting}>Cancel</button>
+              <button className="btn btn-danger" style={{ flex: 1, minHeight: "44px" }} onClick={async () => {
+                setDeleting(true);
+                const res = await apiFetch("/api/members/delete", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: member.id }) });
+                const j = await res.json();
+                if (!j.ok) { alert("Delete failed: " + j.error); setDeleting(false); return; }
+                navigate("/members");
+              }} disabled={deleting}>{deleting ? "Deleting..." : "Delete"}</button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Tabs */}
       <div className="tabs-scroll">
