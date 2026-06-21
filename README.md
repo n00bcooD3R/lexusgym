@@ -1,6 +1,5 @@
-DATA UPDATE USERINFO PIN=0178	Name=Sharon	Pri=0	StartDatetime=2025-01-01 00:00:00	EndDatetime=2027-07-17 23:59:59
-DATA UPDATE USERINFO PIN=0179	Name=Atif	Pri=0	StartDatetime=2025-01-01 00:00:00	EndDatetime=2027-07-17 23:59:59
-DATA UPDATE USERINFO PIN=0180	Name=Ashin vp	Pri=0	StartDatetime=2025-01-01 00:00:00	EndDatetime=2027-07-17 23:59:59
-DATA UPDATE USERINFO PIN=0181	Name=Praseed	Pri=0	StartDatetime=2025-01-01 00:00:00	EndDatetime=2027-07-17 23:59:59
-DATA UPDATE USERINFO PIN=0182	Name=Dhanya	Pri=0	StartDatetime=2025-01-01 00:00:00	EndDatetime=2027-07-17 23:59:59
+tesrdrfdyfhdthfxdyrfxdrycfytffyt
+hfxydfhxfyrdfhxdyrfhcydtfufgfhytfhf
+xcgxdfcgfchcfcccxhfchgh
+chhfgcghtgcvfgcfchcgvcfgcvchf
 
