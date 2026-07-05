@@ -127,10 +127,16 @@ export default function MemberDetailPage() {
       console.error("Failed to load settings:", err);
     }
 
+    const expiry = member.next_due_date ? formatDate(member.next_due_date) : "—";
+    const amount = String(member.fee_amount ?? 0);
+
     const body = template
       .replace(/{name}/g, member.name)
       .replace(/{gym_name}/g, gymName)
-      .replace(/{days}/g, String(daysLeft ?? 30));
+      .replace(/{days}/g, String(daysLeft ?? 30))
+      .replace(/{days_left}/g, String(daysLeft ?? 30))
+      .replace(/{expiry}/g, expiry)
+      .replace(/{amount}/g, amount);
 
     const res = await apiFetch("/api/wa/send", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ memberId: member.id, body }) });
     const j = await res.json();
@@ -1146,22 +1152,23 @@ function MessagesTab({ messages, m, payments, onReload }: { messages: any[]; m: 
       }
 
       const daysLeft = getDaysLeft();
-      const expiry = m.next_due_date ? new Date(m.next_due_date).toLocaleDateString("en-IN") : "N/A";
+      const expiry = m.next_due_date ? formatDate(m.next_due_date) : "—";
       
       let body = template
         .replace(/{name}/g, m.name)
         .replace(/{gym_name}/g, gymName)
-        .replace(/{days}/g, String(daysLeft));
+        .replace(/{days}/g, String(daysLeft))
+        .replace(/{days_left}/g, String(daysLeft))
+        .replace(/{amount}/g, String(paymentAmount))
+        .replace(/{expiry}/g, expiry);
 
-      // Replace amount and expiry if they exist in the template
-      if (body.includes("{amount}") || body.includes("{expiry}")) {
-        body = body
-          .replace(/{amount}/g, String(paymentAmount))
-          .replace(/{expiry}/g, expiry);
-      } else if (type === "welcome" && paymentAmount > 0) {
-        body += `\n\nWe received ₹${paymentAmount}.`;
-      } else if ((type === "renewal" || type === "payment") && paymentAmount > 0) {
-        body += `\n\nWe received ₹${paymentAmount}. Membership active until ${expiry}.`;
+      // Append receipt fallback details only if placeholders are NOT present in the template
+      if (!template.includes("{amount}") && !template.includes("{expiry}")) {
+        if (type === "welcome" && paymentAmount > 0) {
+          body += `\n\nWe received ₹${paymentAmount}.`;
+        } else if ((type === "renewal" || type === "payment") && paymentAmount > 0) {
+          body += `\n\nWe received ₹${paymentAmount}. Membership active until ${expiry}.`;
+        }
       }
 
       const res = await apiFetch("/api/wa/send", { 

@@ -45,6 +45,69 @@ export default function SettingsPage() {
   const [saved, setSaved] = useState(false);
   const [tab, setTab] = useState<"gym" | "messages" | "qr" | "staff">("gym");
 
+  const [waStatus, setWaStatus] = useState<string>("checking");
+  const [waProvider, setWaProvider] = useState<string>("");
+  const [qrCodeBase64, setQrCodeBase64] = useState<string>("");
+  const [loadingQr, setLoadingQr] = useState<boolean>(false);
+  const [qrError, setQrError] = useState<string>("");
+
+  async function fetchWaStatus() {
+    setWaStatus("checking");
+    try {
+      const res = await apiFetch("/api/wa/status");
+      if (res.ok) {
+        const data = await res.json();
+        setWaProvider(data.provider || "");
+        if (data.ok) {
+          const status = data.status || "close";
+          setWaStatus(status);
+          if (status === "close" && data.provider === "evolution") {
+            fetchQrCode();
+          }
+        } else {
+          setWaStatus("error");
+          setQrError(data.error || "Status check failed");
+        }
+      } else {
+        setWaStatus("error");
+        setQrError("Failed to fetch WhatsApp status");
+      }
+    } catch (e: any) {
+      console.error(e);
+      setWaStatus("error");
+      setQrError(e.message || "Connection error checking status");
+    }
+  }
+
+  async function fetchQrCode() {
+    setLoadingQr(true);
+    setQrError("");
+    setQrCodeBase64("");
+    try {
+      const res = await apiFetch("/api/wa/qr");
+      if (res.ok) {
+        const data = await res.json();
+        if (data.ok && data.base64) {
+          setQrCodeBase64(data.base64);
+        } else {
+          setQrError(data.error || "Failed to fetch QR code from server");
+        }
+      } else {
+        setQrError("Server error fetching QR code");
+      }
+    } catch (e: any) {
+      setQrError(e.message || "An error occurred fetching QR code");
+    } finally {
+      setLoadingQr(false);
+    }
+  }
+
+  useEffect(() => {
+    if (tab === "qr") {
+      fetchWaStatus();
+    }
+  }, [tab]);
+
   const TABS = [
     { id: "gym", label: "Gym Details", icon: "settings" },
     { id: "messages", label: "Messages", icon: "mail" },
@@ -251,18 +314,124 @@ export default function SettingsPage() {
       )}
 
       {tab === "qr" && (
-        <div className="glass" style={{ padding: "1.5rem", textAlign: "center" }}>
-          <h3 style={{ fontSize: "1.1rem", fontWeight: 700, marginBottom: "1rem" }}>WhatsApp QR Code</h3>
-          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "1rem" }}>
-            <img
-              src="/whatsapp-qr.png"
-              style={{ width: "100%", maxWidth: "320px", height: "auto", border: "none", borderRadius: "0.75rem", background: "#fff", padding: "0.5rem", boxShadow: "0 4px 12px rgba(0,0,0,0.1)" }}
-              alt="WhatsApp Connection QR"
-            />
-            <p style={{ fontSize: "0.85rem", color: "var(--text-muted)", maxWidth: "320px" }}>
-              Scan this QR with your phone (Linked Devices &rarr; Link a Device) to connect to the WhatsApp Bridge.
-            </p>
+        <div className="glass" style={{ padding: "2rem", display: "flex", flexDirection: "column", gap: "1.5rem" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid var(--border)", paddingBottom: "1rem" }}>
+            <div>
+              <h3 style={{ fontSize: "1.2rem", fontWeight: 800, color: "var(--text)", margin: 0 }}>WhatsApp Integration</h3>
+              <p style={{ fontSize: "0.85rem", color: "var(--text-muted)", margin: "0.25rem 0 0 0" }}>
+                Active Provider: <strong style={{ color: "var(--accent)" }}>{waProvider || "detecting..."}</strong>
+              </p>
+            </div>
+            <button 
+              onClick={fetchWaStatus} 
+              className="btn btn-ghost" 
+              style={{ padding: "0.5rem 1rem", fontSize: "0.875rem", minHeight: "38px" }}
+              disabled={waStatus === "checking"}
+            >
+              {waStatus === "checking" ? (
+                <><span className="spinner" style={{ width: "0.85rem", height: "0.85rem", marginRight: "0.5rem" }} /> Checking Status...</>
+              ) : (
+                <><span style={{ marginRight: "0.5rem", display: "inline-flex" }}><Icon name="activity" size={16} /></span> Refresh Status</>
+              )}
+            </button>
           </div>
+
+          {/* Status Indicator */}
+          <div style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "1rem",
+            padding: "1rem 1.25rem",
+            borderRadius: "0.75rem",
+            background: waStatus === "open" ? "rgba(16,185,129,0.1)" : waStatus === "close" ? "rgba(245,158,11,0.1)" : waStatus === "checking" ? "rgba(255,255,255,0.03)" : "rgba(244,63,94,0.1)",
+            border: `1px solid ${waStatus === "open" ? "rgba(16,185,129,0.25)" : waStatus === "close" ? "rgba(245,158,11,0.25)" : waStatus === "checking" ? "rgba(255,255,255,0.08)" : "rgba(244,63,94,0.25)"}`,
+          }}>
+            <div style={{
+              width: "2.5rem",
+              height: "2.5rem",
+              borderRadius: "50%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: "1.25rem",
+              background: waStatus === "open" ? "rgba(16,185,129,0.2)" : waStatus === "close" ? "rgba(245,158,11,0.2)" : waStatus === "checking" ? "rgba(255,255,255,0.05)" : "rgba(244,63,94,0.2)",
+              color: waStatus === "open" ? "#10b981" : waStatus === "close" ? "#f59e0b" : waStatus === "checking" ? "var(--text-muted)" : "#f43f5e"
+            }}>
+              {waStatus === "open" ? "✓" : waStatus === "close" ? "⚠️" : waStatus === "checking" ? "⏳" : "✕"}
+            </div>
+            <div>
+              <div style={{ fontWeight: 700, fontSize: "0.95rem", color: waStatus === "open" ? "#34d399" : waStatus === "close" ? "#fbbf24" : waStatus === "checking" ? "var(--text)" : "#f87171" }}>
+                {waStatus === "open" ? "WhatsApp Connected" : waStatus === "close" ? "WhatsApp Disconnected" : waStatus === "checking" ? "Checking connection status..." : "Connection Error"}
+              </div>
+              <div style={{ fontSize: "0.825rem", color: "var(--text-muted)", marginTop: "0.2rem" }}>
+                {waStatus === "open" && "The system is successfully connected to WhatsApp. Ready to send messages, payment receipts, and templates."}
+                {waStatus === "close" && "The system is disconnected. Please scan the QR code below using your mobile app to link and reactivate the service."}
+                {waStatus === "checking" && "Inquiring status from the WhatsApp provider server. Please hold on..."}
+                {waStatus === "error" && (qrError || "Could not reach the WhatsApp server. Please check the network connectivity or credentials.")}
+              </div>
+            </div>
+          </div>
+
+          {/* QR Code display section */}
+          {waStatus === "close" && (
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "1.5rem", marginTop: "1rem" }}>
+              <div style={{
+                position: "relative",
+                width: "280px",
+                height: "280px",
+                borderRadius: "1rem",
+                overflow: "hidden",
+                background: "#fff",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                border: "4px solid var(--border)",
+                boxShadow: "0 10px 25px rgba(0,0,0,0.3)"
+              }}>
+                {loadingQr ? (
+                  <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "1rem", color: "#333" }}>
+                    <span className="spinner" style={{ width: "2rem", height: "2rem", borderTopColor: "var(--accent)" }} />
+                    <span style={{ fontSize: "0.85rem", fontWeight: 600 }}>Fetching QR Code...</span>
+                  </div>
+                ) : qrCodeBase64 ? (
+                  <img
+                    src={qrCodeBase64}
+                    style={{ width: "100%", height: "100%", objectFit: "contain", padding: "1rem" }}
+                    alt="WhatsApp Connection QR"
+                  />
+                ) : (
+                  <div style={{ display: "flex", flexDirection: "column", alignItems: "center", padding: "1.5rem", color: "#333", textAlign: "center" }}>
+                    <span style={{ fontSize: "2rem" }}>⚠️</span>
+                    <span style={{ fontSize: "0.85rem", marginTop: "0.5rem", color: "var(--danger)" }}>{qrError || "Failed to load QR code"}</span>
+                    <button onClick={fetchQrCode} className="btn btn-primary" style={{ marginTop: "1rem", minHeight: "36px", padding: "0.4rem 1rem", fontSize: "0.8rem" }}>
+                      Try Again
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              <div style={{ maxWidth: "420px", textAlign: "center" }}>
+                <h4 style={{ fontSize: "0.95rem", fontWeight: 700, marginBottom: "0.5rem", color: "var(--text)" }}>Connection Instructions</h4>
+                <ol style={{ textAlign: "left", fontSize: "0.85rem", color: "var(--text-muted)", lineHeight: "1.6", margin: "0 auto", paddingLeft: "1.25rem" }}>
+                  <li>Open <strong>WhatsApp</strong> on your mobile phone.</li>
+                  <li>Tap <strong>Menu</strong> (on Android) or <strong>Settings</strong> (on iPhone).</li>
+                  <li>Select <strong>Linked Devices</strong> and tap <strong>Link a Device</strong>.</li>
+                  <li>Point your phone camera to this screen and scan the QR code above.</li>
+                  <li>Once paired, wait a moment and tap <strong>Refresh Status</strong> to verify.</li>
+                </ol>
+              </div>
+            </div>
+          )}
+
+          {waStatus === "open" && (
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "1rem", padding: "2rem 0", color: "var(--text-muted)", textAlign: "center" }}>
+              <div style={{ fontSize: "3rem" }}>✨</div>
+              <h4 style={{ fontSize: "1.05rem", fontWeight: 700, color: "var(--text)", margin: 0 }}>All Set!</h4>
+              <p style={{ fontSize: "0.85rem", maxWidth: "320px", margin: 0 }}>
+                Your WhatsApp integration is operational. If you need to switch accounts, log out from Linked Devices on your phone first.
+              </p>
+            </div>
+          )}
         </div>
       )}
 

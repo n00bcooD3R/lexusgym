@@ -139,3 +139,69 @@ def send_via_evolution(to: str, body: str, document_bytes: bytes = None) -> dict
         return {"ok": True, "raw": json_res}
     except Exception as e:
         return {"ok": False, "error": str(e)}
+
+def get_whatsapp_status() -> dict:
+    """
+    Checks connection status of the WhatsApp instance.
+    """
+    provider = os.getenv("WA_PROVIDER", "none").strip().lower()
+    if provider in ("none", "demo", ""):
+        return {"ok": True, "provider": "demo", "status": "open", "message": "Demo mode"}
+    
+    if provider == "evolution":
+        base_url = os.getenv("EVOLUTION_API_URL")
+        api_key = os.getenv("EVOLUTION_API_KEY")
+        instance = os.getenv("EVOLUTION_INSTANCE", "gymapp")
+        
+        if not base_url or not api_key:
+            return {"ok": False, "error": "Evolution credentials missing"}
+            
+        url = f"{base_url.rstrip('/')}/instance/connectionState/{instance}"
+        headers = {"apikey": api_key}
+        try:
+            res = requests.get(url, headers=headers, timeout=10)
+            if res.status_code == 200:
+                data = res.json()
+                state = data.get("instance", {}).get("state", "close")
+                return {"ok": True, "provider": "evolution", "status": state}
+            return {"ok": False, "error": f"Evolution status error: {res.text}"}
+        except Exception as e:
+            return {"ok": False, "error": str(e)}
+            
+    return {"ok": True, "provider": provider, "status": "unknown"}
+
+def get_whatsapp_qr() -> dict:
+    """
+    Fetches the connection QR code for WhatsApp.
+    """
+    provider = os.getenv("WA_PROVIDER", "none").strip().lower()
+    if provider in ("none", "demo", ""):
+        return {"ok": True, "provider": "demo", "message": "Demo mode - no QR code required"}
+        
+    if provider == "evolution":
+        base_url = os.getenv("EVOLUTION_API_URL")
+        api_key = os.getenv("EVOLUTION_API_KEY")
+        instance = os.getenv("EVOLUTION_INSTANCE", "gymapp")
+        
+        if not base_url or not api_key:
+            return {"ok": False, "error": "Evolution credentials missing"}
+            
+        url = f"{base_url.rstrip('/')}/instance/connect/{instance}"
+        headers = {"apikey": api_key}
+        try:
+            res = requests.get(url, headers=headers, timeout=15)
+            if res.status_code == 200:
+                data = res.json()
+                # Return code and base64
+                return {
+                    "ok": True, 
+                    "provider": "evolution", 
+                    "code": data.get("code"),
+                    "base64": data.get("base64")
+                }
+            return {"ok": False, "error": f"Evolution connect error: {res.text}"}
+        except Exception as e:
+            return {"ok": False, "error": str(e)}
+            
+    return {"ok": False, "error": f"QR code generation not supported for provider: {provider}"}
+

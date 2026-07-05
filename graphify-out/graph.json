@@ -170,7 +170,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "api_pdf",
-      "community": 57,
+      "community": 0,
       "norm_label": "pdf.py"
     },
     {
@@ -180,7 +180,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "api_pdf_invoicepdf",
-      "community": 57,
+      "community": 0,
       "norm_label": "invoicepdf"
     },
     {
@@ -190,7 +190,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "fpdf",
-      "community": 57,
+      "community": 0,
       "norm_label": "fpdf"
     },
     {
@@ -200,7 +200,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "api_pdf_invoicepdf_header",
-      "community": 57,
+      "community": 0,
       "norm_label": ".header()"
     },
     {
@@ -210,7 +210,7 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "api_pdf_invoicepdf_footer",
-      "community": 57,
+      "community": 0,
       "norm_label": ".footer()"
     },
     {
@@ -220,7 +220,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "api_pdf_generate_invoice_pdf",
-      "community": 57,
+      "community": 0,
       "norm_label": "generate_invoice_pdf()"
     },
     {
@@ -230,7 +230,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "api_pdf_rationale_13",
-      "community": 57,
+      "community": 0,
       "norm_label": "generates a premium invoice receipt pdf using fpdf2.     matches coordinate offs"
     },
     {
@@ -310,7 +310,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "routes_cron",
-      "community": 57,
+      "community": 0,
       "norm_label": "cron.py"
     },
     {
@@ -320,7 +320,7 @@
       "source_location": "L30",
       "_origin": "ast",
       "id": "routes_cron_run_cron_reminders",
-      "community": 57,
+      "community": 0,
       "norm_label": "run_cron_reminders()"
     },
     {
@@ -350,7 +350,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "basemodel",
-      "community": 0,
+      "community": 10,
       "norm_label": "basemodel"
     },
     {
@@ -380,7 +380,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "routes_payments",
-      "community": 57,
+      "community": 0,
       "norm_label": "payments.py"
     },
     {
@@ -390,7 +390,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "routes_payments_webhookpayload",
-      "community": 57,
+      "community": 0,
       "norm_label": "webhookpayload"
     },
     {
@@ -400,7 +400,7 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "routes_payments_payment_webhook",
-      "community": 57,
+      "community": 0,
       "norm_label": "payment_webhook()"
     },
     {
@@ -410,7 +410,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "routes_pt",
-      "community": 0,
+      "community": 10,
       "norm_label": "pt.py"
     },
     {
@@ -420,7 +420,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "routes_pt_credentialspayload",
-      "community": 0,
+      "community": 10,
       "norm_label": "credentialspayload"
     },
     {
@@ -430,7 +430,7 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "routes_pt_loginpayload",
-      "community": 0,
+      "community": 10,
       "norm_label": "loginpayload"
     },
     {
@@ -440,7 +440,7 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "routes_pt_create_pt_credentials",
-      "community": 0,
+      "community": 10,
       "norm_label": "create_pt_credentials()"
     },
     {
@@ -450,7 +450,7 @@
       "source_location": "L63",
       "_origin": "ast",
       "id": "routes_pt_pt_login",
-      "community": 0,
+      "community": 10,
       "norm_label": "pt_login()"
     },
     {
@@ -460,7 +460,7 @@
       "source_location": "L63",
       "_origin": "ast",
       "id": "backend_api_routes_pt_py_response",
-      "community": 0,
+      "community": 10,
       "norm_label": "response"
     },
     {
@@ -470,7 +470,7 @@
       "source_location": "L106",
       "_origin": "ast",
       "id": "routes_pt_pt_logout",
-      "community": 0,
+      "community": 10,
       "norm_label": "pt_logout()"
     },
     {
@@ -480,7 +480,7 @@
       "source_location": "L121",
       "_origin": "ast",
       "id": "routes_pt_get_portal_data",
-      "community": 0,
+      "community": 10,
       "norm_label": "get_portal_data()"
     },
     {
@@ -490,7 +490,7 @@
       "source_location": "L121",
       "_origin": "ast",
       "id": "backend_api_routes_pt_py_request",
-      "community": 0,
+      "community": 10,
       "norm_label": "request"
     },
     {
@@ -500,7 +500,7 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "routes_pt_rationale_22",
-      "community": 0,
+      "community": 10,
       "norm_label": "creates or updates pt portal credentials for a gym member."
     },
     {
@@ -510,7 +510,7 @@
       "source_location": "L64",
       "_origin": "ast",
       "id": "routes_pt_rationale_64",
-      "community": 0,
+      "community": 10,
       "norm_label": "validates pt client credentials and sets a secure httponly session cookie."
     },
     {
@@ -520,7 +520,7 @@
       "source_location": "L107",
       "_origin": "ast",
       "id": "routes_pt_rationale_107",
-      "community": 0,
+      "community": 10,
       "norm_label": "clears the pt client session cookie."
     },
     {
@@ -530,7 +530,7 @@
       "source_location": "L122",
       "_origin": "ast",
       "id": "routes_pt_rationale_122",
-      "community": 0,
+      "community": 10,
       "norm_label": "returns the logged-in client's profile, workout plan, and diet plan.     validat"
     },
     {
@@ -654,13 +654,33 @@
       "norm_label": "request"
     },
     {
+      "label": "check_wa_status()",
+      "file_type": "code",
+      "source_file": "backend/api/routes/wa.py",
+      "source_location": "L104",
+      "_origin": "ast",
+      "id": "routes_wa_check_wa_status",
+      "community": 0,
+      "norm_label": "check_wa_status()"
+    },
+    {
+      "label": "get_wa_qr()",
+      "file_type": "code",
+      "source_file": "backend/api/routes/wa.py",
+      "source_location": "L109",
+      "_origin": "ast",
+      "id": "routes_wa_get_wa_qr",
+      "community": 0,
+      "norm_label": "get_wa_qr()"
+    },
+    {
       "label": "whatsapp.py",
       "file_type": "code",
       "source_file": "backend/api/whatsapp.py",
       "source_location": "L1",
       "_origin": "ast",
       "id": "api_whatsapp",
-      "community": 57,
+      "community": 0,
       "norm_label": "whatsapp.py"
     },
     {
@@ -670,7 +690,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "api_whatsapp_send_whatsapp",
-      "community": 57,
+      "community": 0,
       "norm_label": "send_whatsapp()"
     },
     {
@@ -680,7 +700,7 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "api_whatsapp_send_via_meta",
-      "community": 57,
+      "community": 0,
       "norm_label": "send_via_meta()"
     },
     {
@@ -690,7 +710,7 @@
       "source_location": "L72",
       "_origin": "ast",
       "id": "api_whatsapp_send_via_local",
-      "community": 57,
+      "community": 0,
       "norm_label": "send_via_local()"
     },
     {
@@ -700,8 +720,28 @@
       "source_location": "L103",
       "_origin": "ast",
       "id": "api_whatsapp_send_via_evolution",
-      "community": 57,
+      "community": 0,
       "norm_label": "send_via_evolution()"
+    },
+    {
+      "label": "get_whatsapp_status()",
+      "file_type": "code",
+      "source_file": "backend/api/whatsapp.py",
+      "source_location": "L143",
+      "_origin": "ast",
+      "id": "api_whatsapp_get_whatsapp_status",
+      "community": 0,
+      "norm_label": "get_whatsapp_status()"
+    },
+    {
+      "label": "get_whatsapp_qr()",
+      "file_type": "code",
+      "source_file": "backend/api/whatsapp.py",
+      "source_location": "L173",
+      "_origin": "ast",
+      "id": "api_whatsapp_get_whatsapp_qr",
+      "community": 0,
+      "norm_label": "get_whatsapp_qr()"
     },
     {
       "label": "Unified WhatsApp sender. Selects provider based on WA_PROVIDER env variable.",
@@ -710,8 +750,28 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "api_whatsapp_rationale_7",
-      "community": 57,
+      "community": 0,
       "norm_label": "unified whatsapp sender. selects provider based on wa_provider env variable."
+    },
+    {
+      "label": "Checks connection status of the WhatsApp instance.",
+      "file_type": "rationale",
+      "source_file": "backend/api/whatsapp.py",
+      "source_location": "L144",
+      "_origin": "ast",
+      "id": "api_whatsapp_rationale_144",
+      "community": 0,
+      "norm_label": "checks connection status of the whatsapp instance."
+    },
+    {
+      "label": "Fetches the connection QR code for WhatsApp.",
+      "file_type": "rationale",
+      "source_file": "backend/api/whatsapp.py",
+      "source_location": "L174",
+      "_origin": "ast",
+      "id": "api_whatsapp_rationale_174",
+      "community": 0,
+      "norm_label": "fetches the connection qr code for whatsapp."
     },
     {
       "label": "settings.json",
@@ -1287,7 +1347,7 @@
       "label": "styles",
       "file_type": "code",
       "source_file": "mobile/app/member-detail.tsx",
-      "source_location": "L302",
+      "source_location": "L308",
       "_origin": "ast",
       "id": "app_member_detail_styles",
       "community": 22,
@@ -2107,7 +2167,7 @@
       "label": "crons",
       "file_type": "code",
       "source_file": "vercel.json",
-      "source_location": "L15",
+      "source_location": "L16",
       "_origin": "ast",
       "id": "vercel_crons",
       "community": 30,
@@ -2770,7 +2830,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_settingsloader",
-      "community": 15,
+      "community": 12,
       "norm_label": "settingsloader.tsx"
     },
     {
@@ -2780,7 +2840,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "components_settingsloader_settingsloader",
-      "community": 15,
+      "community": 12,
       "norm_label": "settingsloader()"
     },
     {
@@ -2830,7 +2890,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "lib_pdf_bill",
-      "community": 15,
+      "community": 12,
       "norm_label": "pdf-bill.ts"
     },
     {
@@ -2840,7 +2900,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "lib_pdf_bill_gymdetails",
-      "community": 15,
+      "community": 12,
       "norm_label": "gymdetails"
     },
     {
@@ -2850,7 +2910,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_pdf_bill_setgymdetails",
-      "community": 15,
+      "community": 12,
       "norm_label": "setgymdetails()"
     },
     {
@@ -2860,7 +2920,7 @@
       "source_location": "L26",
       "_origin": "ast",
       "id": "lib_pdf_bill_setlogobase64",
-      "community": 15,
+      "community": 12,
       "norm_label": "setlogobase64()"
     },
     {
@@ -2870,7 +2930,7 @@
       "source_location": "L30",
       "_origin": "ast",
       "id": "lib_pdf_bill_setsealbase64",
-      "community": 15,
+      "community": 12,
       "norm_label": "setsealbase64()"
     },
     {
@@ -2880,7 +2940,7 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "lib_pdf_bill_getgymdetails",
-      "community": 15,
+      "community": 12,
       "norm_label": "getgymdetails()"
     },
     {
@@ -2890,7 +2950,7 @@
       "source_location": "L38",
       "_origin": "ast",
       "id": "lib_pdf_bill_generateinvoice",
-      "community": 15,
+      "community": 12,
       "norm_label": "generateinvoice()"
     },
     {
@@ -2900,7 +2960,7 @@
       "source_location": "L286",
       "_origin": "ast",
       "id": "lib_pdf_bill_generatebill",
-      "community": 15,
+      "community": 12,
       "norm_label": "generatebill()"
     },
     {
@@ -2910,7 +2970,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "web_src_lib_supabase_ts_lib_supabase",
-      "community": 20,
+      "community": 12,
       "norm_label": "supabase.ts"
     },
     {
@@ -2920,7 +2980,7 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "web_src_lib_supabase_ts_lib_supabase_supabase",
-      "community": 20,
+      "community": 12,
       "norm_label": "supabase"
     },
     {
@@ -2930,7 +2990,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_supabase_apifetch",
-      "community": 20,
+      "community": 12,
       "norm_label": "apifetch()"
     },
     {
@@ -2950,7 +3010,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "pages_addmember",
-      "community": 17,
+      "community": 12,
       "norm_label": "addmember.tsx"
     },
     {
@@ -2960,7 +3020,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "pages_addmember_plans",
-      "community": 17,
+      "community": 12,
       "norm_label": "plans"
     },
     {
@@ -2970,7 +3030,7 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "pages_addmember_gettodaystring",
-      "community": 17,
+      "community": 12,
       "norm_label": "gettodaystring()"
     },
     {
@@ -2980,7 +3040,7 @@
       "source_location": "L23",
       "_origin": "ast",
       "id": "pages_addmember_adddays",
-      "community": 17,
+      "community": 12,
       "norm_label": "adddays()"
     },
     {
@@ -2990,7 +3050,7 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "pages_addmember_diffdays",
-      "community": 17,
+      "community": 12,
       "norm_label": "diffdays()"
     },
     {
@@ -3000,7 +3060,7 @@
       "source_location": "L44",
       "_origin": "ast",
       "id": "pages_addmember_newmember",
-      "community": 17,
+      "community": 12,
       "norm_label": "newmember()"
     },
     {
@@ -3010,7 +3070,7 @@
       "source_location": "L539",
       "_origin": "ast",
       "id": "pages_addmember_field",
-      "community": 17,
+      "community": 12,
       "norm_label": "field()"
     },
     {
@@ -3250,7 +3310,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "pages_login",
-      "community": 34,
+      "community": 12,
       "norm_label": "login.tsx"
     },
     {
@@ -3260,7 +3320,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "pages_login_view",
-      "community": 34,
+      "community": 12,
       "norm_label": "view"
     },
     {
@@ -3270,7 +3330,7 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "pages_login_loginpage",
-      "community": 34,
+      "community": 12,
       "norm_label": "loginpage()"
     },
     {
@@ -3280,7 +3340,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "pages_memberdetail",
-      "community": 13,
+      "community": 12,
       "norm_label": "memberdetail.tsx"
     },
     {
@@ -3290,7 +3350,7 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "pages_memberdetail_plans",
-      "community": 13,
+      "community": 12,
       "norm_label": "plans"
     },
     {
@@ -3300,7 +3360,7 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "pages_memberdetail_adddays",
-      "community": 13,
+      "community": 12,
       "norm_label": "adddays()"
     },
     {
@@ -3310,7 +3370,7 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "pages_memberdetail_addmonths",
-      "community": 13,
+      "community": 12,
       "norm_label": "addmonths()"
     },
     {
@@ -3320,87 +3380,87 @@
       "source_location": "L27",
       "_origin": "ast",
       "id": "pages_memberdetail_memberdetailpage",
-      "community": 13,
+      "community": 8,
       "norm_label": "memberdetailpage()"
     },
     {
       "label": "InfoTab()",
       "file_type": "code",
       "source_file": "web/src/pages/MemberDetail.tsx",
-      "source_location": "L261",
+      "source_location": "L267",
       "_origin": "ast",
       "id": "pages_memberdetail_infotab",
-      "community": 13,
+      "community": 12,
       "norm_label": "infotab()"
     },
     {
       "label": "PaymentsTab()",
       "file_type": "code",
       "source_file": "web/src/pages/MemberDetail.tsx",
-      "source_location": "L425",
+      "source_location": "L431",
       "_origin": "ast",
       "id": "pages_memberdetail_paymentstab",
-      "community": 13,
+      "community": 12,
       "norm_label": "paymentstab()"
     },
     {
       "label": "WorkoutsTab()",
       "file_type": "code",
       "source_file": "web/src/pages/MemberDetail.tsx",
-      "source_location": "L816",
+      "source_location": "L822",
       "_origin": "ast",
       "id": "pages_memberdetail_workoutstab",
-      "community": 13,
+      "community": 12,
       "norm_label": "workoutstab()"
     },
     {
       "label": "DietsTab()",
       "file_type": "code",
       "source_file": "web/src/pages/MemberDetail.tsx",
-      "source_location": "L882",
+      "source_location": "L888",
       "_origin": "ast",
       "id": "pages_memberdetail_dietstab",
-      "community": 13,
+      "community": 12,
       "norm_label": "dietstab()"
     },
     {
       "label": "PortalTab()",
       "file_type": "code",
       "source_file": "web/src/pages/MemberDetail.tsx",
-      "source_location": "L952",
+      "source_location": "L958",
       "_origin": "ast",
       "id": "pages_memberdetail_portaltab",
-      "community": 13,
+      "community": 12,
       "norm_label": "portaltab()"
     },
     {
       "label": "MessagesTab()",
       "file_type": "code",
       "source_file": "web/src/pages/MemberDetail.tsx",
-      "source_location": "L1102",
+      "source_location": "L1108",
       "_origin": "ast",
       "id": "pages_memberdetail_messagestab",
-      "community": 13,
+      "community": 12,
       "norm_label": "messagestab()"
     },
     {
       "label": "EditFormView()",
       "file_type": "code",
       "source_file": "web/src/pages/MemberDetail.tsx",
-      "source_location": "L1266",
+      "source_location": "L1273",
       "_origin": "ast",
       "id": "pages_memberdetail_editformview",
-      "community": 13,
+      "community": 12,
       "norm_label": "editformview()"
     },
     {
       "label": "L()",
       "file_type": "code",
       "source_file": "web/src/pages/MemberDetail.tsx",
-      "source_location": "L1418",
+      "source_location": "L1425",
       "_origin": "ast",
       "id": "pages_memberdetail_l",
-      "community": 13,
+      "community": 12,
       "norm_label": "l()"
     },
     {
@@ -3450,7 +3510,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "pages_pt",
-      "community": 10,
+      "community": 8,
       "norm_label": "pt.tsx"
     },
     {
@@ -3460,7 +3520,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "pages_pt_exercise",
-      "community": 10,
+      "community": 8,
       "norm_label": "exercise"
     },
     {
@@ -3470,7 +3530,7 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "pages_pt_workoutday",
-      "community": 10,
+      "community": 8,
       "norm_label": "workoutday"
     },
     {
@@ -3480,7 +3540,7 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "pages_pt_dietitem",
-      "community": 10,
+      "community": 8,
       "norm_label": "dietitem"
     },
     {
@@ -3490,7 +3550,7 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "pages_pt_dietmeal",
-      "community": 10,
+      "community": 8,
       "norm_label": "dietmeal"
     },
     {
@@ -3500,7 +3560,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "pages_pt_day_defaults",
-      "community": 10,
+      "community": 8,
       "norm_label": "day_defaults"
     },
     {
@@ -3510,7 +3570,7 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "pages_pt_meal_defaults",
-      "community": 10,
+      "community": 8,
       "norm_label": "meal_defaults"
     },
     {
@@ -3520,7 +3580,7 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "pages_pt_blankexercise",
-      "community": 10,
+      "community": 8,
       "norm_label": "blankexercise()"
     },
     {
@@ -3530,7 +3590,7 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "pages_pt_blankitem",
-      "community": 10,
+      "community": 8,
       "norm_label": "blankitem()"
     },
     {
@@ -3540,7 +3600,7 @@
       "source_location": "L23",
       "_origin": "ast",
       "id": "pages_pt_blankday",
-      "community": 10,
+      "community": 8,
       "norm_label": "blankday()"
     },
     {
@@ -3550,7 +3610,7 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "pages_pt_blankmeal",
-      "community": 10,
+      "community": 8,
       "norm_label": "blankmeal()"
     },
     {
@@ -3560,7 +3620,7 @@
       "source_location": "L26",
       "_origin": "ast",
       "id": "pages_pt_ptpage",
-      "community": 10,
+      "community": 8,
       "norm_label": "ptpage()"
     },
     {
@@ -3570,7 +3630,7 @@
       "source_location": "L117",
       "_origin": "ast",
       "id": "pages_pt_ptclientdetail",
-      "community": 10,
+      "community": 8,
       "norm_label": "ptclientdetail()"
     },
     {
@@ -3580,7 +3640,7 @@
       "source_location": "L215",
       "_origin": "ast",
       "id": "pages_pt_workouteditor",
-      "community": 10,
+      "community": 8,
       "norm_label": "workouteditor()"
     },
     {
@@ -3590,7 +3650,7 @@
       "source_location": "L314",
       "_origin": "ast",
       "id": "pages_pt_dieteditor",
-      "community": 10,
+      "community": 8,
       "norm_label": "dieteditor()"
     },
     {
@@ -3600,7 +3660,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "pages_settings",
-      "community": 20,
+      "community": 12,
       "norm_label": "settings.tsx"
     },
     {
@@ -3610,7 +3670,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "pages_settings_settings_keys",
-      "community": 20,
+      "community": 12,
       "norm_label": "settings_keys"
     },
     {
@@ -3620,7 +3680,7 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "pages_settings_placeholders",
-      "community": 20,
+      "community": 12,
       "norm_label": "placeholders"
     },
     {
@@ -3630,7 +3690,7 @@
       "source_location": "L23",
       "_origin": "ast",
       "id": "pages_settings_default_settings",
-      "community": 20,
+      "community": 12,
       "norm_label": "default_settings"
     },
     {
@@ -3640,7 +3700,7 @@
       "source_location": "L38",
       "_origin": "ast",
       "id": "pages_settings_gym_keys",
-      "community": 20,
+      "community": 12,
       "norm_label": "gym_keys"
     },
     {
@@ -3650,7 +3710,7 @@
       "source_location": "L39",
       "_origin": "ast",
       "id": "pages_settings_msg_keys",
-      "community": 20,
+      "community": 12,
       "norm_label": "msg_keys"
     },
     {
@@ -3660,7 +3720,7 @@
       "source_location": "L41",
       "_origin": "ast",
       "id": "pages_settings_settingspage",
-      "community": 20,
+      "community": 12,
       "norm_label": "settingspage()"
     },
     {
@@ -5088,7 +5148,7 @@
       "file_type": "code",
       "source_file": "backend/api/routes/pt.py",
       "source_location": "L63",
-      "community": 0,
+      "community": 10,
       "norm_label": "response",
       "id": "response"
     },
@@ -5269,9 +5329,9 @@
       "source_file": "backend/api/routes/adms.py",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_adms",
-      "target": "api_database",
-      "confidence_score": 1.0
+      "target": "api_database"
     },
     {
       "relation": "imports_from",
@@ -5666,9 +5726,9 @@
       "source_file": "backend/api/routes/adms.py",
       "source_location": "L120",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_adms",
-      "target": "routes_adms_adms_device_cmd_response",
-      "confidence_score": 1.0
+      "target": "routes_adms_adms_device_cmd_response"
     },
     {
       "relation": "contains",
@@ -5676,9 +5736,9 @@
       "source_file": "backend/api/routes/adms.py",
       "source_location": "L113",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_adms",
-      "target": "routes_adms_adms_get_commands",
-      "confidence_score": 1.0
+      "target": "routes_adms_adms_get_commands"
     },
     {
       "relation": "contains",
@@ -5686,9 +5746,9 @@
       "source_file": "backend/api/routes/adms.py",
       "source_location": "L15",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_adms",
-      "target": "routes_adms_adms_handshake",
-      "confidence_score": 1.0
+      "target": "routes_adms_adms_handshake"
     },
     {
       "relation": "contains",
@@ -5696,9 +5756,9 @@
       "source_file": "backend/api/routes/adms.py",
       "source_location": "L36",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_adms",
-      "target": "routes_adms_adms_receive_data",
-      "confidence_score": 1.0
+      "target": "routes_adms_adms_receive_data"
     },
     {
       "relation": "references",
@@ -5707,9 +5767,9 @@
       "source_file": "backend/api/routes/adms.py",
       "source_location": "L36",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_adms_adms_receive_data",
-      "target": "backend_api_routes_adms_py_request",
-      "confidence_score": 1.0
+      "target": "backend_api_routes_adms_py_request"
     },
     {
       "relation": "imports_from",
@@ -6141,6 +6201,26 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "backend/api/routes/wa.py",
+      "source_location": "L103",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "routes_wa",
+      "target": "routes_wa_check_wa_status"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/api/routes/wa.py",
+      "source_location": "L108",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "routes_wa",
+      "target": "routes_wa_get_wa_qr"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/api/routes/wa.py",
       "source_location": "L10",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -6168,6 +6248,48 @@
       "confidence_score": 1.0,
       "source": "routes_wa_send_wa_message",
       "target": "backend_api_routes_wa_py_request"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/api/routes/wa.py",
+      "source_location": "L105",
+      "weight": 1.0,
+      "source": "routes_wa_check_wa_status",
+      "target": "api_whatsapp_get_whatsapp_status"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/api/routes/wa.py",
+      "source_location": "L110",
+      "weight": 1.0,
+      "source": "routes_wa_get_wa_qr",
+      "target": "api_whatsapp_get_whatsapp_qr"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/api/whatsapp.py",
+      "source_location": "L173",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "api_whatsapp",
+      "target": "api_whatsapp_get_whatsapp_qr"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/api/whatsapp.py",
+      "source_location": "L143",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "api_whatsapp",
+      "target": "api_whatsapp_get_whatsapp_status"
     },
     {
       "relation": "contains",
@@ -6251,6 +6373,26 @@
       "confidence_score": 1.0,
       "source": "api_whatsapp_send_whatsapp",
       "target": "api_whatsapp_send_via_meta"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/api/whatsapp.py",
+      "source_location": "L144",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "api_whatsapp_rationale_144",
+      "target": "api_whatsapp_get_whatsapp_status"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/api/whatsapp.py",
+      "source_location": "L174",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "api_whatsapp_rationale_174",
+      "target": "api_whatsapp_get_whatsapp_qr"
     },
     {
       "relation": "contains",
@@ -11005,5 +11147,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "e93c9e1d0de7016696f7dfcfe2fbd72a31511682"
+  "built_at_commit": "bbd41fd697c16cb60a51652626e5de15e5777b1a"
 }

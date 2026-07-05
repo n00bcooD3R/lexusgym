@@ -76,6 +76,7 @@ async def send_wa_message(
             text = text.replace("{name}", name)
             text = text.replace("{gym_name}", gym_name)
             text = text.replace("{days}", str(days_left))
+            text = text.replace("{days_left}", str(days_left))
             text = text.replace("{amount}", str(fee))
             text = text.replace("{expiry}", formatted_due)
 
@@ -98,3 +99,14 @@ async def send_wa_message(
         return result
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+@router.get("/status")
+async def check_wa_status(user = Depends(get_current_user)):
+    from api.whatsapp import get_whatsapp_status
+    return get_whatsapp_status()
+
+@router.get("/qr")
+async def get_wa_qr(user = Depends(get_current_user)):
+    from api.whatsapp import get_whatsapp_qr
+    return get_whatsapp_qr()
+

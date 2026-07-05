@@ -35,8 +35,8 @@
     "semantic_hash": ""
   },
   "backend/api/routes/cron.py": {
-    "mtime": 1780987978.1339893,
-    "ast_hash": "6f238a5e2e327ef8fb7c8008b3723b40",
+    "mtime": 1783232731.8220463,
+    "ast_hash": "7458b4b578b562574cfafab87dacefa9",
     "semantic_hash": ""
   },
   "backend/api/routes/members.py": {
@@ -65,13 +65,13 @@
     "semantic_hash": ""
   },
   "backend/api/routes/wa.py": {
-    "mtime": 1780987966.12248,
-    "ast_hash": "bda60410089eb9888185dff177da5896",
+    "mtime": 1783232735.395567,
+    "ast_hash": "f4108a72cc5f70b578177d586260ed9e",
     "semantic_hash": ""
   },
   "backend/api/whatsapp.py": {
-    "mtime": 1780899912.9941366,
-    "ast_hash": "d436dffab7ded20f7ce47ea3b79b2353",
+    "mtime": 1783232252.8578076,
+    "ast_hash": "c6655a627cb005a0b0c12941f710f81f",
     "semantic_hash": ""
   },
   "mobile/.claude/settings.json": {
@@ -130,8 +130,8 @@
     "semantic_hash": ""
   },
   "mobile/app/member-detail.tsx": {
-    "mtime": 1780900715.664145,
-    "ast_hash": "ec38fdb82e186c8060991d2dffc4d87c",
+    "mtime": 1783232765.747381,
+    "ast_hash": "c51bb706fe7a8aec44f452c50a2679f3",
     "semantic_hash": ""
   },
   "mobile/app/modal.tsx": {
@@ -240,8 +240,8 @@
     "semantic_hash": ""
   },
   "vercel.json": {
-    "mtime": 1780900540.333725,
-    "ast_hash": "16eaa0af202f78be2c7ae155faff5aa4",
+    "mtime": 1781006134.9859462,
+    "ast_hash": "56c20fb687eb45cfe8bb12ad7a863f33",
     "semantic_hash": ""
   },
   "wa-bridge/index.js": {
@@ -325,8 +325,8 @@
     "semantic_hash": ""
   },
   "web/src/pages/MemberDetail.tsx": {
-    "mtime": 1780989495.3217509,
-    "ast_hash": "8145e47dc3201bde839895add4dc5213",
+    "mtime": 1783232751.9638088,
+    "ast_hash": "c8c7d9b6a0cecd5e78e8a0ff742776ea",
     "semantic_hash": ""
   },
   "web/src/pages/Members.tsx": {
@@ -340,8 +340,8 @@
     "semantic_hash": ""
   },
   "web/src/pages/Settings.tsx": {
-    "mtime": 1780921791.037406,
-    "ast_hash": "c359c13d6076f5fe0510f463a064fb88",
+    "mtime": 1783232303.3136911,
+    "ast_hash": "e3355e43627fbf85135441f24b6804f2",
     "semantic_hash": ""
   },
   "web/src/pages/Statistics.tsx": {

@@ -1,16 +1,16 @@
-# Graph Report - gymapp  (2026-06-09)
+# Graph Report - gymapp  (2026-07-05)
 
 ## Corpus Check
-- 96 files · ~100,650 words
+- 96 files · ~101,798 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 510 nodes · 574 edges · 59 communities (43 shown, 16 thin omitted)
+- 516 nodes · 582 edges · 53 communities (39 shown, 14 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `e93c9e1d`
+- Built from commit: `bbd41fd6`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -28,14 +28,10 @@
 - [[_COMMUNITY_Community 10|Community 10]]
 - [[_COMMUNITY_Community 11|Community 11]]
 - [[_COMMUNITY_Community 12|Community 12]]
-- [[_COMMUNITY_Community 13|Community 13]]
 - [[_COMMUNITY_Community 14|Community 14]]
-- [[_COMMUNITY_Community 15|Community 15]]
 - [[_COMMUNITY_Community 16|Community 16]]
-- [[_COMMUNITY_Community 17|Community 17]]
 - [[_COMMUNITY_Community 18|Community 18]]
 - [[_COMMUNITY_Community 19|Community 19]]
-- [[_COMMUNITY_Community 20|Community 20]]
 - [[_COMMUNITY_Community 21|Community 21]]
 - [[_COMMUNITY_Community 22|Community 22]]
 - [[_COMMUNITY_Community 23|Community 23]]
@@ -49,7 +45,6 @@
 - [[_COMMUNITY_Community 31|Community 31]]
 - [[_COMMUNITY_Community 32|Community 32]]
 - [[_COMMUNITY_Community 33|Community 33]]
-- [[_COMMUNITY_Community 34|Community 34]]
 - [[_COMMUNITY_Community 35|Community 35]]
 - [[_COMMUNITY_Community 36|Community 36]]
 - [[_COMMUNITY_Community 37|Community 37]]
@@ -60,7 +55,6 @@
 - [[_COMMUNITY_Community 46|Community 46]]
 - [[_COMMUNITY_Community 47|Community 47]]
 - [[_COMMUNITY_Community 56|Community 56]]
-- [[_COMMUNITY_Community 57|Community 57]]
 - [[_COMMUNITY_Community 59|Community 59]]
 
 ## God Nodes (most connected - your core abstractions)
@@ -76,25 +70,25 @@
 10. `formatDate()` - 7 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `MemberDetailPage()` --calls--> `formatDate()`  [EXTRACTED]
-  web/src/pages/MemberDetail.tsx → web/src/lib/fees.ts
 - `search_members()` --calls--> `get_db_client()`  [EXTRACTED]
   backend/api/routes/members.py → backend/api/database.py
-- `run_cron_reminders()` --calls--> `get_admin_client()`  [EXTRACTED]
-  backend/api/routes/cron.py → backend/api/database.py
-- `payment_webhook()` --calls--> `get_admin_client()`  [EXTRACTED]
-  backend/api/routes/payments.py → backend/api/database.py
+- `create_pt_credentials()` --calls--> `get_admin_client()`  [EXTRACTED]
+  backend/api/routes/pt.py → backend/api/database.py
+- `get_portal_data()` --calls--> `get_admin_client()`  [EXTRACTED]
+  backend/api/routes/pt.py → backend/api/database.py
+- `pt_login()` --calls--> `get_admin_client()`  [EXTRACTED]
+  backend/api/routes/pt.py → backend/api/database.py
 - `save_settings()` --calls--> `get_admin_client()`  [EXTRACTED]
   backend/api/routes/settings.py → backend/api/database.py
 
 ## Import Cycles
 - None detected.
 
-## Communities (59 total, 16 thin omitted)
+## Communities (53 total, 14 thin omitted)
 
 ### Community 0 - "Community 0"
-Cohesion: 0.06
-Nodes (37): get_current_user(), FastAPI dependency to validate user JWT session token.     Raises 401 Unauthoriz, get_admin_client(), get_db_client(), Returns a client-side Supabase client.     If an Authorization header is provide, Returns an admin Supabase client using the service role key, bypassing RLS., str, Request (+29 more)
+Cohesion: 0.05
+Nodes (41): get_current_user(), FastAPI dependency to validate user JWT session token.     Raises 401 Unauthoriz, get_admin_client(), get_db_client(), Returns a client-side Supabase client.     If an Authorization header is provide, Returns an admin Supabase client using the service role key, bypassing RLS., generate_invoice_pdf(), InvoicePDF (+33 more)
 
 ### Community 1 - "Community 1"
 Cohesion: 0.06
@@ -125,40 +119,32 @@ Cohesion: 0.11
 Nodes (17): compilerOptions, allowImportingTsExtensions, erasableSyntaxOnly, lib, module, moduleDetection, moduleResolution, noEmit (+9 more)
 
 ### Community 8 - "Community 8"
-Cohesion: 0.19
-Nodes (6): buildReminderMsg(), feeStatus, formatDate(), M, MemberRow(), Tab
+Cohesion: 0.08
+Nodes (17): buildReminderMsg(), feeStatus, formatDate(), M, MemberRow(), MemberDetailPage(), Tab, blankDay() (+9 more)
 
 ### Community 9 - "Community 9"
 Cohesion: 0.14
 Nodes (10): blankDiary(), DiaryEntry, DiaryRow, DietItem, DietMeal, Exercise, FoodDiary(), MOODS (+2 more)
 
 ### Community 10 - "Community 10"
-Cohesion: 0.15
-Nodes (10): blankDay(), blankExercise(), blankItem(), blankMeal(), DAY_DEFAULTS, DietItem, DietMeal, Exercise (+2 more)
+Cohesion: 0.18
+Nodes (14): Request, Response, BaseModel, Response, create_pt_credentials(), CredentialsPayload, get_portal_data(), LoginPayload (+6 more)
 
 ### Community 11 - "Community 11"
 Cohesion: 0.15
 Nodes (12): 1) Supabase, 2) WhatsApp — pick ONE, 3) App, 4) Deploy to Vercel (free), Customising messages, Features, 🏋️ Lexus Fitness Group — Free Stack + WhatsApp, License (+4 more)
 
 ### Community 12 - "Community 12"
-Cohesion: 0.21
-Nodes (5): Icon(), ICONS, FLOAT_ICONS, NAV_LINKS, STARS
+Cohesion: 0.06
+Nodes (24): Icon(), ICONS, generateBill(), generateInvoice(), gymDetails, setGymDetails(), setLogoBase64(), setSealBase64() (+16 more)
 
 ### Community 14 - "Community 14"
 Cohesion: 0.17
 Nodes (11): dependencies, express, puppeteer, qrcode-terminal, whatsapp-web.js, main, name, scripts (+3 more)
 
-### Community 15 - "Community 15"
-Cohesion: 0.29
-Nodes (6): generateBill(), generateInvoice(), gymDetails, setGymDetails(), setLogoBase64(), setSealBase64()
-
 ### Community 16 - "Community 16"
 Cohesion: 0.20
 Nodes (9): dependencies, express, qrcode-terminal, whatsapp-web.js, name, private, scripts, start (+1 more)
-
-### Community 17 - "Community 17"
-Cohesion: 0.38
-Nodes (4): addDays(), getTodayString(), NewMember(), PLANS
 
 ### Community 18 - "Community 18"
 Cohesion: 0.25
@@ -167,10 +153,6 @@ Nodes (7): graphify reference: extra exports and benchmark, Step 6b - Wiki (only
 ### Community 19 - "Community 19"
 Cohesion: 0.29
 Nodes (6): compilerOptions, paths, strict, extends, include, @/*
-
-### Community 20 - "Community 20"
-Cohesion: 0.20
-Nodes (7): apiFetch(), DEFAULT_SETTINGS, GYM_KEYS, MSG_KEYS, PLACEHOLDERS, SETTINGS_KEYS, supabase
 
 ### Community 23 - "Community 23"
 Cohesion: 0.33
@@ -212,24 +194,20 @@ Nodes (3): Expanding the ESLint configuration, React Compiler, React + TypeScrip
 Cohesion: 0.70
 Nodes (4): get_last_synced_id(), init_local_tracker(), start_sync(), update_last_synced_id()
 
-### Community 57 - "Community 57"
-Cohesion: 0.17
-Nodes (12): generate_invoice_pdf(), InvoicePDF, Generates a premium invoice receipt PDF using fpdf2.     Matches coordinate offs, Unified WhatsApp sender. Selects provider based on WA_PROVIDER env variable., send_via_evolution(), send_via_local(), send_via_meta(), send_whatsapp() (+4 more)
-
 ## Knowledge Gaps
 - **252 isolated node(s):** `PreToolUse`, `str`, `Request`, `Request`, `Response` (+247 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **16 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **14 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `get_admin_client()` connect `Community 0` to `Community 57`?**
-  _High betweenness centrality (0.045) - this node is a cross-community bridge._
+- **Why does `get_admin_client()` connect `Community 0` to `Community 10`?**
+  _High betweenness centrality (0.048) - this node is a cross-community bridge._
 - **What connects `PreToolUse`, `str`, `FastAPI dependency to validate user JWT session token.     Raises 401 Unauthoriz` to the rest of the system?**
-  _262 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _264 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Community 0` be split into smaller, more focused modules?**
-  _Cohesion score 0.06207482993197279 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.05323653962492438 - nodes in this community are weakly interconnected._
 - **Should `Community 1` be split into smaller, more focused modules?**
   _Cohesion score 0.05714285714285714 - nodes in this community are weakly interconnected._
 - **Should `Community 2` be split into smaller, more focused modules?**

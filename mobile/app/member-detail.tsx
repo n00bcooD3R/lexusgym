@@ -84,10 +84,16 @@ export default function MemberDetailScreen() {
       console.warn("Failed to load settings in RN app:", err);
     }
 
+    const expiry = member.next_due_date ? new Date(member.next_due_date).toLocaleDateString("en-IN") : "—";
+    const amount = String(member.fee_amount ?? 0);
+
     const body = template
       .replace(/{name}/g, member.name)
       .replace(/{gym_name}/g, gymName)
-      .replace(/{days}/g, String(daysLeft ?? 30));
+      .replace(/{days}/g, String(daysLeft ?? 30))
+      .replace(/{days_left}/g, String(daysLeft ?? 30))
+      .replace(/{expiry}/g, expiry)
+      .replace(/{amount}/g, amount);
 
     try {
       // Fetch session from supabase to get current token for authorization

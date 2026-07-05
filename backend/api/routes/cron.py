@@ -82,6 +82,7 @@ def run_cron_reminders(authorization: str = Header(None)):
             body = body.replace("{name}", m["name"])
             body = body.replace("{gym_name}", gym_name)
             body = body.replace("{days}", str(diff_days))
+            body = body.replace("{days_left}", str(diff_days))
             body = body.replace("{amount}", str(m.get("fee_amount") or 0))
             body = body.replace("{expiry}", formatted_due)
                 
