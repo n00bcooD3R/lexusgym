@@ -43,42 +43,42 @@ async def send_wa_message(
         member = res.data[0]
         phone = member["phone"]
         
-        # Build reminder message if not provided
+        name = member["name"]
+        fee = member["fee_amount"] or 0
+        due = member["next_due_date"]
+        
+        formatted_due = due or "N/A"
+        overdue = False
+        days_left = 0
+        if due:
+            try:
+                dt = datetime.strptime(due, "%Y-%m-%d")
+                formatted_due = dt.strftime("%d/%m/%Y")
+                days_left = (dt.date() - datetime.now().date()).days
+                overdue = days_left < 0
+            except Exception:
+                pass
+        
+        # Fetch settings
+        res_settings = sb.from_("settings").select("key, value").execute()
+        settings = {s["key"]: (s["value"] or "") for s in res_settings.data or []}
+        gym_name = settings.get("gym_name", "Lexus Fitness Group")
+
         text = body
         if not text:
-            name = member["name"]
-            fee = member["fee_amount"] or 0
-            due = member["next_due_date"]
-            
-            formatted_due = due or "N/A"
-            overdue = False
-            days_left = 0
-            if due:
-                try:
-                    dt = datetime.strptime(due, "%Y-%m-%d")
-                    formatted_due = dt.strftime("%d/%m/%Y")
-                    days_left = (dt.date() - datetime.now().date()).days
-                    overdue = days_left < 0
-                except Exception:
-                    pass
-            
-            # Fetch settings for custom templates
-            res_settings = sb.from_("settings").select("key, value").execute()
-            settings = {s["key"]: (s["value"] or "") for s in res_settings.data or []}
-            gym_name = settings.get("gym_name", "Lexus Fitness Group")
-            
             if overdue:
                 template = settings.get("msg_expired") or "Hello {name},\n\nYour {gym_name} membership has expired. 😔\nPlease renew to continue.\n\n— Team {gym_name}"
             else:
                 template = settings.get("msg_reminder") or "Hello {name},\n\nYour {gym_name} membership expires in {days} days. 💪\nPlease renew soon!\n\n— Team {gym_name}"
-            
             text = template
-            text = text.replace("{name}", name)
-            text = text.replace("{gym_name}", gym_name)
-            text = text.replace("{days}", str(days_left))
-            text = text.replace("{days_left}", str(days_left))
-            text = text.replace("{amount}", str(fee))
-            text = text.replace("{expiry}", formatted_due)
+            
+        # Replace placeholders in the final text (fallback for frontend/custom text too)
+        text = text.replace("{name}", name)
+        text = text.replace("{gym_name}", gym_name)
+        text = text.replace("{days}", str(days_left))
+        text = text.replace("{days_left}", str(days_left))
+        text = text.replace("{amount}", str(fee))
+        text = text.replace("{expiry}", formatted_due)
 
         # Send via WhatsApp utility
         result = send_whatsapp(phone, text, document_bytes)
