@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { supabase, apiFetch } from "../lib/supabase";
+import { compressImage } from "../lib/image";
 import { feeStatus, formatDate } from "../lib/fees";
 import { generateInvoice, setGymDetails } from "../lib/pdf-bill";
 import { Icon } from "../components/Icons";
@@ -1300,8 +1301,20 @@ function EditFormView({ member, onCancel, onSaved }: { member: any; onCancel: ()
     setErr(""); setBusy(true);
     let photo_url = f.photo_url;
     if (photo) {
-      const path = `members/${Date.now()}-${photo.name.replace(/[^a-z0-9.]/gi, "_")}`;
-      const { error: upErr } = await supabase.storage.from("member-photos").upload(path, photo);
+      let uploadFile: Blob | File = photo;
+      let filename = photo.name.replace(/[^a-z0-9.]/gi, "_");
+      try {
+        const compressedBlob = await compressImage(photo);
+        const baseName = photo.name.replace(/\.[^/.]+$/, "");
+        const cleanBaseName = baseName.replace(/[^a-z0-9]/gi, "_");
+        filename = `${cleanBaseName}.jpg`;
+        uploadFile = new File([compressedBlob], filename, { type: "image/jpeg" });
+      } catch (compressErr) {
+        console.error("Error compressing image, uploading original instead:", compressErr);
+      }
+
+      const path = `members/${Date.now()}-${filename}`;
+      const { error: upErr } = await supabase.storage.from("member-photos").upload(path, uploadFile);
       if (upErr) { setErr(upErr.message); setBusy(false); return; }
       const { data: pub } = supabase.storage.from("member-photos").getPublicUrl(path);
       photo_url = pub.publicUrl;

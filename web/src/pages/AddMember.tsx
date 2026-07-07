@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase, apiFetch } from "../lib/supabase";
+import { compressImage } from "../lib/image";
 import { Icon } from "../components/Icons";
 
 const PLANS = [
@@ -174,8 +175,20 @@ export default function NewMember() {
 
     let photo_url: string | null = null;
     if (photo) {
-      const path = `members/${Date.now()}-${photo.name.replace(/[^a-z0-9.]/gi, "_")}`;
-      const { error: upErr } = await supabase.storage.from("member-photos").upload(path, photo, { upsert: true });
+      let uploadFile: Blob | File = photo;
+      let filename = photo.name.replace(/[^a-z0-9.]/gi, "_");
+      try {
+        const compressedBlob = await compressImage(photo);
+        const baseName = photo.name.replace(/\.[^/.]+$/, "");
+        const cleanBaseName = baseName.replace(/[^a-z0-9]/gi, "_");
+        filename = `${cleanBaseName}.jpg`;
+        uploadFile = new File([compressedBlob], filename, { type: "image/jpeg" });
+      } catch (compressErr) {
+        console.error("Error compressing image, uploading original instead:", compressErr);
+      }
+
+      const path = `members/${Date.now()}-${filename}`;
+      const { error: upErr } = await supabase.storage.from("member-photos").upload(path, uploadFile, { upsert: true });
       if (upErr) { setErr("Photo upload: " + upErr.message); setLoading(false); return; }
       photo_url = supabase.storage.from("member-photos").getPublicUrl(path).data.publicUrl;
     }
