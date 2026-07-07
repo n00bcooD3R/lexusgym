@@ -70,10 +70,13 @@ def run_cron_reminders(authorization: str = Header(None)):
             
         diff_days = (due_date - today).days
         
-        # Send alerts for due date <= 4 days (today, in 1-4 days, or overdue)
-        if diff_days <= 4:
+        # Send alerts only for:
+        # - Exactly 3 days before expiry (diff_days == 3)
+        # - Last day of membership (diff_days == 0)
+        # - Exactly 1 day after expiry (diff_days == -1)
+        if diff_days in (3, 0, -1):
             formatted_due = due_date.strftime("%d/%m/%Y")
-            if diff_days < 0:
+            if diff_days == -1:
                 template = settings.get("msg_expired") or EXPIRED_MSG
             else:
                 template = settings.get("msg_reminder") or REMINDER_MSG
