@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, Request
+from pydantic import BaseModel
 from api.database import get_admin_client
 from api.auth import get_current_user
 from api.whatsapp import send_whatsapp
@@ -109,4 +110,55 @@ async def check_wa_status(user = Depends(get_current_user)):
 async def get_wa_qr(user = Depends(get_current_user)):
     from api.whatsapp import get_whatsapp_qr
     return get_whatsapp_qr()
+
+
+class OwnerNotificationRequest(BaseModel):
+    type: str  # "admission" or "renewal"
+    name: str
+    method: str
+    amount: str
+
+@router.post("/notify-owner")
+async def notify_owner(
+    req: OwnerNotificationRequest,
+    user = Depends(get_current_user)
+):
+    try:
+        sb = get_admin_client()
+        # Fetch settings to get owner_wa_number
+        res_settings = sb.from_("settings").select("key, value").execute()
+        settings = {s["key"]: (s["value"] or "") for s in res_settings.data or []}
+        owner_phone = settings.get("owner_wa_number", "").strip()
+        
+        if not owner_phone:
+            return {"ok": True, "message": "Owner phone number not configured in settings"}
+            
+        from datetime import datetime, timezone, timedelta
+        
+        # IST is UTC + 5:30
+        ist_tz = timezone(timedelta(hours=5, minutes=30))
+        now_ist = datetime.now(ist_tz)
+        date_str = now_ist.strftime("%d/%m/%Y")
+        
+        if req.type == "admission":
+            text = (
+                "🆕 New admission details:-\n"
+                f"Date = {date_str}\n"
+                f"Name = {req.name}\n"
+                f"method = {req.method}\n"
+                f"amount = {req.amount}"
+            )
+        else:
+            text = (
+                "🔄 Membership Renewal Details:-\n"
+                f"Date = {date_str}\n"
+                f"Name = {req.name}\n"
+                f"method = {req.method}\n"
+                f"amount = {req.amount}"
+            )
+            
+        result = send_whatsapp(owner_phone, text)
+        return result
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 

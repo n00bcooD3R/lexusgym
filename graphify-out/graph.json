@@ -50,7 +50,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "api_auth",
-      "community": 57,
+      "community": 0,
       "norm_label": "auth.py"
     },
     {
@@ -60,7 +60,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "api_auth_get_current_user",
-      "community": 58,
+      "community": 0,
       "norm_label": "get_current_user()"
     },
     {
@@ -70,7 +70,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "backend_api_auth_py_str",
-      "community": 58,
+      "community": 0,
       "norm_label": "str"
     },
     {
@@ -80,7 +80,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "api_auth_rationale_5",
-      "community": 58,
+      "community": 0,
       "norm_label": "fastapi dependency to validate user jwt session token.     raises 401 unauthoriz"
     },
     {
@@ -90,7 +90,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "api_database",
-      "community": 57,
+      "community": 0,
       "norm_label": "database.py"
     },
     {
@@ -100,7 +100,7 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "api_database_get_db_client",
-      "community": 58,
+      "community": 0,
       "norm_label": "get_db_client()"
     },
     {
@@ -110,7 +110,7 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "client",
-      "community": 58,
+      "community": 0,
       "norm_label": "client"
     },
     {
@@ -120,7 +120,7 @@
       "source_location": "L32",
       "_origin": "ast",
       "id": "api_database_get_admin_client",
-      "community": 57,
+      "community": 0,
       "norm_label": "get_admin_client()"
     },
     {
@@ -130,7 +130,7 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "api_database_rationale_19",
-      "community": 58,
+      "community": 0,
       "norm_label": "returns a client-side supabase client.     if an authorization header is provide"
     },
     {
@@ -140,7 +140,7 @@
       "source_location": "L33",
       "_origin": "ast",
       "id": "api_database_rationale_33",
-      "community": 57,
+      "community": 0,
       "norm_label": "returns an admin supabase client using the service role key, bypassing rls."
     },
     {
@@ -170,7 +170,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "api_pdf",
-      "community": 60,
+      "community": 10,
       "norm_label": "pdf.py"
     },
     {
@@ -180,7 +180,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "api_pdf_invoicepdf",
-      "community": 60,
+      "community": 10,
       "norm_label": "invoicepdf"
     },
     {
@@ -190,7 +190,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "fpdf",
-      "community": 60,
+      "community": 10,
       "norm_label": "fpdf"
     },
     {
@@ -200,7 +200,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "api_pdf_invoicepdf_header",
-      "community": 60,
+      "community": 10,
       "norm_label": ".header()"
     },
     {
@@ -210,7 +210,7 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "api_pdf_invoicepdf_footer",
-      "community": 60,
+      "community": 10,
       "norm_label": ".footer()"
     },
     {
@@ -220,7 +220,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "api_pdf_generate_invoice_pdf",
-      "community": 60,
+      "community": 10,
       "norm_label": "generate_invoice_pdf()"
     },
     {
@@ -230,7 +230,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "api_pdf_rationale_13",
-      "community": 60,
+      "community": 10,
       "norm_label": "generates a premium invoice receipt pdf using fpdf2.     matches coordinate offs"
     },
     {
@@ -250,7 +250,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "routes_adms",
-      "community": 61,
+      "community": 0,
       "norm_label": "adms.py"
     },
     {
@@ -260,7 +260,7 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "routes_adms_adms_handshake",
-      "community": 61,
+      "community": 0,
       "norm_label": "adms_handshake()"
     },
     {
@@ -270,7 +270,7 @@
       "source_location": "L36",
       "_origin": "ast",
       "id": "routes_adms_adms_receive_data",
-      "community": 61,
+      "community": 0,
       "norm_label": "adms_receive_data()"
     },
     {
@@ -280,7 +280,7 @@
       "source_location": "L36",
       "_origin": "ast",
       "id": "backend_api_routes_adms_py_request",
-      "community": 61,
+      "community": 0,
       "norm_label": "request"
     },
     {
@@ -290,7 +290,7 @@
       "source_location": "L113",
       "_origin": "ast",
       "id": "routes_adms_adms_get_commands",
-      "community": 61,
+      "community": 0,
       "norm_label": "adms_get_commands()"
     },
     {
@@ -300,7 +300,7 @@
       "source_location": "L120",
       "_origin": "ast",
       "id": "routes_adms_adms_device_cmd_response",
-      "community": 61,
+      "community": 0,
       "norm_label": "adms_device_cmd_response()"
     },
     {
@@ -330,7 +330,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "routes_members",
-      "community": 58,
+      "community": 0,
       "norm_label": "members.py"
     },
     {
@@ -340,7 +340,7 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "routes_members_deleterequest",
-      "community": 58,
+      "community": 0,
       "norm_label": "deleterequest"
     },
     {
@@ -360,7 +360,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "routes_members_search_members",
-      "community": 58,
+      "community": 0,
       "norm_label": "search_members()"
     },
     {
@@ -370,7 +370,7 @@
       "source_location": "L41",
       "_origin": "ast",
       "id": "routes_members_delete_member",
-      "community": 58,
+      "community": 0,
       "norm_label": "delete_member()"
     },
     {
@@ -380,7 +380,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "routes_payments",
-      "community": 60,
+      "community": 10,
       "norm_label": "payments.py"
     },
     {
@@ -390,7 +390,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "routes_payments_webhookpayload",
-      "community": 60,
+      "community": 10,
       "norm_label": "webhookpayload"
     },
     {
@@ -400,7 +400,7 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "routes_payments_payment_webhook",
-      "community": 60,
+      "community": 10,
       "norm_label": "payment_webhook()"
     },
     {
@@ -540,47 +540,47 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "routes_settings",
-      "community": 57,
+      "community": 0,
       "norm_label": "settings.py"
     },
     {
       "label": "list_settings()",
       "file_type": "code",
       "source_file": "backend/api/routes/settings.py",
-      "source_location": "L24",
+      "source_location": "L25",
       "_origin": "ast",
       "id": "routes_settings_list_settings",
-      "community": 57,
+      "community": 0,
       "norm_label": "list_settings()"
     },
     {
       "label": "Response",
       "file_type": "code",
       "source_file": "backend/api/routes/settings.py",
-      "source_location": "L24",
+      "source_location": "L25",
       "_origin": "ast",
       "id": "backend_api_routes_settings_py_response",
-      "community": 57,
+      "community": 0,
       "norm_label": "response"
     },
     {
       "label": "save_settings()",
       "file_type": "code",
       "source_file": "backend/api/routes/settings.py",
-      "source_location": "L51",
+      "source_location": "L52",
       "_origin": "ast",
       "id": "routes_settings_save_settings",
-      "community": 57,
+      "community": 0,
       "norm_label": "save_settings()"
     },
     {
       "label": "seed_settings()",
       "file_type": "code",
       "source_file": "backend/api/routes/settings.py",
-      "source_location": "L64",
+      "source_location": "L65",
       "_origin": "ast",
       "id": "routes_settings_seed_settings",
-      "community": 57,
+      "community": 0,
       "norm_label": "seed_settings()"
     },
     {
@@ -590,7 +590,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "routes_statistics",
-      "community": 57,
+      "community": 0,
       "norm_label": "statistics.py"
     },
     {
@@ -600,7 +600,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "routes_statistics_get_stats_summary",
-      "community": 57,
+      "community": 0,
       "norm_label": "get_stats_summary()"
     },
     {
@@ -610,7 +610,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "backend_api_routes_statistics_py_str",
-      "community": 57,
+      "community": 0,
       "norm_label": "str"
     },
     {
@@ -620,7 +620,7 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "routes_statistics_rationale_17",
-      "community": 57,
+      "community": 0,
       "norm_label": "computes aggregated kpis, 6-month historical trends, plan distributions,     and"
     },
     {
@@ -637,7 +637,7 @@
       "label": "send_wa_message()",
       "file_type": "code",
       "source_file": "backend/api/routes/wa.py",
-      "source_location": "L10",
+      "source_location": "L11",
       "_origin": "ast",
       "id": "routes_wa_send_wa_message",
       "community": 10,
@@ -647,7 +647,7 @@
       "label": "Request",
       "file_type": "code",
       "source_file": "backend/api/routes/wa.py",
-      "source_location": "L10",
+      "source_location": "L11",
       "_origin": "ast",
       "id": "backend_api_routes_wa_py_request",
       "community": 10,
@@ -657,7 +657,7 @@
       "label": "check_wa_status()",
       "file_type": "code",
       "source_file": "backend/api/routes/wa.py",
-      "source_location": "L104",
+      "source_location": "L105",
       "_origin": "ast",
       "id": "routes_wa_check_wa_status",
       "community": 10,
@@ -667,11 +667,31 @@
       "label": "get_wa_qr()",
       "file_type": "code",
       "source_file": "backend/api/routes/wa.py",
-      "source_location": "L109",
+      "source_location": "L110",
       "_origin": "ast",
       "id": "routes_wa_get_wa_qr",
       "community": 10,
       "norm_label": "get_wa_qr()"
+    },
+    {
+      "label": "OwnerNotificationRequest",
+      "file_type": "code",
+      "source_file": "backend/api/routes/wa.py",
+      "source_location": "L115",
+      "_origin": "ast",
+      "id": "routes_wa_ownernotificationrequest",
+      "community": 10,
+      "norm_label": "ownernotificationrequest"
+    },
+    {
+      "label": "notify_owner()",
+      "file_type": "code",
+      "source_file": "backend/api/routes/wa.py",
+      "source_location": "L122",
+      "_origin": "ast",
+      "id": "routes_wa_notify_owner",
+      "community": 10,
+      "norm_label": "notify_owner()"
     },
     {
       "label": "whatsapp.py",
@@ -3020,7 +3040,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_main",
-      "community": 58,
+      "community": 0,
       "norm_label": "main.tsx"
     },
     {
@@ -3087,7 +3107,7 @@
       "label": "Field()",
       "file_type": "code",
       "source_file": "web/src/pages/AddMember.tsx",
-      "source_location": "L563",
+      "source_location": "L579",
       "_origin": "ast",
       "id": "pages_addmember_field",
       "community": 34,
@@ -3427,7 +3447,7 @@
       "label": "WorkoutsTab()",
       "file_type": "code",
       "source_file": "web/src/pages/MemberDetail.tsx",
-      "source_location": "L823",
+      "source_location": "L840",
       "_origin": "ast",
       "id": "pages_memberdetail_workoutstab",
       "community": 12,
@@ -3437,7 +3457,7 @@
       "label": "DietsTab()",
       "file_type": "code",
       "source_file": "web/src/pages/MemberDetail.tsx",
-      "source_location": "L889",
+      "source_location": "L906",
       "_origin": "ast",
       "id": "pages_memberdetail_dietstab",
       "community": 12,
@@ -3447,7 +3467,7 @@
       "label": "PortalTab()",
       "file_type": "code",
       "source_file": "web/src/pages/MemberDetail.tsx",
-      "source_location": "L959",
+      "source_location": "L976",
       "_origin": "ast",
       "id": "pages_memberdetail_portaltab",
       "community": 12,
@@ -3457,7 +3477,7 @@
       "label": "MessagesTab()",
       "file_type": "code",
       "source_file": "web/src/pages/MemberDetail.tsx",
-      "source_location": "L1109",
+      "source_location": "L1126",
       "_origin": "ast",
       "id": "pages_memberdetail_messagestab",
       "community": 12,
@@ -3467,7 +3487,7 @@
       "label": "EditFormView()",
       "file_type": "code",
       "source_file": "web/src/pages/MemberDetail.tsx",
-      "source_location": "L1274",
+      "source_location": "L1291",
       "_origin": "ast",
       "id": "pages_memberdetail_editformview",
       "community": 12,
@@ -3477,7 +3497,7 @@
       "label": "L()",
       "file_type": "code",
       "source_file": "web/src/pages/MemberDetail.tsx",
-      "source_location": "L1438",
+      "source_location": "L1455",
       "_origin": "ast",
       "id": "pages_memberdetail_l",
       "community": 12,
@@ -3697,7 +3717,7 @@
       "label": "PLACEHOLDERS",
       "file_type": "code",
       "source_file": "web/src/pages/Settings.tsx",
-      "source_location": "L15",
+      "source_location": "L16",
       "_origin": "ast",
       "id": "pages_settings_placeholders",
       "community": 20,
@@ -3707,7 +3727,7 @@
       "label": "DEFAULT_SETTINGS",
       "file_type": "code",
       "source_file": "web/src/pages/Settings.tsx",
-      "source_location": "L23",
+      "source_location": "L24",
       "_origin": "ast",
       "id": "pages_settings_default_settings",
       "community": 20,
@@ -3717,7 +3737,7 @@
       "label": "GYM_KEYS",
       "file_type": "code",
       "source_file": "web/src/pages/Settings.tsx",
-      "source_location": "L38",
+      "source_location": "L40",
       "_origin": "ast",
       "id": "pages_settings_gym_keys",
       "community": 20,
@@ -3727,7 +3747,7 @@
       "label": "MSG_KEYS",
       "file_type": "code",
       "source_file": "web/src/pages/Settings.tsx",
-      "source_location": "L39",
+      "source_location": "L41",
       "_origin": "ast",
       "id": "pages_settings_msg_keys",
       "community": 20,
@@ -3737,7 +3757,7 @@
       "label": "SettingsPage()",
       "file_type": "code",
       "source_file": "web/src/pages/Settings.tsx",
-      "source_location": "L41",
+      "source_location": "L43",
       "_origin": "ast",
       "id": "pages_settings_settingspage",
       "community": 20,
@@ -5057,7 +5077,7 @@
       "file_type": "code",
       "source_file": "backend/api/auth.py",
       "source_location": "L4",
-      "community": 58,
+      "community": 0,
       "norm_label": "str",
       "id": "str"
     }
@@ -5501,6 +5521,17 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "backend/api/routes/wa.py",
+      "source_location": "L127",
+      "weight": 1.0,
+      "source": "routes_wa_notify_owner",
+      "target": "api_database_get_admin_client"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/api/routes/wa.py",
       "source_location": "L37",
       "weight": 1.0,
       "source": "routes_wa_send_wa_message",
@@ -5783,6 +5814,16 @@
       "confidence_score": 1.0,
       "source": "routes_pt_loginpayload",
       "target": "basemodel"
+    },
+    {
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/api/routes/wa.py",
+      "source_location": "L115",
+      "weight": 1.0,
+      "source": "routes_wa_ownernotificationrequest",
+      "target": "basemodel",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -6121,6 +6162,26 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "backend/api/routes/wa.py",
+      "source_location": "L122",
+      "weight": 1.0,
+      "source": "routes_wa",
+      "target": "routes_wa_notify_owner",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/api/routes/wa.py",
+      "source_location": "L115",
+      "weight": 1.0,
+      "source": "routes_wa",
+      "target": "routes_wa_ownernotificationrequest",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/api/routes/wa.py",
       "source_location": "L10",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -6170,6 +6231,28 @@
       "weight": 1.0,
       "source": "routes_wa_get_wa_qr",
       "target": "api_whatsapp_get_whatsapp_qr"
+    },
+    {
+      "relation": "references",
+      "context": "parameter_type",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/api/routes/wa.py",
+      "source_location": "L122",
+      "weight": 1.0,
+      "source": "routes_wa_notify_owner",
+      "target": "routes_wa_ownernotificationrequest",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/api/routes/wa.py",
+      "source_location": "L160",
+      "weight": 1.0,
+      "source": "routes_wa_notify_owner",
+      "target": "api_whatsapp_send_whatsapp"
     },
     {
       "relation": "contains",
@@ -10981,5 +11064,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "8049b0e8c2a8559a85e9c514a6ca26558ca0f699"
+  "built_at_commit": "dc4590934a9aa77fdb997f5c8948b20422c55bf9"
 }

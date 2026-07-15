@@ -1,16 +1,16 @@
 # Graph Report - gymapp  (2026-07-15)
 
 ## Corpus Check
-- 97 files · ~101,691 words
+- 97 files · ~101,979 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 506 nodes · 575 edges · 62 communities (46 shown, 16 thin omitted)
+- 508 nodes · 581 edges · 58 communities (43 shown, 15 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `8049b0e8`
+- Built from commit: `dc459093`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -59,20 +59,16 @@
 - [[_COMMUNITY_Community 46|Community 46]]
 - [[_COMMUNITY_Community 47|Community 47]]
 - [[_COMMUNITY_Community 56|Community 56]]
-- [[_COMMUNITY_Community 57|Community 57]]
-- [[_COMMUNITY_Community 58|Community 58]]
 - [[_COMMUNITY_Community 59|Community 59]]
-- [[_COMMUNITY_Community 60|Community 60]]
-- [[_COMMUNITY_Community 61|Community 61]]
 
 ## God Nodes (most connected - your core abstractions)
 1. `compilerOptions` - 17 edges
 2. `compilerOptions` - 16 edges
-3. `get_admin_client()` - 14 edges
+3. `get_admin_client()` - 15 edges
 4. `expo` - 13 edges
 5. `/graphify` - 11 edges
 6. `What You Must Do When Invoked` - 11 edges
-7. `send_whatsapp()` - 8 edges
+7. `send_whatsapp()` - 9 edges
 8. `Icon()` - 8 edges
 9. `formatDate()` - 7 edges
 10. `apiFetch()` - 7 edges
@@ -80,23 +76,23 @@
 ## Surprising Connections (you probably didn't know these)
 - `search_members()` --calls--> `get_db_client()`  [EXTRACTED]
   backend/api/routes/members.py → backend/api/database.py
-- `adms_receive_data()` --calls--> `get_admin_client()`  [EXTRACTED]
-  backend/api/routes/adms.py → backend/api/database.py
 - `run_cron_reminders()` --calls--> `get_admin_client()`  [EXTRACTED]
   backend/api/routes/cron.py → backend/api/database.py
 - `payment_webhook()` --calls--> `get_admin_client()`  [EXTRACTED]
   backend/api/routes/payments.py → backend/api/database.py
-- `create_pt_credentials()` --calls--> `get_admin_client()`  [EXTRACTED]
-  backend/api/routes/pt.py → backend/api/database.py
+- `save_settings()` --calls--> `get_admin_client()`  [EXTRACTED]
+  backend/api/routes/settings.py → backend/api/database.py
+- `seed_settings()` --calls--> `get_admin_client()`  [EXTRACTED]
+  backend/api/routes/settings.py → backend/api/database.py
 
 ## Import Cycles
 - None detected.
 
-## Communities (62 total, 16 thin omitted)
+## Communities (58 total, 15 thin omitted)
 
 ### Community 0 - "Community 0"
-Cohesion: 0.18
-Nodes (14): Request, Response, BaseModel, Response, create_pt_credentials(), CredentialsPayload, get_portal_data(), LoginPayload (+6 more)
+Cohesion: 0.07
+Nodes (35): get_current_user(), FastAPI dependency to validate user JWT session token.     Raises 401 Unauthoriz, get_admin_client(), get_db_client(), Returns a client-side Supabase client.     If an Authorization header is provide, Returns an admin Supabase client using the service role key, bypassing RLS., str, Request (+27 more)
 
 ### Community 1 - "Community 1"
 Cohesion: 0.06
@@ -135,8 +131,8 @@ Cohesion: 0.14
 Nodes (10): blankDiary(), DiaryEntry, DiaryRow, DietItem, DietMeal, Exercise, FoodDiary(), MOODS (+2 more)
 
 ### Community 10 - "Community 10"
-Cohesion: 0.17
-Nodes (14): get_whatsapp_qr(), get_whatsapp_status(), Checks connection status of the WhatsApp instance., Fetches the connection QR code for WhatsApp., Unified WhatsApp sender. Selects provider based on WA_PROVIDER env variable., send_via_evolution(), send_via_local(), send_via_meta() (+6 more)
+Cohesion: 0.10
+Nodes (22): generate_invoice_pdf(), InvoicePDF, Generates a premium invoice receipt PDF using fpdf2.     Matches coordinate offs, get_whatsapp_qr(), get_whatsapp_status(), Checks connection status of the WhatsApp instance., Fetches the connection QR code for WhatsApp., Unified WhatsApp sender. Selects provider based on WA_PROVIDER env variable. (+14 more)
 
 ### Community 13 - "Community 13"
 Cohesion: 0.15
@@ -214,37 +210,25 @@ Nodes (5): compressImage(), addDays(), getTodayString(), NewMember(), PLANS
 Cohesion: 0.70
 Nodes (4): get_last_synced_id(), init_local_tracker(), start_sync(), update_last_synced_id()
 
-### Community 57 - "Community 57"
-Cohesion: 0.23
-Nodes (9): get_admin_client(), Returns an admin Supabase client using the service role key, bypassing RLS., Response, str, list_settings(), save_settings(), seed_settings(), get_stats_summary() (+1 more)
-
-### Community 58 - "Community 58"
-Cohesion: 0.20
-Nodes (10): get_current_user(), FastAPI dependency to validate user JWT session token.     Raises 401 Unauthoriz, get_db_client(), Returns a client-side Supabase client.     If an Authorization header is provide, str, Client, delete_member(), DeleteRequest (+2 more)
-
-### Community 60 - "Community 60"
-Cohesion: 0.29
-Nodes (6): generate_invoice_pdf(), InvoicePDF, Generates a premium invoice receipt PDF using fpdf2.     Matches coordinate offs, FPDF, payment_webhook(), WebhookPayload
-
 ## Knowledge Gaps
 - **242 isolated node(s):** `PreToolUse`, `str`, `Request`, `Request`, `Response` (+237 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **16 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **15 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `Client` connect `Community 58` to `Community 57`?**
-  _High betweenness centrality (0.058) - this node is a cross-community bridge._
-- **Why does `get_admin_client()` connect `Community 57` to `Community 0`, `Community 10`, `Community 58`, `Community 60`, `Community 61`?**
-  _High betweenness centrality (0.051) - this node is a cross-community bridge._
-- **Why does `get_db_client()` connect `Community 58` to `Community 57`?**
-  _High betweenness centrality (0.015) - this node is a cross-community bridge._
+- **Why does `get_admin_client()` connect `Community 0` to `Community 10`?**
+  _High betweenness centrality (0.053) - this node is a cross-community bridge._
 - **What connects `PreToolUse`, `str`, `FastAPI dependency to validate user JWT session token.     Raises 401 Unauthoriz` to the rest of the system?**
   _254 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **Should `Community 0` be split into smaller, more focused modules?**
+  _Cohesion score 0.06570048309178744 - nodes in this community are weakly interconnected._
 - **Should `Community 1` be split into smaller, more focused modules?**
   _Cohesion score 0.05714285714285714 - nodes in this community are weakly interconnected._
 - **Should `Community 2` be split into smaller, more focused modules?**
   _Cohesion score 0.06060606060606061 - nodes in this community are weakly interconnected._
 - **Should `Community 3` be split into smaller, more focused modules?**
   _Cohesion score 0.10752688172043011 - nodes in this community are weakly interconnected._
+- **Should `Community 4` be split into smaller, more focused modules?**
+  _Cohesion score 0.07692307692307693 - nodes in this community are weakly interconnected._

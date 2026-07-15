@@ -7,6 +7,7 @@ const SETTINGS_KEYS: Record<string, string> = {
   gym_name: "Gym Name", gym_tagline: "Tagline", gym_address: "Address",
   gym_phone: "Phone", gym_email: "Email", gym_gst: "GST Number",
   wa_bridge_url: "WhatsApp Bridge URL",
+  owner_wa_number: "Owner WhatsApp Notification Number",
   msg_welcome: "Welcome Message", msg_renewal: "Renewal Message",
   msg_reminder: "Reminder Message (Before Expiry)",
   msg_expired: "Expired Message", msg_payment: "Payment Confirmation Message"
@@ -28,6 +29,7 @@ const DEFAULT_SETTINGS: Record<string, string> = {
   gym_email: "info@lexusfitness.com",
   gym_gst: "27AAABCU9603R1ZM",
   wa_bridge_url: "http://140.245.215.154:3001",
+  owner_wa_number: "",
   msg_welcome: "Hello {name}, 👋\n\nWelcome to {gym_name}! 💪🔥\nWe are excited to have you as a part of the {gym_name} family.\n\nYour membership has been successfully activated, and your fitness journey officially starts today. Whether your goal is muscle building, fat loss, strength improvement, endurance, or overall fitness, our team is here to support and guide you every step of the way.\n\nAt {gym_name}, we believe that consistency, discipline, and dedication create real transformation. With our professional training environment, modern equipment, and motivating atmosphere, you now have everything you need to become the strongest version of yourself.\n\nRemember:\n✅ Every workout brings progress\n✅ Every drop of sweat is an investment in yourself\n✅ Small daily efforts create big results over time\n\nWe encourage you to stay committed to your training schedule, maintain proper nutrition, and never give up on your goals. Results take time, but with patience and consistency, success is guaranteed.\n\nIf you need any assistance regarding workouts, diet guidance, membership support, or gym facilities, feel free to contact our team anytime. We are always happy to help.\n\nThank you once again for trusting {gym_name} with your fitness journey.\n\nLet’s train hard, stay focused, and achieve greatness together! 🔥🏋️\n\n— Team {gym_name}",
   msg_renewal: "Hello {name},\n\nYour {gym_name} membership has been renewed! 💪🔥\n\n— Team {gym_name}",
   msg_reminder: "Hello {name},\n\nYour {gym_name} membership expires in {days} days. 💪\nPlease renew soon!\n\n— Team {gym_name}",
@@ -35,7 +37,7 @@ const DEFAULT_SETTINGS: Record<string, string> = {
   msg_payment: "Hello {name},\n\nThank you for ₹{amount}! 💪\nMembership active until {expiry}.\n\n— Team {gym_name}"
 };
 
-const GYM_KEYS = ["gym_name", "gym_tagline", "gym_address", "gym_phone", "gym_email", "gym_gst", "wa_bridge_url"];
+const GYM_KEYS = ["gym_name", "gym_tagline", "gym_address", "gym_phone", "gym_email", "gym_gst", "wa_bridge_url", "owner_wa_number"];
 const MSG_KEYS = ["msg_welcome", "msg_renewal", "msg_reminder", "msg_expired", "msg_payment"];
 
 export default function SettingsPage() {

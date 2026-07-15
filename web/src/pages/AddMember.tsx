@@ -291,6 +291,22 @@ export default function NewMember() {
         console.error("Invoice error:", e.message);
       }
     }
+    // Send owner notification
+    try {
+      const paymentMethodStr = paymentMethod === "upi" ? "UPI/QR" : paymentMethod === "card" ? "Card" : paymentMethod === "bank" ? "Bank Transfer" : "Cash";
+      await apiFetch("/api/wa/notify-owner", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          type: "admission",
+          name: form.name,
+          method: paymentMethodStr,
+          amount: String(totalPayment)
+        })
+      });
+    } catch (e: any) {
+      console.error("Owner notification error:", e.message);
+    }
     setLoading(false);
     // Redirect to the new member's detail page
     navigate(`/members/${data.id}`);

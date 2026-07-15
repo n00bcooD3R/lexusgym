@@ -603,6 +603,23 @@ function PaymentsTab({ m, payments, partner, onReload }: { m: any; payments: any
           next_due_date: expiringDate,
         }).eq("id", m.couple_partner_id);
       }
+      
+      // Send owner notification
+      try {
+        const paymentMethodStr = method === "upi" ? "UPI/QR" : method === "card" ? "Card" : method === "bank" ? "Bank Transfer" : "Cash";
+        await apiFetch("/api/wa/notify-owner", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            type: "renewal",
+            name: m.name,
+            method: paymentMethodStr,
+            amount: String(total)
+          })
+        });
+      } catch (e: any) {
+        console.error("Owner notification error:", e.message);
+      }
 
       alert("Payment recorded successfully!");
       setCardio(false);

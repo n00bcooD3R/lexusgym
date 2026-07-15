@@ -55,8 +55,8 @@
     "semantic_hash": ""
   },
   "backend/api/routes/settings.py": {
-    "mtime": 1780921773.4020603,
-    "ast_hash": "b491a3949d7b739b91dc864ae743f5ce",
+    "mtime": 1784088093.834177,
+    "ast_hash": "441ad4385c84f82a8d78a5c122f6a87a",
     "semantic_hash": ""
   },
   "backend/api/routes/statistics.py": {
@@ -65,8 +65,8 @@
     "semantic_hash": ""
   },
   "backend/api/routes/wa.py": {
-    "mtime": 1783233507.7421854,
-    "ast_hash": "ca884ba5b43240e0d2af40f9b37ba461",
+    "mtime": 1784088108.9596627,
+    "ast_hash": "2bfc5bad6a6d35214e71caf969f38701",
     "semantic_hash": ""
   },
   "backend/api/whatsapp.py": {
@@ -305,8 +305,8 @@
     "semantic_hash": ""
   },
   "web/src/pages/AddMember.tsx": {
-    "mtime": 1784087285.961114,
-    "ast_hash": "28a7844260f6e384db5fdccdaed291f7",
+    "mtime": 1784088115.241285,
+    "ast_hash": "23e43319ed7236813e52b8936a20d6a9",
     "semantic_hash": ""
   },
   "web/src/pages/ClientView.tsx": {
@@ -325,8 +325,8 @@
     "semantic_hash": ""
   },
   "web/src/pages/MemberDetail.tsx": {
-    "mtime": 1783358365.5192947,
-    "ast_hash": "51c611d1ca07c7f9c8e3c404a34a160a",
+    "mtime": 1784088131.4191594,
+    "ast_hash": "677e750f535817e219f072343f3e9cb8",
     "semantic_hash": ""
   },
   "web/src/pages/Members.tsx": {
@@ -340,8 +340,8 @@
     "semantic_hash": ""
   },
   "web/src/pages/Settings.tsx": {
-    "mtime": 1783232896.3617249,
-    "ast_hash": "431c5e828deb80c1e8c2ede0c0f26572",
+    "mtime": 1784088098.2408152,
+    "ast_hash": "8a854722b25b89977dcc6f2e9c39068e",
     "semantic_hash": ""
   },
   "web/src/pages/Statistics.tsx": {
