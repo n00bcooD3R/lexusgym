@@ -52,6 +52,7 @@ export default function NewMember() {
   const [cardio, setCardio] = useState(false);
   const [settings, setSettings] = useState<Record<string, string>>({});
   const [selectedPlan, setSelectedPlan] = useState<string>("flex");
+  const [paymentMethod, setPaymentMethod] = useState("cash");
   // Couple pack state
   const [coupleSearch, setCoupleSearch] = useState("");
   const [coupleResults, setCoupleResults] = useState<any[]>([]);
@@ -232,7 +233,7 @@ export default function NewMember() {
       const { data: payRec } = await supabase.from("payments").insert({
         member_id: data.id,
         amount: totalPayment,
-        method: "cash",
+        method: paymentMethod,
         notes: "Initial Membership" + (admFee > 0 ? " + Admission" : "") + (cardio ? " + Cardio" : ""),
         paid_on: joinDateStr
       }).select().single();
@@ -246,17 +247,19 @@ export default function NewMember() {
       
       const expiryDateObj = new Date(dueDateStr);
       const expiry = expiryDateObj.toLocaleDateString("en-IN");
+      const paymentMethodStr = paymentMethod === "upi" ? "UPI/QR" : paymentMethod === "card" ? "Card" : paymentMethod === "bank" ? "Bank Transfer" : "Cash";
 
       msg = msg
         .replace(/{name}/g, form.name)
-        .replace(/{gym_name}/g, gymName);
+        .replace(/{gym_name}/g, gymName)
+        .replace(/{method}/g, paymentMethodStr);
 
       if (msg.includes("{amount}") || msg.includes("{expiry}")) {
         msg = msg
           .replace(/{amount}/g, String(totalPayment))
           .replace(/{expiry}/g, expiry);
       } else if (totalPayment > 0) {
-        msg += `\n\nWe received ₹${totalPayment}. Check the attached invoice!`;
+        msg += `\n\nWe received ₹${totalPayment} via ${paymentMethodStr}. Check the attached invoice!`;
       }
 
       try {
@@ -338,6 +341,14 @@ export default function NewMember() {
           </Field>
           <Field label="Extra Admission Fee (₹)">
             <input id="new-adm-fee" type="number" className="input" placeholder="e.g. 500" value={form.admission_fee} onChange={e => upd("admission_fee", e.target.value)} />
+          </Field>
+          <Field label="Payment Method">
+            <select id="new-payment-method" className="input" value={paymentMethod} onChange={e => setPaymentMethod(e.target.value)}>
+              <option value="cash">Cash</option>
+              <option value="upi">UPI</option>
+              <option value="card">Card</option>
+              <option value="bank">Bank Transfer</option>
+            </select>
           </Field>
         </div>
 
