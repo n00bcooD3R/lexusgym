@@ -547,7 +547,7 @@
       "label": "list_settings()",
       "file_type": "code",
       "source_file": "backend/api/routes/settings.py",
-      "source_location": "L25",
+      "source_location": "L26",
       "_origin": "ast",
       "id": "routes_settings_list_settings",
       "community": 0,
@@ -557,7 +557,7 @@
       "label": "Response",
       "file_type": "code",
       "source_file": "backend/api/routes/settings.py",
-      "source_location": "L25",
+      "source_location": "L26",
       "_origin": "ast",
       "id": "backend_api_routes_settings_py_response",
       "community": 0,
@@ -567,7 +567,7 @@
       "label": "save_settings()",
       "file_type": "code",
       "source_file": "backend/api/routes/settings.py",
-      "source_location": "L52",
+      "source_location": "L53",
       "_origin": "ast",
       "id": "routes_settings_save_settings",
       "community": 0,
@@ -577,7 +577,7 @@
       "label": "seed_settings()",
       "file_type": "code",
       "source_file": "backend/api/routes/settings.py",
-      "source_location": "L65",
+      "source_location": "L66",
       "_origin": "ast",
       "id": "routes_settings_seed_settings",
       "community": 0,
@@ -2837,7 +2837,7 @@
       "label": "Icon()",
       "file_type": "code",
       "source_file": "web/src/components/Icons.tsx",
-      "source_location": "L37",
+      "source_location": "L38",
       "_origin": "ast",
       "id": "components_icons_icon",
       "community": 15,
@@ -3350,7 +3350,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "pages_login",
-      "community": 15,
+      "community": 57,
       "norm_label": "login.tsx"
     },
     {
@@ -3360,7 +3360,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "pages_login_view",
-      "community": 15,
+      "community": 57,
       "norm_label": "view"
     },
     {
@@ -3370,7 +3370,7 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "pages_login_loginpage",
-      "community": 15,
+      "community": 57,
       "norm_label": "loginpage()"
     },
     {
@@ -3717,7 +3717,7 @@
       "label": "PLACEHOLDERS",
       "file_type": "code",
       "source_file": "web/src/pages/Settings.tsx",
-      "source_location": "L16",
+      "source_location": "L17",
       "_origin": "ast",
       "id": "pages_settings_placeholders",
       "community": 20,
@@ -3727,7 +3727,7 @@
       "label": "DEFAULT_SETTINGS",
       "file_type": "code",
       "source_file": "web/src/pages/Settings.tsx",
-      "source_location": "L24",
+      "source_location": "L25",
       "_origin": "ast",
       "id": "pages_settings_default_settings",
       "community": 20,
@@ -3737,7 +3737,7 @@
       "label": "GYM_KEYS",
       "file_type": "code",
       "source_file": "web/src/pages/Settings.tsx",
-      "source_location": "L40",
+      "source_location": "L42",
       "_origin": "ast",
       "id": "pages_settings_gym_keys",
       "community": 20,
@@ -3747,7 +3747,7 @@
       "label": "MSG_KEYS",
       "file_type": "code",
       "source_file": "web/src/pages/Settings.tsx",
-      "source_location": "L41",
+      "source_location": "L43",
       "_origin": "ast",
       "id": "pages_settings_msg_keys",
       "community": 20,
@@ -3757,7 +3757,7 @@
       "label": "SettingsPage()",
       "file_type": "code",
       "source_file": "web/src/pages/Settings.tsx",
-      "source_location": "L43",
+      "source_location": "L45",
       "_origin": "ast",
       "id": "pages_settings_settingspage",
       "community": 20,
@@ -3782,6 +3782,16 @@
       "id": "pages_statistics_statisticspage",
       "community": 15,
       "norm_label": "statisticspage()"
+    },
+    {
+      "label": "UnlockPrompt()",
+      "file_type": "code",
+      "source_file": "web/src/pages/Statistics.tsx",
+      "source_location": "L1156",
+      "_origin": "ast",
+      "id": "pages_statistics_unlockprompt",
+      "community": 15,
+      "norm_label": "unlockprompt()"
     },
     {
       "label": "tailwind.config.js",
@@ -5821,9 +5831,9 @@
       "source_file": "backend/api/routes/wa.py",
       "source_location": "L115",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_wa_ownernotificationrequest",
-      "target": "basemodel",
-      "confidence_score": 1.0
+      "target": "basemodel"
     },
     {
       "relation": "imports_from",
@@ -6164,9 +6174,9 @@
       "source_file": "backend/api/routes/wa.py",
       "source_location": "L122",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_wa",
-      "target": "routes_wa_notify_owner",
-      "confidence_score": 1.0
+      "target": "routes_wa_notify_owner"
     },
     {
       "relation": "contains",
@@ -6174,9 +6184,9 @@
       "source_file": "backend/api/routes/wa.py",
       "source_location": "L115",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_wa",
-      "target": "routes_wa_ownernotificationrequest",
-      "confidence_score": 1.0
+      "target": "routes_wa_ownernotificationrequest"
     },
     {
       "relation": "contains",
@@ -6239,9 +6249,9 @@
       "source_file": "backend/api/routes/wa.py",
       "source_location": "L122",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_wa_notify_owner",
-      "target": "routes_wa_ownernotificationrequest",
-      "confidence_score": 1.0
+      "target": "routes_wa_ownernotificationrequest"
     },
     {
       "relation": "calls",
@@ -10005,6 +10015,16 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "web/src/pages/Statistics.tsx",
+      "source_location": "L1156",
+      "weight": 1.0,
+      "source": "pages_statistics",
+      "target": "pages_statistics_unlockprompt",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "web/tsconfig.app.json",
       "source_location": "L2",
       "weight": 1.0,
@@ -11064,5 +11084,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "dc4590934a9aa77fdb997f5c8948b20422c55bf9"
+  "built_at_commit": "56dc1a00242257014b80fa6457eac0ec3e43bd28"
 }

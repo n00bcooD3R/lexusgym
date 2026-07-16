@@ -1,16 +1,16 @@
-# Graph Report - gymapp  (2026-07-15)
+# Graph Report - gymapp  (2026-07-16)
 
 ## Corpus Check
-- 97 files · ~101,979 words
+- 97 files · ~102,369 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 508 nodes · 581 edges · 58 communities (43 shown, 15 thin omitted)
+- 509 nodes · 582 edges · 59 communities (43 shown, 16 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `dc459093`
+- Built from commit: `56dc1a00`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -59,6 +59,7 @@
 - [[_COMMUNITY_Community 46|Community 46]]
 - [[_COMMUNITY_Community 47|Community 47]]
 - [[_COMMUNITY_Community 56|Community 56]]
+- [[_COMMUNITY_Community 57|Community 57]]
 - [[_COMMUNITY_Community 59|Community 59]]
 
 ## God Nodes (most connected - your core abstractions)
@@ -88,7 +89,7 @@
 ## Import Cycles
 - None detected.
 
-## Communities (58 total, 15 thin omitted)
+## Communities (59 total, 16 thin omitted)
 
 ### Community 0 - "Community 0"
 Cohesion: 0.07
@@ -143,8 +144,8 @@ Cohesion: 0.17
 Nodes (11): dependencies, express, puppeteer, qrcode-terminal, whatsapp-web.js, main, name, scripts (+3 more)
 
 ### Community 15 - "Community 15"
-Cohesion: 0.16
-Nodes (6): Icon(), ICONS, View, FLOAT_ICONS, NAV_LINKS, STARS
+Cohesion: 0.19
+Nodes (5): Icon(), ICONS, FLOAT_ICONS, NAV_LINKS, STARS
 
 ### Community 16 - "Community 16"
 Cohesion: 0.20
@@ -213,7 +214,7 @@ Nodes (4): get_last_synced_id(), init_local_tracker(), start_sync(), update_last
 ## Knowledge Gaps
 - **242 isolated node(s):** `PreToolUse`, `str`, `Request`, `Request`, `Response` (+237 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **15 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **16 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_

@@ -55,8 +55,8 @@
     "semantic_hash": ""
   },
   "backend/api/routes/settings.py": {
-    "mtime": 1784088093.834177,
-    "ast_hash": "441ad4385c84f82a8d78a5c122f6a87a",
+    "mtime": 1784176717.2308545,
+    "ast_hash": "0080a79e3734b33e60dea765128a50af",
     "semantic_hash": ""
   },
   "backend/api/routes/statistics.py": {
@@ -275,8 +275,8 @@
     "semantic_hash": ""
   },
   "web/src/components/Icons.tsx": {
-    "mtime": 1779214900.6070173,
-    "ast_hash": "649106cf3b27558c6d066e3fa0db067e",
+    "mtime": 1784176700.2524266,
+    "ast_hash": "264299ea13c0fb588b9dd79baa2ac8b2",
     "semantic_hash": ""
   },
   "web/src/components/SettingsLoader.tsx": {
@@ -340,13 +340,13 @@
     "semantic_hash": ""
   },
   "web/src/pages/Settings.tsx": {
-    "mtime": 1784088098.2408152,
-    "ast_hash": "8a854722b25b89977dcc6f2e9c39068e",
+    "mtime": 1784176737.4521654,
+    "ast_hash": "018a22f0d19c5cc2c2d055acf495094a",
     "semantic_hash": ""
   },
   "web/src/pages/Statistics.tsx": {
-    "mtime": 1780919294.461543,
-    "ast_hash": "8aae4089865e41ad2f11f1c2f8aa5133",
+    "mtime": 1784176802.082219,
+    "ast_hash": "dfac4316f634f4942bc18f6d1e85087b",
     "semantic_hash": ""
   },
   "web/tailwind.config.js": {

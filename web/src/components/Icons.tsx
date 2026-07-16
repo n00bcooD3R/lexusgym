@@ -32,6 +32,7 @@ export const ICONS = {
   z: "M4 4h16v16H4z",
   menu: "M4 6h16M4 12h16M4 18h16",
   logout: "M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1",
+  lock: "M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4",
 };
 
 export function Icon({ name, size = 20, color = "currentColor", className }: { name: keyof typeof ICONS; size?: number; color?: string; className?: string }) {

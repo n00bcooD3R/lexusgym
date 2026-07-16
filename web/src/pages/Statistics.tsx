@@ -26,6 +26,9 @@ export default function StatisticsPage() {
     return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-01`;
   });
   const [endDate, setEndDate] = useState(() => new Date().toISOString().slice(0, 10));
+  const [unlocked, setUnlocked] = useState(() => {
+    return sessionStorage.getItem("stats_unlocked") === "true";
+  });
 
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState<any>(null);
@@ -58,8 +61,10 @@ export default function StatisticsPage() {
   }, [filterMode, selectedMonth, startDate, endDate]);
 
   useEffect(() => {
-    fetchStats();
-  }, [fetchStats]);
+    if (unlocked) {
+      fetchStats();
+    }
+  }, [fetchStats, unlocked]);
 
   useEffect(() => {
     async function fetchSettings() {
@@ -567,6 +572,18 @@ export default function StatisticsPage() {
   const newJoinsRevenue = stats?.kpis?.new_joins_revenue || 0;
   const renewalsRevenue = stats?.kpis?.renewals_revenue || 0;
   const transactionCount = stats?.transactions?.length || 0;
+
+  if (!unlocked) {
+    return (
+      <UnlockPrompt
+        gymSettings={gymSettings}
+        onUnlock={() => {
+          sessionStorage.setItem("stats_unlocked", "true");
+          setUnlocked(true);
+        }}
+      />
+    );
+  }
 
   if (loading || !stats) {
     return (
@@ -1131,6 +1148,142 @@ export default function StatisticsPage() {
             </tbody>
           </table>
         </div>
+      </div>
+    </div>
+  );
+}
+
+function UnlockPrompt({ gymSettings, onUnlock }: { gymSettings: any; onUnlock: () => void }) {
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+
+    setTimeout(() => {
+      const correctPassword = gymSettings?.stats_password || "stats123";
+      if (password === correctPassword) {
+        onUnlock();
+      } else {
+        setError("Invalid password. Please try again.");
+        setLoading(false);
+      }
+    }, 450);
+  };
+
+  return (
+    <div style={{
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      minHeight: "65vh",
+      padding: "1rem"
+    }}>
+      <div className="glass" style={{
+        maxWidth: "24rem",
+        width: "100%",
+        padding: "2.5rem 2rem",
+        borderRadius: "1.25rem",
+        textAlign: "center",
+        boxShadow: "0 20px 40px rgba(0,0,0,0.3)",
+        border: "1px solid rgba(255,255,255,0.08)",
+        background: "rgba(17, 24, 39, 0.45)",
+        backdropFilter: "blur(20px)",
+        display: "flex",
+        flexDirection: "column",
+        gap: "1.25rem"
+      }}>
+        <div style={{
+          width: "4.5rem",
+          height: "4.5rem",
+          borderRadius: "50%",
+          background: "rgba(139,92,246,0.12)",
+          border: "1px solid rgba(139,92,246,0.25)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          margin: "0 auto 0.5rem auto",
+          color: "#a78bfa",
+          boxShadow: "0 0 20px rgba(139,92,246,0.15)"
+        }}>
+          <Icon name="lock" size={32} />
+        </div>
+
+        <div>
+          <h2 style={{
+            fontSize: "1.3rem",
+            fontWeight: 800,
+            color: "var(--text)",
+            margin: "0 0 0.4rem 0"
+          }}>
+            Restricted Access
+          </h2>
+          <p style={{
+            fontSize: "0.85rem",
+            color: "var(--text-muted)",
+            margin: 0,
+            lineHeight: 1.5
+          }}>
+            Please enter the statistics password to unlock this page and load metrics.
+          </p>
+        </div>
+
+        <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "0.85rem", marginTop: "0.5rem" }}>
+          <input
+            id="stats-auth-password"
+            type="password"
+            placeholder="Password"
+            className="input"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            autoFocus
+            style={{
+              textAlign: "center",
+              letterSpacing: "0.15em",
+              fontSize: "1.05rem",
+              padding: "0.7rem 1rem",
+              background: "rgba(255,255,255,0.03)",
+              border: "1px solid var(--border)",
+              borderRadius: "0.75rem",
+              transition: "border-color 0.2s"
+            }}
+          />
+
+          {error && (
+            <div style={{
+              fontSize: "0.78rem",
+              color: "#fb7185",
+              background: "rgba(244,63,94,0.1)",
+              border: "1px solid rgba(244,63,94,0.2)",
+              borderRadius: "0.5rem",
+              padding: "0.45rem 0.75rem"
+            }}>
+              ⚠️ {error}
+            </div>
+          )}
+
+          <button
+            id="stats-auth-unlock"
+            type="submit"
+            className="btn btn-primary"
+            disabled={loading}
+            style={{
+              padding: "0.7rem 1.25rem",
+              fontSize: "0.9rem",
+              fontWeight: 700,
+              borderRadius: "0.75rem",
+              cursor: "pointer",
+              transition: "all 0.2s",
+              boxShadow: "0 4px 12px rgba(139,92,246,0.3)"
+            }}
+          >
+            {loading ? <><span className="spinner" style={{ width: "1rem", height: "1rem", marginRight: "0.5rem" }} /> Unlocking...</> : "Unlock Statistics"}
+          </button>
+        </form>
       </div>
     </div>
   );
